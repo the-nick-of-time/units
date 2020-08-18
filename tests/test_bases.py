@@ -28,5 +28,6 @@ class TestMakeUnit(TestCase):
         second = make_unit('second', self.dimension, Decimal('10'))
         ten_ones = first(10)
         one_ten = second(1)
+        self.dimension.BASE_UNIT = first
         # 'is' assumes that test_flyweights passed
         self.assertIs(ten_ones.to_second(), one_ten)

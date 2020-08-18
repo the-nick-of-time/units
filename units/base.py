@@ -14,13 +14,13 @@ def make_dimension(name: str) -> typing.Type:
 
     def new(cls, value):
         if value not in cls.instances:
-            cls.instances[value] = super().__new__(cls)
+            cls.instances[value] = super(type, cls).__new__(cls)
         return cls.instances[value]
 
     def init(self, value):
         if not isinstance(value, Number):
             raise TypeError("A dimension has a scalar value")
-        self.value = value
+        self.value = Decimal(value)
 
     def add(self, other):
         if not isinstance(other, type(self)):
@@ -58,5 +58,14 @@ def make_dimension(name: str) -> typing.Type:
     return dimension
 
 
-def make_unit(name: str, dimension: typing.Type, scale: Decimal) -> typing.Type:
-    ...
+def make_unit(name: str, dimension: type, scale: typing.Union[Decimal, int]) -> type:
+    unit = type(name.title(), (dimension,), {
+        "scale": scale,
+        "instances": {},
+    })
+
+    def converter(self):
+        return unit(self.to_base_unit().value / unit.scale)
+
+    setattr(dimension, 'to_' + name, converter)
+    return unit
