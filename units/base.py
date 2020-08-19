@@ -67,5 +67,5 @@ def make_unit(name: str, dimension: type, scale: typing.Union[Decimal, int]) -> 
     def converter(self):
         return unit(self.to_base_unit().value / unit.scale)
 
-    setattr(dimension, 'to_' + name, converter)
+    setattr(dimension, "to_" + name, converter)
     return unit

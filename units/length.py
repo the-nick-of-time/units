@@ -5,7 +5,7 @@ from exceptions import OperationError
 
 
 class Length:
-    __slots__ = 'value', 'scale'
+    __slots__ = "value", "scale"
 
     def __init__(self, value):
         if not isinstance(value, Number):
