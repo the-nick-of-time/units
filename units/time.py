@@ -4,7 +4,6 @@ from base import make_unit, make_dimension
 
 Time = make_dimension("Time")
 seconds = make_unit("seconds", Time, 1)
-Time.BASE_UNIT = seconds
 
 minutes = make_unit("minutes", Time, 60)
 hours = make_unit("hours", Time, 60 * 60)
