@@ -77,3 +77,15 @@ class TestMakeUnit(TestCase):
         b = second(1)
         with self.assertRaises(ImplicitConversionError):
             print(a == b)
+
+    def test_multiply_scalar(self):
+        unit = make_unit("unit", self.dimension, 1)
+        one = unit(1)
+        five = unit(5)
+        self.assertIs(five, one * 5)
+
+    def test_divide_scalar(self):
+        unit = make_unit("unit", self.dimension, 1)
+        two = unit(2)
+        four = unit(4)
+        self.assertIs(two, four / 2)

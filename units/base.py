@@ -36,6 +36,16 @@ def make_dimension(name: str) -> typing.Type:
             raise ImplicitConversionError(type(other), type(self))
         return self.value * self.scale == other.value * other.scale
 
+    def multiply(self, other):
+        if isinstance(other, Number):
+            return type(self)(self.value * other)
+        raise NotImplementedError()
+
+    def divide(self, other):
+        if isinstance(other, Number):
+            return type(self)(self.value / other)
+        raise NotImplementedError()
+
     dimension = type(name, (object,), {
         "__new__": new,
         "__init__": init,
@@ -43,6 +53,8 @@ def make_dimension(name: str) -> typing.Type:
         "__radd__": add,
         "__sub__": subtract,
         "__eq__": equal,
+        "__mul__": multiply,
+        "__truediv__": divide,
     })
 
     # can only be defined after the initial class definition
