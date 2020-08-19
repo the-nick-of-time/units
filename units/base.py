@@ -33,6 +33,8 @@ def make_dimension(name: str) -> typing.Type:
         return type(self)(self.value - other.value)
 
     def equal(self, other):
+        if self is other:
+            return True
         if not isinstance(other, self.get_dimension()):
             raise ImplicitConversionError(type(other), type(self))
         return self.to_base_unit().value == other.to_base_unit().value

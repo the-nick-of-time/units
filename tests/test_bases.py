@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from base import make_dimension, make_unit, Decimal
+from exceptions import OperationError, ImplicitConversionError
 
 
 class TestMakeDimension(TestCase):
@@ -24,10 +25,59 @@ class TestMakeUnit(TestCase):
         self.assertIs(c, d)
 
     def test_conversion(self):
-        first = make_unit("first", self.dimension, Decimal("1"))
-        second = make_unit("second", self.dimension, Decimal("10"))
+        first = make_unit("first", self.dimension, 1)
+        second = make_unit("second", self.dimension, 10)
         ten_ones = first(10)
         one_ten = second(1)
         self.dimension.BASE_UNIT = first
         # "is" assumes that test_flyweights passed
         self.assertIs(ten_ones.to_second(), one_ten)
+
+    def test_add_same_unit(self):
+        unit = make_unit("unit", self.dimension, 1)
+        one = unit(1)
+        two = unit(2)
+        three = unit(3)
+        self.assertIs(three, one + two)
+
+    def test_add_different_unit(self):
+        first = make_unit("first", self.dimension, 1)
+        second = make_unit("second", self.dimension, 10)
+        a = first(10)
+        b = second(1)
+        with self.assertRaises(OperationError):
+            print(a + b)
+
+    def test_subtract_same_unit(self):
+        unit = make_unit("unit", self.dimension, 1)
+        one = unit(1)
+        two = unit(2)
+        three = unit(3)
+        self.assertIs(two, three - one)
+
+    def test_subtract_different_unit(self):
+        first = make_unit("first", self.dimension, 1)
+        second = make_unit("second", self.dimension, 10)
+        a = first(10)
+        b = second(1)
+        with self.assertRaises(OperationError):
+            print(a - b)
+
+    def test_equal_same_dimension(self):
+        first = make_unit("first", self.dimension, 1)
+        second = make_unit("second", self.dimension, 10)
+        ten_ones = first(10)
+        one_ten = second(1)
+        self.dimension.BASE_UNIT = first
+        self.assertEqual(ten_ones, one_ten)
+
+    def test_equal_different_dimension(self):
+        dim2 = make_dimension("dim2")
+        first = make_unit("first", self.dimension, 1)
+        self.dimension.BASE_UNIT = first
+        a = first(1)
+        second = make_unit("second", dim2, 1)
+        dim2.BASE_UNIT = second
+        b = second(1)
+        with self.assertRaises(ImplicitConversionError):
+            print(a == b)
