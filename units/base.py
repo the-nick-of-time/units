@@ -7,9 +7,6 @@ from exceptions import OperationError, ImplicitConversionError
 
 def make_dimension(name: str) -> typing.Type:
     """Create a dimension, a class representing a quantity about the world.
-
-    After creating the type and a unit using it, you must set the BASE_UNIT
-    class variable on it.
     """
 
     def new(cls, value):
@@ -35,12 +32,9 @@ def make_dimension(name: str) -> typing.Type:
     def equal(self, other):
         if self is other:
             return True
-        if not isinstance(other, self.get_dimension()):
+        if not isinstance(other, self.DIMENSION):
             raise ImplicitConversionError(type(other), type(self))
-        return self.to_base_unit().value == other.to_base_unit().value
-
-    def to_base_unit(self):
-        return self.BASE_UNIT(self.value * self.scale)
+        return self.value * self.scale == other.value * other.scale
 
     dimension = type(name, (object,), {
         "__new__": new,
@@ -49,14 +43,10 @@ def make_dimension(name: str) -> typing.Type:
         "__radd__": add,
         "__sub__": subtract,
         "__eq__": equal,
-        "to_base_unit": to_base_unit,
     })
 
     # can only be defined after the initial class definition
-    def get_dimension(self):
-        return dimension
-
-    dimension.get_dimension = get_dimension
+    dimension.DIMENSION = dimension
     return dimension
 
 
@@ -67,7 +57,7 @@ def make_unit(name: str, dimension: type, scale: typing.Union[Decimal, int]) -> 
     })
 
     def converter(self):
-        return unit(self.to_base_unit().value / unit.scale)
+        return unit(self.value * self.scale / unit.scale)
 
     setattr(dimension, "to_" + name, converter)
     return unit
