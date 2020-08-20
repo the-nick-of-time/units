@@ -5,9 +5,9 @@ from exceptions import OperationError, ImplicitConversionError
 
 
 class TestMakeDimension(TestCase):
-    def test_construction(self):
+    def test_self_reference(self):
         dim = make_dimension("TEST")
-        self.assertIsNotNone(dim)
+        self.assertIs(dim, dim.DIMENSION)
 
 
 class TestMakeUnit(TestCase):
@@ -89,3 +89,11 @@ class TestMakeUnit(TestCase):
         two = unit(2)
         four = unit(4)
         self.assertIs(two, four / 2)
+
+
+class TestCompoundDimension(TestCase):
+    def test_self_reference(self):
+        pass
+
+    def test_isinstance(self):
+        pass

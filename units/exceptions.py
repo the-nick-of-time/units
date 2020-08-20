@@ -19,3 +19,6 @@ class ImplicitConversionError(UnitException):
 
     def __str__(self):
         return f"Will not implicitly convert {self.source} to {self.dest}"
+
+# class DimensionMismatchError(UnitException):
+#     def __init__(self):

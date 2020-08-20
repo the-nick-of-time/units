@@ -1,8 +1,11 @@
 import typing
+from collections import Counter
 from decimal import Decimal
 from numbers import Number
 
 from exceptions import OperationError, ImplicitConversionError
+
+ScaleType = typing.Union[Decimal, int]
 
 
 def make_dimension(name: str) -> typing.Type:
@@ -62,7 +65,7 @@ def make_dimension(name: str) -> typing.Type:
     return dimension
 
 
-def make_unit(name: str, dimension: type, scale: typing.Union[Decimal, int]) -> type:
+def make_unit(name: str, dimension: type, scale: ScaleType) -> type:
     unit = type(name.title(), (dimension,), {
         "scale": scale,
         "instances": {},
@@ -73,3 +76,19 @@ def make_unit(name: str, dimension: type, scale: typing.Union[Decimal, int]) -> 
 
     setattr(dimension, "to_" + name, converter)
     return unit
+
+
+def make_compound_dimension(name: str, numerator: Counter, denominator: Counter) -> type:
+    def instance_check(cls, instance):
+        try:
+            return (instance.DIMENSION.NUMERATOR == cls.DIMENSION.NUMERATOR
+                    and instance.DIMENSION.DENOMINATOR == cls.DIMENSION.DENOMINATOR)
+        except AttributeError:
+            return False
+
+    dimension = make_dimension(name)
+    dimension.NUMERATOR = numerator
+    dimension.DENOMINATOR = denominator
+    dimension.__instancecheck__ = instance_check
+
+    return dimension
