@@ -14,7 +14,10 @@ class Multiset:
         return hash(tuple(self.store.items()))
 
     def __iter__(self):
-        return self.store.keys()
+        return iter(self.store.keys())
+
+    def __getitem__(self, item):
+        return self.store[item]
 
     def __eq__(self, other):
         if isinstance(other, Multiset):
@@ -24,24 +27,27 @@ class Multiset:
     def __contains__(self, item):
         return item in self.store
 
-    def add(self, elem: type):
-        copy = self.store.copy()
-        if elem in copy:
-            copy[elem] += 1
-            if copy[elem] == 0:
-                del copy[elem]
-        else:
-            copy[elem] = 1
-        return Multiset(copy)
+    def add(self, elem: typing.Union[type, 'Multiset']):
+        if isinstance(elem, type):
+            elem = Multiset({elem: 1})
+        return self.__merge(elem)
 
-    def remove(self, elem: type):
-        copy = self.store.copy()
-        if elem in copy:
-            copy[elem] -= 1
-            if copy[elem] == 0:
-                del copy[elem]
+    def remove(self, elem: typing.Union[type, 'Multiset']):
+        if isinstance(elem, type):
+            elem = Multiset({elem: -1})
         else:
-            copy[elem] = -1
+            elem = Multiset({key: -value for key, value in elem.store.items()})
+        return self.__merge(elem)
+
+    def __merge(self, other: 'Multiset') -> 'Multiset':
+        copy = self.store.copy()
+        for key in other:
+            if key in copy:
+                copy[key] += other[key]
+            else:
+                copy[key] = other[key]
+            if copy[key] == 0:
+                del copy[key]
         return Multiset(copy)
 
 
@@ -58,19 +64,23 @@ class CompoundUnit:
         except AttributeError:
             return False
 
-    def __mul__(self, other: type):
+    def __mul__(self, other: typing.Union[type, Multiset]):
+        if isinstance(other, type):
+            other = Multiset({other: 1})
         self.__verify_no_dimension_mismatch(other)
         return CompoundUnit(self.units.add(other))
 
-    def __truediv__(self, other: type):
+    def __truediv__(self, other: typing.Union[type, Multiset]):
+        if isinstance(other, type):
+            other = Multiset({other: -1})
         self.__verify_no_dimension_mismatch(other)
         return CompoundUnit(self.units.remove(other))
 
-    def __verify_no_dimension_mismatch(self, typ: type):
-        for unit in self.units:
-            if typ is unit:
-                break
-            elif typ.DIMENSION == unit.DIMENSION:
+    def __verify_no_dimension_mismatch(self, extra: Multiset):
+        existing_dimensions = {unit.DIMENSION: unit for unit in self.units}
+        for unit in extra:
+            if (unit.DIMENSION in existing_dimensions
+                    and existing_dimensions[unit.DIMENSION] is not unit):
                 # the dimension is already represented in the current unit, but it isn't the
                 # same unit
-                raise ImplicitConversionError(typ, unit)
+                raise ImplicitConversionError(unit, existing_dimensions[unit.DIMENSION])
