@@ -64,15 +64,19 @@ class CompoundUnit:
         except AttributeError:
             return False
 
-    def __mul__(self, other: typing.Union[type, Multiset]):
+    def __mul__(self, other: typing.Union[type, Multiset, 'CompoundUnit']):
         if isinstance(other, type):
             other = Multiset({other: 1})
+        elif isinstance(other, CompoundUnit):
+            other = other.units
         self.__verify_no_dimension_mismatch(other)
         return CompoundUnit(self.units.add(other))
 
-    def __truediv__(self, other: typing.Union[type, Multiset]):
+    def __truediv__(self, other: typing.Union[type, Multiset, 'CompoundUnit']):
         if isinstance(other, type):
             other = Multiset({other: -1})
+        elif isinstance(other, CompoundUnit):
+            other = other.units
         self.__verify_no_dimension_mismatch(other)
         return CompoundUnit(self.units.remove(other))
 

@@ -1,21 +1,45 @@
 from unittest import TestCase
 
 from base import make_dimension, make_unit
-from extras import Multiset
+from extras import Multiset, CompoundUnit
 
 
 class TestCompoundUnit(TestCase):
+    def setUp(self):
+        self.first_dimension = make_dimension("TEST1")
+        self.second_dimension = make_dimension("TEST2")
+        self.unit_1a = make_unit("unit_1a", self.first_dimension, 1)
+        self.unit_1b = make_unit("unit_1b", self.first_dimension, 10)
+        self.unit_2 = make_unit("unit_2", self.second_dimension, 1)
+
     def test_creation(self):
-        pass
+        compound = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
+
+        self.assertEqual({self.unit_1a: 1, self.unit_2: -1}, compound.units.store)
 
     def test_equality(self):
-        pass
+        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
+        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
+
+        self.assertEqual(a, b)
 
     def test_multiply(self):
-        pass
+        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
+        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, 2)))
+
+        result = a * b
+
+        self.assertEqual(CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1))), a)
+        self.assertEqual(CompoundUnit(((self.unit_1a, 2), (self.unit_2, 1))), result)
 
     def test_divide(self):
-        pass
+        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
+        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, 2)))
+
+        result = a / b
+
+        self.assertEqual(CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1))), a)
+        self.assertEqual(CompoundUnit(((self.unit_2, -3),)), result)
 
 
 class TestMultiSet(TestCase):
