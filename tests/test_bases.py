@@ -105,3 +105,43 @@ class TestCompoundDimension(TestCase):
 
         self.assertTrue(unit_a(1).instance_of(a))
         self.assertTrue(unit_a(1).instance_of(b))
+
+
+class TestCompoundUnit(TestCase):
+    def setUp(self):
+        self.simple_a = make_dimension("a")
+        self.simple_b = make_dimension("b")
+        self.dimension = make_compound_dimension("TEST", ((self.simple_a, 1),
+                                                          (self.simple_b, -1)))
+        self.alt_dimension = make_compound_dimension("TEST", ((self.simple_a, 1),
+                                                              (self.simple_b, -2)))
+
+    def test_add(self):
+        pass
+
+    def test_add_equivalent(self):
+        pass
+
+    def test_subtract(self):
+        pass
+
+    def test_subtract_equivalent(self):
+        pass
+
+    def test_multiply_scalar(self):
+        pass
+
+    def test_multiply_simple_unit(self):
+        pass
+
+    def test_multiply_complex_unit(self):
+        pass
+
+    def test_divide_scalar(self):
+        pass
+
+    def test_divide_simple_unit(self):
+        pass
+
+    def test_divide_complex_unit(self):
+        pass

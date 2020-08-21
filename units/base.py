@@ -89,3 +89,24 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
     dimension.UNITS = CompoundUnit(exponents if exponents else ((dimension, 1),))
 
     return dimension
+
+
+def make_compound_unit(dimension: type, scale: ScaleType):
+    name = ""
+    for unit in dimension.UNITS:
+        name += _exponent_name(unit, dimension.UNITS[unit])
+
+    return make_unit(name, dimension, scale)
+
+
+def _exponent_name(unit: type, exponent: int) -> str:
+    value_names = {
+        1: "",
+        2: "Squared",
+        3: "Cubed",
+        4: "ToTheFourth",
+        5: "ToTheFifth",
+        # that's the highest I've ever seen
+    }
+    prefix = 'Per' if exponent < 0 else ''
+    return f"{prefix}{unit.__name__}{value_names[abs(exponent)]}"
