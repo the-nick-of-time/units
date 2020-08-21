@@ -7,8 +7,8 @@ Pairs = typing.Tuple[typing.Tuple[type, int], ...]
 
 class Multiset:
     # just different enough from collections.Counter to be worth writing
-    def __init__(self, pairs: typing.Union[Pairs, 'Multiset']):
-        self.store = pairs.store if isinstance(pairs, Multiset) else dict(pairs)
+    def __init__(self, pairs: typing.Union[Pairs, 'Multiset', dict]):
+        self.store = pairs.store.copy() if isinstance(pairs, Multiset) else dict(pairs)
 
     def __hash__(self):
         return hash(tuple(self.store.items()))
@@ -25,18 +25,24 @@ class Multiset:
         return item in self.store
 
     def add(self, elem: type):
-        if elem in self.store:
-            self.store[elem] += 1
+        copy = self.store.copy()
+        if elem in copy:
+            copy[elem] += 1
+            if copy[elem] == 0:
+                del copy[elem]
         else:
-            self.store[elem] = 1
+            copy[elem] = 1
+        return Multiset(copy)
 
     def remove(self, elem: type):
-        if elem in self.store:
-            self.store[elem] -= 1
-            if self.store[elem] == 0:
-                del self.store[elem]
+        copy = self.store.copy()
+        if elem in copy:
+            copy[elem] -= 1
+            if copy[elem] == 0:
+                del copy[elem]
         else:
-            self.store[elem] = -1
+            copy[elem] = -1
+        return Multiset(copy)
 
 
 class CompoundUnit:
@@ -54,11 +60,11 @@ class CompoundUnit:
 
     def __mul__(self, other: type):
         self.__verify_no_dimension_mismatch(other)
-        self.units.add(other)
+        return CompoundUnit(self.units.add(other))
 
     def __truediv__(self, other: type):
         self.__verify_no_dimension_mismatch(other)
-        self.units.remove(other)
+        return CompoundUnit(self.units.remove(other))
 
     def __verify_no_dimension_mismatch(self, typ: type):
         for unit in self.units:
