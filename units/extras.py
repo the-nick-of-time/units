@@ -64,6 +64,12 @@ class CompoundUnit:
         except AttributeError:
             return False
 
+    def __iter__(self):
+        return iter(self.units)
+
+    def __getitem__(self, item):
+        return self.units[item]
+
     def __mul__(self, other: typing.Union[type, Multiset, 'CompoundUnit']):
         if isinstance(other, type):
             other = Multiset({other: 1})

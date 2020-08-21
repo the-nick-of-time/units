@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from base import make_dimension, make_unit, Decimal, make_compound_dimension
+from base import make_dimension, make_unit, Decimal, make_compound_dimension, make_compound_unit
 from exceptions import OperationError, ImplicitConversionError
 
 
@@ -117,19 +117,33 @@ class TestCompoundUnit(TestCase):
                                                               (self.simple_b, -2)))
 
     def test_add(self):
-        pass
+        unit = make_compound_unit(self.dimension, 1)
+        a = unit(1)
+        b = unit(2)
+        expected = unit(3)
+
+        self.assertIs(expected, a + b)
 
     def test_add_equivalent(self):
         pass
 
     def test_subtract(self):
-        pass
+        unit = make_compound_unit(self.dimension, 1)
+        a = unit(5)
+        b = unit(2)
+        expected = unit(3)
+
+        self.assertIs(expected, a - b)
 
     def test_subtract_equivalent(self):
         pass
 
     def test_multiply_scalar(self):
-        pass
+        unit = make_compound_unit(self.dimension, 1)
+        a = unit(1)
+        expected = unit(3)
+
+        self.assertIs(expected, a * 3)
 
     def test_multiply_simple_unit(self):
         pass
@@ -138,7 +152,11 @@ class TestCompoundUnit(TestCase):
         pass
 
     def test_divide_scalar(self):
-        pass
+        unit = make_compound_unit(self.dimension, 1)
+        a = unit(3)
+        expected = unit(1)
+
+        self.assertIs(expected, a / 3)
 
     def test_divide_simple_unit(self):
         pass
