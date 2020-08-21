@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from base import make_dimension, make_unit, Decimal
+from base import make_dimension, make_unit, Decimal, make_compound_dimension
 from exceptions import OperationError, ImplicitConversionError
 
 
@@ -92,8 +92,16 @@ class TestMakeUnit(TestCase):
 
 
 class TestCompoundDimension(TestCase):
-    def test_self_reference(self):
-        pass
+    def setUp(self):
+        self.dimA = make_dimension("FIRST")
+        self.dimB = make_dimension("SECOND")
+        self.unitA = make_unit("first", self.dimA, 1)
+        self.unitB = make_unit("second", self.dimB, 1)
 
     def test_isinstance(self):
-        pass
+        a = make_compound_dimension("baseline", ((self.dimA, 1), (self.dimB, -1)))
+        b = make_compound_dimension("compare", ((self.dimA, 1), (self.dimB, -1)))
+        unit_a = make_unit("fromA", a, 1)
+
+        self.assertIsInstance(unit_a(1), a)
+        self.assertIsInstance(unit_a(1), b)

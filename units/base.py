@@ -1,9 +1,9 @@
 import typing
-from collections import Counter
 from decimal import Decimal
 from numbers import Number
 
 from exceptions import OperationError, ImplicitConversionError
+from extras import CompoundUnit, Pairs
 
 ScaleType = typing.Union[Decimal, int]
 
@@ -11,7 +11,24 @@ ScaleType = typing.Union[Decimal, int]
 def make_dimension(name: str) -> typing.Type:
     """Create a dimension, a class representing a quantity about the world.
     """
+    dimension = make_compound_dimension(name, ())
+    return dimension
 
+
+def make_unit(name: str, dimension: type, scale: ScaleType) -> type:
+    unit = type(name.title(), (dimension,), {
+        "scale": scale,
+        "instances": {},
+    })
+
+    def converter(self):
+        return unit(self.value * self.scale / unit.scale)
+
+    setattr(dimension, "to_" + name, converter)
+    return unit
+
+
+def make_compound_dimension(name: str, exponents: Pairs) -> type:
     def new(cls, value):
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
@@ -62,33 +79,14 @@ def make_dimension(name: str) -> typing.Type:
 
     # can only be defined after the initial class definition
     dimension.DIMENSION = dimension
-    return dimension
+    dimension.UNITS = CompoundUnit(exponents if exponents else ((dimension, 1),))
 
-
-def make_unit(name: str, dimension: type, scale: ScaleType) -> type:
-    unit = type(name.title(), (dimension,), {
-        "scale": scale,
-        "instances": {},
-    })
-
-    def converter(self):
-        return unit(self.value * self.scale / unit.scale)
-
-    setattr(dimension, "to_" + name, converter)
-    return unit
-
-
-def make_compound_dimension(name: str, numerator: Counter, denominator: Counter) -> type:
-    def instance_check(cls, instance):
+    def is_instance(obj):
         try:
-            return (instance.DIMENSION.NUMERATOR == cls.DIMENSION.NUMERATOR
-                    and instance.DIMENSION.DENOMINATOR == cls.DIMENSION.DENOMINATOR)
+            return obj.DIMENSION.UNITS == dimension.UNITS
         except AttributeError:
             return False
 
-    dimension = make_dimension(name)
-    dimension.NUMERATOR = numerator
-    dimension.DENOMINATOR = denominator
-    dimension.__instancecheck__ = instance_check
+    dimension.__instancecheck__ = is_instance
 
     return dimension
