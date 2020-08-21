@@ -66,6 +66,12 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
             return type(self)(self.value / other)
         raise NotImplementedError()
 
+    def instance_of(self, dim):
+        try:
+            return dim.DIMENSION.UNITS == self.DIMENSION.UNITS
+        except AttributeError:
+            return False
+
     dimension = type(name, (object,), {
         "__new__": new,
         "__init__": init,
@@ -75,18 +81,11 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
         "__eq__": equal,
         "__mul__": multiply,
         "__truediv__": divide,
+        "instance_of": instance_of
     })
 
     # can only be defined after the initial class definition
     dimension.DIMENSION = dimension
     dimension.UNITS = CompoundUnit(exponents if exponents else ((dimension, 1),))
-
-    def is_instance(obj):
-        try:
-            return obj.DIMENSION.UNITS == dimension.UNITS
-        except AttributeError:
-            return False
-
-    dimension.__instancecheck__ = is_instance
 
     return dimension

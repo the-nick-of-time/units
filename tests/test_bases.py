@@ -103,5 +103,5 @@ class TestCompoundDimension(TestCase):
         b = make_compound_dimension("compare", ((self.dimA, 1), (self.dimB, -1)))
         unit_a = make_unit("fromA", a, 1)
 
-        self.assertIsInstance(unit_a(1), a)
-        self.assertIsInstance(unit_a(1), b)
+        self.assertTrue(unit_a(1).instance_of(a))
+        self.assertTrue(unit_a(1).instance_of(b))
