@@ -39,6 +39,9 @@ class Multiset:
             elem = Multiset({key: -value for key, value in elem.store.items()})
         return self.__merge(elem)
 
+    def to_pairs(self) -> Pairs:
+        return tuple((key, self[key]) for key in self)
+
     def __merge(self, other: 'Multiset') -> 'Multiset':
         copy = self.store.copy()
         for key in other:

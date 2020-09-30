@@ -113,8 +113,8 @@ class TestCompoundUnit(TestCase):
         self.simple_b = make_dimension("b")
         self.dimension = make_compound_dimension("TEST", ((self.simple_a, 1),
                                                           (self.simple_b, -1)))
-        self.alt_dimension = make_compound_dimension("TEST", ((self.simple_a, 1),
-                                                              (self.simple_b, -2)))
+        self.alt_dimension = make_compound_dimension("TESTAlt", ((self.simple_a, 1),
+                                                                 (self.simple_b, -2)))
 
     def test_add(self):
         unit = make_compound_unit(self.dimension, 1)
@@ -146,10 +146,29 @@ class TestCompoundUnit(TestCase):
         self.assertIs(expected, a * 3)
 
     def test_multiply_simple_unit(self):
-        pass
+        compound = make_compound_unit(self.dimension, 1)
+        simple = make_unit("simple", self.simple_b, 1)
+        expected_unit = make_unit('expected', self.simple_a, 1)
+
+        expected = expected_unit(2)
+        result = compound(2) * simple(1)
+
+        self.assertTrue(result.instance_of(expected_unit))
+        self.assertEqual(expected, result)
 
     def test_multiply_complex_unit(self):
-        pass
+        first = make_compound_unit(self.dimension, 1)
+        second = make_compound_unit(self.alt_dimension, 1)
+
+        expected_dim = make_compound_dimension("EXPECTED", ((self.simple_a, 2),
+                                                            (self.simple_b, -3)))
+        expected_unit = make_compound_unit(expected_dim, 1)
+
+        expected = expected_unit(1)
+        result = first(1) * second(1)
+
+        self.assertTrue(result.instance_of(expected_dim))
+        self.assertEqual(expected, result)
 
     def test_divide_scalar(self):
         unit = make_compound_unit(self.dimension, 1)
@@ -163,3 +182,21 @@ class TestCompoundUnit(TestCase):
 
     def test_divide_complex_unit(self):
         pass
+
+    def test_unit_name(self):
+        length = make_unit('Meters', self.dimension, 1)
+        time = make_unit('Seconds', self.alt_dimension, 1)
+
+        velocity = make_compound_dimension("Velocity", ((length, 1), (time, -1)))
+        mps = make_compound_unit(velocity, 1)
+
+        self.assertEqual("MetersPerSecond", mps.__name__)
+
+    def test_unit_name_exponent(self):
+        length = make_unit('Meters', self.dimension, 1)
+        time = make_unit('Seconds', self.alt_dimension, 1)
+
+        acceleration = make_compound_dimension("Acceleration", ((length, 1), (time, -2)))
+        mpss = make_compound_unit(acceleration, 1)
+
+        self.assertEqual("MetersPerSecondSquared", mpss.__name__)

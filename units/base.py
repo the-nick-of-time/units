@@ -16,7 +16,7 @@ def make_dimension(name: str) -> typing.Type:
 
 
 def make_unit(name: str, dimension: type, scale: ScaleType) -> type:
-    unit = type(name.title(), (dimension,), {
+    unit = type(name, (dimension,), {
         "scale": scale,
         "instances": {},
     })
@@ -52,14 +52,17 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
     def equal(self, other):
         if self is other:
             return True
-        if not isinstance(other, self.DIMENSION):
+        if not other.instance_of(self.DIMENSION):
             raise ImplicitConversionError(type(other), type(self))
         return self.value * self.scale == other.value * other.scale
 
     def multiply(self, other):
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        raise NotImplementedError()
+        result_dim = make_compound_dimension(_exponent_name(self, 1) + _exponent_name(other, 1),
+                                             (self.UNITS * other.UNITS).units.to_pairs())
+        result_unit = make_compound_unit(result_dim, self.scale * other.scale)
+        return result_unit(self.value * other.value / (self.scale * other.scale))
 
     def divide(self, other):
         if isinstance(other, Number):
@@ -81,7 +84,8 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
         "__eq__": equal,
         "__mul__": multiply,
         "__truediv__": divide,
-        "instance_of": instance_of
+        "__name__": name,
+        "instance_of": instance_of,
     })
 
     # can only be defined after the initial class definition
@@ -109,4 +113,5 @@ def _exponent_name(unit: type, exponent: int) -> str:
         # that's the highest I've ever seen
     }
     prefix = 'Per' if exponent < 0 else ''
-    return f"{prefix}{unit.__name__}{value_names[abs(exponent)]}"
+    body = unit.__name__.rstrip("s") if exponent < 0 else unit.__name__
+    return f"{prefix}{body}{value_names[abs(exponent)]}"
