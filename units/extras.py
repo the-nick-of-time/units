@@ -27,6 +27,9 @@ class Multiset:
     def __contains__(self, item):
         return item in self.store
 
+    def __len__(self):
+        return len(self.store)
+
     def add(self, elem: typing.Union[type, 'Multiset']):
         if isinstance(elem, type):
             elem = Multiset({elem: 1})

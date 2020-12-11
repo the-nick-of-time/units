@@ -178,7 +178,23 @@ class TestCompoundUnit(TestCase):
         self.assertIs(expected, a / 3)
 
     def test_divide_simple_unit(self):
-        pass
+        a = make_unit("a", self.simple_a, 1)
+        b = make_unit("b", self.simple_b, 1)
+        expected_unit = make_compound_unit(self.dimension, 1)
+        expected = expected_unit(1)
+
+        result = a(1) / b(1)
+
+        self.assertTrue(result.instance_of(expected_unit))
+        self.assertEqual(expected, result)
+
+    def test_divide_to_dimensionless(self):
+        simple = make_unit("simple", self.simple_a, 1)
+        expected = 2
+
+        result = simple(4) / simple(2)
+
+        self.assertEqual(expected, result)
 
     def test_divide_complex_unit(self):
         pass

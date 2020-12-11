@@ -67,7 +67,15 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
     def divide(self, other):
         if isinstance(other, Number):
             return type(self)(self.value / other)
-        raise NotImplementedError()
+        result_units = (self.UNITS / other.UNITS).units.to_pairs()
+        result_value = (self.value / self.scale) / (other.value / other.scale)
+        if len(result_units) == 0:
+            return result_value
+        result_dim = make_compound_dimension(
+            _exponent_name(self, 1) + _exponent_name(other, -1),
+            result_units)
+        result_unit = make_compound_unit(result_dim, self.scale * other.scale)
+        return result_unit(result_value)
 
     def instance_of(self, dim):
         try:
