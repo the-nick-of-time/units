@@ -46,8 +46,7 @@ def test_conversion(dimension):
     second = make_unit("second", dimension, 10)
     ten_ones = first(10)
     one_ten = second(1)
-    # "is" assumes that test_flyweights passed
-    assert ten_ones.to_second() is one_ten
+    assert ten_ones.to_second() == one_ten
 
 
 def test_add_same_unit(dimension):
@@ -55,7 +54,7 @@ def test_add_same_unit(dimension):
     one = unit(1)
     two = unit(2)
     three = unit(3)
-    assert three is one + two
+    assert three == one + two
 
 
 def test_add_different_unit(dimension):
@@ -72,7 +71,7 @@ def test_subtract_same_unit(dimension):
     one = unit(1)
     two = unit(2)
     three = unit(3)
-    assert two is three - one
+    assert two == three - one
 
 
 def test_subtract_different_unit(dimension):
@@ -106,14 +105,14 @@ def test_multiply_scalar(dimension):
     unit = make_unit("unit", dimension, 1)
     one = unit(1)
     five = unit(5)
-    assert five is one * 5
+    assert five == one * 5
 
 
 def test_divide_scalar(dimension):
     unit = make_unit("unit", dimension, 1)
     two = unit(2)
     four = unit(4)
-    assert two is four / 2
+    assert two == four / 2
 
 
 def test_isinstance(dimension, dimension2):
@@ -131,7 +130,7 @@ def test_add(compound_dimension):
     b = unit(2)
     expected = unit(3)
 
-    assert expected is a + b
+    assert expected == a + b
 
 
 def test_add_equivalent():
@@ -144,7 +143,7 @@ def test_subtract(compound_dimension):
     b = unit(2)
     expected = unit(3)
 
-    assert expected is a - b
+    assert expected == a - b
 
 
 def test_subtract_equivalent():
@@ -156,7 +155,7 @@ def test_multiply_compound_scalar(compound_dimension):
     a = unit(1)
     expected = unit(3)
 
-    assert expected is a * 3
+    assert expected == a * 3
 
 
 def test_multiply_simple_unit(compound_dimension, dimension, dimension2):
@@ -191,7 +190,7 @@ def test_divide_compound_scalar(compound_dimension):
     a = unit(3)
     expected = unit(1)
 
-    assert expected is a / 3
+    assert expected == a / 3
 
 
 def test_divide_simple_unit(dimension, dimension2, compound_dimension):
