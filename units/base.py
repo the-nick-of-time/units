@@ -2,8 +2,8 @@ import typing
 from decimal import Decimal
 from numbers import Number
 
-from exceptions import OperationError, ImplicitConversionError
-from extras import CompoundUnit, Pairs
+from units.exceptions import OperationError, ImplicitConversionError
+from units.extras import CompoundUnit, Pairs
 
 ScaleType = typing.Union[Decimal, int]
 
@@ -35,8 +35,6 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
         return cls.instances[value]
 
     def init(self, value):
-        if not isinstance(value, Number):
-            raise TypeError("A dimension has a scalar value")
         self.value = Decimal(value)
 
     def add(self, other):

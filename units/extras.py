@@ -1,6 +1,6 @@
 import typing
 
-from exceptions import ImplicitConversionError
+from units.exceptions import ImplicitConversionError
 
 Pairs = typing.Tuple[typing.Tuple[type, int], ...]
 

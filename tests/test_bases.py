@@ -1,218 +1,239 @@
-from unittest import TestCase
+import pytest
 
-from base import make_dimension, make_unit, Decimal, make_compound_dimension, make_compound_unit
-from exceptions import OperationError, ImplicitConversionError
-
-
-class TestMakeDimension(TestCase):
-    def test_self_reference(self):
-        dim = make_dimension("TEST")
-        self.assertIs(dim, dim.DIMENSION)
+from units.base import make_dimension, make_unit, Decimal, make_compound_dimension, \
+    make_compound_unit
+from units.exceptions import OperationError, ImplicitConversionError
 
 
-class TestMakeUnit(TestCase):
-    def setUp(self):
-        self.dimension = make_dimension("TEST")
-
-    def test_flyweights(self):
-        unit = make_unit("testunit", self.dimension, Decimal("2"))
-        a = unit(1)
-        b = unit(1)
-        c = unit(2)
-        d = unit(2)
-        self.assertIs(a, b)
-        self.assertIsNot(a, c)
-        self.assertIs(c, d)
-
-    def test_conversion(self):
-        first = make_unit("first", self.dimension, 1)
-        second = make_unit("second", self.dimension, 10)
-        ten_ones = first(10)
-        one_ten = second(1)
-        # "is" assumes that test_flyweights passed
-        self.assertIs(ten_ones.to_second(), one_ten)
-
-    def test_add_same_unit(self):
-        unit = make_unit("unit", self.dimension, 1)
-        one = unit(1)
-        two = unit(2)
-        three = unit(3)
-        self.assertIs(three, one + two)
-
-    def test_add_different_unit(self):
-        first = make_unit("first", self.dimension, 1)
-        second = make_unit("second", self.dimension, 10)
-        a = first(10)
-        b = second(1)
-        with self.assertRaises(OperationError):
-            print(a + b)
-
-    def test_subtract_same_unit(self):
-        unit = make_unit("unit", self.dimension, 1)
-        one = unit(1)
-        two = unit(2)
-        three = unit(3)
-        self.assertIs(two, three - one)
-
-    def test_subtract_different_unit(self):
-        first = make_unit("first", self.dimension, 1)
-        second = make_unit("second", self.dimension, 10)
-        a = first(10)
-        b = second(1)
-        with self.assertRaises(OperationError):
-            print(a - b)
-
-    def test_equal_same_dimension(self):
-        first = make_unit("first", self.dimension, 1)
-        second = make_unit("second", self.dimension, 10)
-        ten_ones = first(10)
-        one_ten = second(1)
-        self.assertEqual(ten_ones, one_ten)
-
-    def test_equal_different_dimension(self):
-        dim2 = make_dimension("dim2")
-        first = make_unit("first", self.dimension, 1)
-        a = first(1)
-        second = make_unit("second", dim2, 1)
-        b = second(1)
-        with self.assertRaises(ImplicitConversionError):
-            print(a == b)
-
-    def test_multiply_scalar(self):
-        unit = make_unit("unit", self.dimension, 1)
-        one = unit(1)
-        five = unit(5)
-        self.assertIs(five, one * 5)
-
-    def test_divide_scalar(self):
-        unit = make_unit("unit", self.dimension, 1)
-        two = unit(2)
-        four = unit(4)
-        self.assertIs(two, four / 2)
+@pytest.fixture
+def dimension():
+    return make_dimension("TEST")
 
 
-class TestCompoundDimension(TestCase):
-    def setUp(self):
-        self.dimA = make_dimension("FIRST")
-        self.dimB = make_dimension("SECOND")
-        self.unitA = make_unit("first", self.dimA, 1)
-        self.unitB = make_unit("second", self.dimB, 1)
-
-    def test_isinstance(self):
-        a = make_compound_dimension("baseline", ((self.dimA, 1), (self.dimB, -1)))
-        b = make_compound_dimension("compare", ((self.dimA, 1), (self.dimB, -1)))
-        unit_a = make_unit("fromA", a, 1)
-
-        self.assertTrue(unit_a(1).instance_of(a))
-        self.assertTrue(unit_a(1).instance_of(b))
+@pytest.fixture
+def dimension2():
+    return make_dimension("TEST2")
 
 
-class TestCompoundUnit(TestCase):
-    def setUp(self):
-        self.simple_a = make_dimension("a")
-        self.simple_b = make_dimension("b")
-        self.dimension = make_compound_dimension("TEST", ((self.simple_a, 1),
-                                                          (self.simple_b, -1)))
-        self.alt_dimension = make_compound_dimension("TESTAlt", ((self.simple_a, 1),
-                                                                 (self.simple_b, -2)))
+@pytest.fixture
+def compound_dimension(dimension, dimension2):
+    return make_compound_dimension("COMPOUND", ((dimension, 1), (dimension2, -1)))
 
-    def test_add(self):
-        unit = make_compound_unit(self.dimension, 1)
-        a = unit(1)
-        b = unit(2)
-        expected = unit(3)
 
-        self.assertIs(expected, a + b)
+@pytest.fixture
+def compound_dimension2(dimension, dimension2):
+    return make_compound_dimension("COMPOUND2", ((dimension, 1), (dimension2, -2)))
 
-    def test_add_equivalent(self):
-        pass
 
-    def test_subtract(self):
-        unit = make_compound_unit(self.dimension, 1)
-        a = unit(5)
-        b = unit(2)
-        expected = unit(3)
+def test_self_reference():
+    dim = make_dimension("TEST")
+    assert dim is dim.DIMENSION
 
-        self.assertIs(expected, a - b)
 
-    def test_subtract_equivalent(self):
-        pass
+def test_flyweights(dimension):
+    unit = make_unit("testunit", dimension, Decimal("2"))
+    a = unit(1)
+    b = unit(1)
+    c = unit(2)
+    d = unit(2)
+    assert a is b
+    assert a is not c
+    assert c is d
 
-    def test_multiply_scalar(self):
-        unit = make_compound_unit(self.dimension, 1)
-        a = unit(1)
-        expected = unit(3)
 
-        self.assertIs(expected, a * 3)
+def test_conversion(dimension):
+    first = make_unit("first", dimension, 1)
+    second = make_unit("second", dimension, 10)
+    ten_ones = first(10)
+    one_ten = second(1)
+    # "is" assumes that test_flyweights passed
+    assert ten_ones.to_second() is one_ten
 
-    def test_multiply_simple_unit(self):
-        compound = make_compound_unit(self.dimension, 1)
-        simple = make_unit("simple", self.simple_b, 1)
-        expected_unit = make_unit('expected', self.simple_a, 1)
 
-        expected = expected_unit(2)
-        result = compound(2) * simple(1)
+def test_add_same_unit(dimension):
+    unit = make_unit("unit", dimension, 1)
+    one = unit(1)
+    two = unit(2)
+    three = unit(3)
+    assert three is one + two
 
-        self.assertTrue(result.instance_of(expected_unit))
-        self.assertEqual(expected, result)
 
-    def test_multiply_complex_unit(self):
-        first = make_compound_unit(self.dimension, 1)
-        second = make_compound_unit(self.alt_dimension, 1)
+def test_add_different_unit(dimension):
+    first = make_unit("first", dimension, 1)
+    second = make_unit("second", dimension, 10)
+    a = first(10)
+    b = second(1)
+    with pytest.raises(OperationError):
+        print(a + b)
 
-        expected_dim = make_compound_dimension("EXPECTED", ((self.simple_a, 2),
-                                                            (self.simple_b, -3)))
-        expected_unit = make_compound_unit(expected_dim, 1)
 
-        expected = expected_unit(1)
-        result = first(1) * second(1)
+def test_subtract_same_unit(dimension):
+    unit = make_unit("unit", dimension, 1)
+    one = unit(1)
+    two = unit(2)
+    three = unit(3)
+    assert two is three - one
 
-        self.assertTrue(result.instance_of(expected_dim))
-        self.assertEqual(expected, result)
 
-    def test_divide_scalar(self):
-        unit = make_compound_unit(self.dimension, 1)
-        a = unit(3)
-        expected = unit(1)
+def test_subtract_different_unit(dimension):
+    first = make_unit("first", dimension, 1)
+    second = make_unit("second", dimension, 10)
+    a = first(10)
+    b = second(1)
+    with pytest.raises(OperationError):
+        print(a - b)
 
-        self.assertIs(expected, a / 3)
 
-    def test_divide_simple_unit(self):
-        a = make_unit("a", self.simple_a, 1)
-        b = make_unit("b", self.simple_b, 1)
-        expected_unit = make_compound_unit(self.dimension, 1)
-        expected = expected_unit(1)
+def test_equal_same_dimension(dimension):
+    first = make_unit("first", dimension, 1)
+    second = make_unit("second", dimension, 10)
+    ten_ones = first(10)
+    one_ten = second(1)
+    assert ten_ones == one_ten
 
-        result = a(1) / b(1)
 
-        self.assertTrue(result.instance_of(expected_unit))
-        self.assertEqual(expected, result)
+def test_equal_different_dimension(dimension):
+    dim2 = make_dimension("dim2")
+    first = make_unit("first", dimension, 1)
+    a = first(1)
+    second = make_unit("second", dim2, 1)
+    b = second(1)
+    with pytest.raises(ImplicitConversionError):
+        print(a == b)
 
-    def test_divide_to_dimensionless(self):
-        simple = make_unit("simple", self.simple_a, 1)
-        expected = 2
 
-        result = simple(4) / simple(2)
+def test_multiply_scalar(dimension):
+    unit = make_unit("unit", dimension, 1)
+    one = unit(1)
+    five = unit(5)
+    assert five is one * 5
 
-        self.assertEqual(expected, result)
 
-    def test_divide_complex_unit(self):
-        pass
+def test_divide_scalar(dimension):
+    unit = make_unit("unit", dimension, 1)
+    two = unit(2)
+    four = unit(4)
+    assert two is four / 2
 
-    def test_unit_name(self):
-        length = make_unit('Meters', self.dimension, 1)
-        time = make_unit('Seconds', self.alt_dimension, 1)
 
-        velocity = make_compound_dimension("Velocity", ((length, 1), (time, -1)))
-        mps = make_compound_unit(velocity, 1)
+def test_isinstance(dimension, dimension2):
+    a = make_compound_dimension("baseline", ((dimension, 1), (dimension2, -1)))
+    b = make_compound_dimension("compare", ((dimension, 1), (dimension2, -1)))
+    unit_a = make_unit("fromA", a, 1)
 
-        self.assertEqual("MetersPerSecond", mps.__name__)
+    assert unit_a(1).instance_of(a)
+    assert unit_a(1).instance_of(b)
 
-    def test_unit_name_exponent(self):
-        length = make_unit('Meters', self.dimension, 1)
-        time = make_unit('Seconds', self.alt_dimension, 1)
 
-        acceleration = make_compound_dimension("Acceleration", ((length, 1), (time, -2)))
-        mpss = make_compound_unit(acceleration, 1)
+def test_add(compound_dimension):
+    unit = make_compound_unit(compound_dimension, 1)
+    a = unit(1)
+    b = unit(2)
+    expected = unit(3)
 
-        self.assertEqual("MetersPerSecondSquared", mpss.__name__)
+    assert expected is a + b
+
+
+def test_add_equivalent():
+    pass
+
+
+def test_subtract(compound_dimension):
+    unit = make_compound_unit(compound_dimension, 1)
+    a = unit(5)
+    b = unit(2)
+    expected = unit(3)
+
+    assert expected is a - b
+
+
+def test_subtract_equivalent():
+    pass
+
+
+def test_multiply_compound_scalar(compound_dimension):
+    unit = make_compound_unit(compound_dimension, 1)
+    a = unit(1)
+    expected = unit(3)
+
+    assert expected is a * 3
+
+
+def test_multiply_simple_unit(compound_dimension, dimension, dimension2):
+    compound = make_compound_unit(compound_dimension, 1)
+    simple = make_unit("simple", dimension2, 1)
+    expected_unit = make_unit('expected', dimension, 1)
+
+    expected = expected_unit(2)
+    result = compound(2) * simple(1)
+
+    assert result.instance_of(expected_unit)
+    assert expected == result
+
+
+def test_multiply_complex_unit(compound_dimension, compound_dimension2, dimension, dimension2):
+    first = make_compound_unit(compound_dimension, 1)
+    second = make_compound_unit(compound_dimension2, 1)
+
+    expected_dim = make_compound_dimension("EXPECTED", ((dimension, 2),
+                                                        (dimension2, -3)))
+    expected_unit = make_compound_unit(expected_dim, 1)
+
+    expected = expected_unit(1)
+    result = first(1) * second(1)
+
+    assert result.instance_of(expected_dim)
+    assert expected == result
+
+
+def test_divide_compound_scalar(compound_dimension):
+    unit = make_compound_unit(compound_dimension, 1)
+    a = unit(3)
+    expected = unit(1)
+
+    assert expected is a / 3
+
+
+def test_divide_simple_unit(dimension, dimension2, compound_dimension):
+    a = make_unit("a", dimension, 1)
+    b = make_unit("b", dimension2, 1)
+    expected_unit = make_compound_unit(compound_dimension, 1)
+    expected = expected_unit(1)
+
+    result = a(1) / b(1)
+
+    assert result.instance_of(expected_unit)
+    assert expected == result
+
+
+def test_divide_to_dimensionless(dimension):
+    simple = make_unit("simple", dimension, 1)
+    expected = 2
+
+    result = simple(4) / simple(2)
+
+    assert expected == result
+
+
+def test_divide_complex_unit():
+    pass
+
+
+def test_unit_name(dimension, dimension2):
+    length = make_unit('Meters', dimension, 1)
+    time = make_unit('Seconds', dimension2, 1)
+
+    velocity = make_compound_dimension("Velocity", ((length, 1), (time, -1)))
+    mps = make_compound_unit(velocity, 1)
+
+    assert "MetersPerSecond" == mps.__name__
+
+
+def test_unit_name_exponent(dimension, dimension2):
+    length = make_unit('Meters', dimension, 1)
+    time = make_unit('Seconds', dimension2, 1)
+
+    acceleration = make_compound_dimension("Acceleration", ((length, 1), (time, -2)))
+    mpss = make_compound_unit(acceleration, 1)
+
+    assert "MetersPerSecondSquared" == mpss.__name__

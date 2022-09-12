@@ -1,120 +1,142 @@
-from unittest import TestCase
+import pytest
 
-from base import make_dimension, make_unit
-from extras import Multiset, CompoundUnit
-
-
-class TestCompoundUnit(TestCase):
-    def setUp(self):
-        self.first_dimension = make_dimension("TEST1")
-        self.second_dimension = make_dimension("TEST2")
-        self.unit_1a = make_unit("unit_1a", self.first_dimension, 1)
-        self.unit_1b = make_unit("unit_1b", self.first_dimension, 10)
-        self.unit_2 = make_unit("unit_2", self.second_dimension, 1)
-
-    def test_creation(self):
-        compound = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
-
-        self.assertEqual({self.unit_1a: 1, self.unit_2: -1}, compound.units.store)
-
-    def test_equality(self):
-        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
-        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
-
-        self.assertEqual(a, b)
-
-    def test_multiply(self):
-        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
-        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, 2)))
-
-        result = a * b
-
-        self.assertEqual(CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1))), a)
-        self.assertEqual(CompoundUnit(((self.unit_1a, 2), (self.unit_2, 1))), result)
-
-    def test_divide(self):
-        a = CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1)))
-        b = CompoundUnit(((self.unit_1a, 1), (self.unit_2, 2)))
-
-        result = a / b
-
-        self.assertEqual(CompoundUnit(((self.unit_1a, 1), (self.unit_2, -1))), a)
-        self.assertEqual(CompoundUnit(((self.unit_2, -3),)), result)
+from units.base import make_dimension, make_unit
+from units.extras import Multiset, CompoundUnit
 
 
-class TestMultiSet(TestCase):
-    def setUp(self):
-        self.dimension = make_dimension("TEST")
-        self.first = make_unit("first", self.dimension, 1)
-        self.second = make_unit("second", self.dimension, 10)
+@pytest.fixture
+def first_dimension():
+    return make_dimension("TEST1")
 
-    def test_creation_pairs(self):
-        pairs = ((self.first, 1), (self.second, -1))
 
-        multiset = Multiset(pairs)
+@pytest.fixture
+def second_dimension():
+    return make_dimension("TEST2")
 
-        self.assertEqual({self.first: 1, self.second: -1}, multiset.store)
 
-    def test_creation_copy(self):
-        pairs = ((self.first, 1), (self.second, -1))
+@pytest.fixture
+def unit_1a(first_dimension):
+    return make_unit("unit_1a", first_dimension, 1)
 
-        source = Multiset(pairs)
-        dest = Multiset(source)
 
-        self.assertEqual(source, dest)
+@pytest.fixture
+def unit_1b(first_dimension):
+    return make_unit("unit_1b", first_dimension, 10)
 
-    def test_equality(self):
-        pairs = ((self.first, 1), (self.second, -1))
 
-        a = Multiset(pairs)
-        b = Multiset(pairs)
+@pytest.fixture
+def unit_2(second_dimension):
+    return make_unit("unit_2", second_dimension, 1)
 
-        self.assertEqual(a, b)
 
-    def test_add(self):
-        pairs = ((self.first, 1), (self.second, -1))
+def test_creation(unit_1a, unit_2):
+    compound = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
 
-        source = Multiset(pairs)
-        added = source.add(self.first)
+    assert {unit_1a: 1, unit_2: -1} == compound.units.store
 
-        self.assertEqual({self.first: 2, self.second: -1}, added.store)
 
-    def test_add_zero(self):
-        pairs = ((self.first, 1), (self.second, -1))
+def test_equality(unit_1a, unit_2):
+    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
+    b = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
 
-        source = Multiset(pairs)
-        added = source.add(self.second)
+    assert a == b
 
-        self.assertEqual({self.first: 1}, added.store)
 
-    def test_add_compound(self):
-        a = Multiset(((self.first, 1), (self.second, -1)))
-        b = Multiset(((self.first, -1), (self.second, -1)))
+def test_multiply(unit_1a, unit_2):
+    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
+    b = CompoundUnit(((unit_1a, 1), (unit_2, 2)))
 
-        added = a.add(b)
+    result = a * b
 
-        self.assertEqual({self.second: -2}, added.store)
+    assert CompoundUnit(((unit_1a, 1), (unit_2, -1))) == a
+    assert CompoundUnit(((unit_1a, 2), (unit_2, 1))) == result
 
-    def test_remove(self):
-        pairs = ((self.first, 1), (self.second, -1))
 
-        source = Multiset(pairs)
-        subtracted = source.remove(self.second)
+def test_divide(unit_1a, unit_2):
+    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
+    b = CompoundUnit(((unit_1a, 1), (unit_2, 2)))
 
-        self.assertEqual({self.first: 1, self.second: -2}, subtracted.store)
+    result = a / b
 
-    def test_remove_zero(self):
-        pairs = ((self.first, 1), (self.second, -1))
+    assert CompoundUnit(((unit_1a, 1), (unit_2, -1))) == a
+    assert CompoundUnit(((unit_2, -3),)) == result
 
-        source = Multiset(pairs)
-        subtracted = source.remove(self.first)
 
-        self.assertEqual({self.second: -1}, subtracted.store)
+def test_creation_pairs(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
 
-    def test_remove_compound(self):
-        a = Multiset(((self.first, 1), (self.second, -1)))
-        b = Multiset(((self.first, -1), (self.second, -1)))
+    multiset = Multiset(pairs)
 
-        subtracted = a.remove(b)
+    assert {unit_1a: 1, unit_1b: -1} == multiset.store
 
-        self.assertEqual({self.first: 2}, subtracted.store)
+
+def test_creation_copy(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    source = Multiset(pairs)
+    dest = Multiset(source)
+
+    assert source == dest
+
+
+def test_multiset_equality(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    a = Multiset(pairs)
+    b = Multiset(pairs)
+
+    assert a == b
+
+
+def test_add(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    source = Multiset(pairs)
+    added = source.add(unit_1a)
+
+    assert {unit_1a: 2, unit_1b: -1} == added.store
+
+
+def test_add_zero(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    source = Multiset(pairs)
+    added = source.add(unit_1b)
+
+    assert {unit_1a: 1} == added.store
+
+
+def test_add_compound(unit_1a, unit_1b):
+    a = Multiset(((unit_1a, 1), (unit_1b, -1)))
+    b = Multiset(((unit_1a, -1), (unit_1b, -1)))
+
+    added = a.add(b)
+
+    assert {unit_1b: -2} == added.store
+
+
+def test_remove(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    source = Multiset(pairs)
+    subtracted = source.remove(unit_1b)
+
+    assert {unit_1a: 1, unit_1b: -2} == subtracted.store
+
+
+def test_remove_zero(unit_1a, unit_1b):
+    pairs = ((unit_1a, 1), (unit_1b, -1))
+
+    source = Multiset(pairs)
+    subtracted = source.remove(unit_1a)
+
+    assert {unit_1b: -1} == subtracted.store
+
+
+def test_remove_compound(unit_1a, unit_1b):
+    a = Multiset(((unit_1a, 1), (unit_1b, -1)))
+    b = Multiset(((unit_1a, -1), (unit_1b, -1)))
+
+    subtracted = a.remove(b)
+
+    assert {unit_1a: 2} == subtracted.store
