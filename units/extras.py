@@ -93,10 +93,10 @@ class Compound:
         return Compound(self.units.remove(other))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
-        existing_dimensions = {unit.DIMENSION: unit for unit in self.units}
+        existing_dimensions = {unit.dimension: unit for unit in self.units}
         for unit in extra:
-            if (unit.DIMENSION in existing_dimensions
-                    and existing_dimensions[unit.DIMENSION] is not unit):
+            if (unit.dimension in existing_dimensions
+                    and existing_dimensions[unit.dimension] is not unit):
                 # the dimension is already represented in the current unit, but it isn't the
                 # same unit
-                raise ImplicitConversionError(unit, existing_dimensions[unit.DIMENSION])
+                raise ImplicitConversionError(unit, existing_dimensions[unit.dimension])
