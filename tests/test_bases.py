@@ -165,7 +165,6 @@ def test_multiply_simple_unit(compound_dimension, dimension, dimension2):
     assert expected == result
 
 
-@pytest.mark.skip("Might need some serious reworking")
 def test_multiply_complex_unit(compound_dimension, compound_dimension2, dimension, dimension2):
     first = make_compound_unit(compound_dimension, 1)
     second = make_compound_unit(compound_dimension2, 1)
@@ -189,7 +188,6 @@ def test_divide_compound_scalar(compound_dimension):
     assert expected == a / 3
 
 
-@pytest.mark.skip("Might need some serious reworking")
 def test_divide_simple_unit(dimension, dimension2, compound_dimension):
     a = make_unit("a", dimension, 1)
     b = make_unit("b", dimension2, 1)
@@ -198,7 +196,7 @@ def test_divide_simple_unit(dimension, dimension2, compound_dimension):
 
     result = a(1) / b(1)
 
-    assert result.is_dimension(expected_unit)
+    assert result.is_dimension(compound_dimension)
     assert expected == result
 
 

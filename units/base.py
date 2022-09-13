@@ -43,20 +43,20 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
             return type(self)(self.value * other)
         result_dim = make_compound_dimension(_exponent_name(self, 1) + _exponent_name(other, 1),
                                              (
-                                                         self.dimension.composition * other.dimension.composition))
+                                                     self.dimension.composition * other.dimension.composition).units)
         result_unit = make_compound_unit(result_dim, self.scale * other.scale)
         return result_unit(self.value * other.value / (self.scale * other.scale))
 
     def divide(self, other):
         if isinstance(other, Number):
             return type(self)(self.value / other)
-        result_units = (self.composition / other.composition).units.to_pairs()
+        result_units = (self.composition / other.composition).units
         result_value = (self.value / self.scale) / (other.value / other.scale)
         if len(result_units) == 0:
             return result_value
         result_dim = make_compound_dimension(
             _exponent_name(self, 1) + _exponent_name(other, -1),
-            result_units)
+            (self.dimension.composition / other.dimension.composition).units)
         result_unit = make_compound_unit(result_dim, self.scale * other.scale)
         return result_unit(result_value)
 
@@ -134,7 +134,7 @@ class DimensionBase:
             # Base dimensions are identified by name
             key = name
         else:
-            # Compound dimensions
+            # Compound dimensions with the same composition must refer to the same thing
             key = exponents
         if key not in cls.__INSTANCES:
             cls.__INSTANCES[key] = super(DimensionBase, cls).__new__(cls)
@@ -151,9 +151,11 @@ class DimensionBase:
 class Multiset:
     # just different enough from collections.Counter to be worth writing
     def __init__(self, pairs: typing.Union[Pairs, 'Multiset', dict]):
-        self.store: typing.Dict[type, int] = pairs.store.copy() if isinstance(pairs,
-                                                                              Multiset) else dict(
-            pairs)
+        self.store: typing.Dict[type, int]
+        if isinstance(pairs, Multiset):
+            self.store = pairs.store.copy()
+        else:
+            self.store = dict(pairs)
 
     def __hash__(self):
         return hash(tuple(self.store.items()))
