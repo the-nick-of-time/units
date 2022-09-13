@@ -57,7 +57,7 @@ class Multiset:
         return Multiset(copy)
 
 
-class CompoundUnit:
+class Compound:
     def __init__(self, units: typing.Union[Pairs, Multiset]):
         self.units = Multiset(units)
 
@@ -76,21 +76,21 @@ class CompoundUnit:
     def __getitem__(self, item):
         return self.units[item]
 
-    def __mul__(self, other: typing.Union[type, Multiset, 'CompoundUnit']):
+    def __mul__(self, other: typing.Union[type, Multiset, 'Compound']):
         if isinstance(other, type):
             other = Multiset({other: 1})
-        elif isinstance(other, CompoundUnit):
+        elif isinstance(other, Compound):
             other = other.units
         self.__verify_no_dimension_mismatch(other)
-        return CompoundUnit(self.units.add(other))
+        return Compound(self.units.add(other))
 
-    def __truediv__(self, other: typing.Union[type, Multiset, 'CompoundUnit']):
+    def __truediv__(self, other: typing.Union[type, Multiset, 'Compound']):
         if isinstance(other, type):
             other = Multiset({other: -1})
-        elif isinstance(other, CompoundUnit):
+        elif isinstance(other, Compound):
             other = other.units
         self.__verify_no_dimension_mismatch(other)
-        return CompoundUnit(self.units.remove(other))
+        return Compound(self.units.remove(other))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
         existing_dimensions = {unit.DIMENSION: unit for unit in self.units}

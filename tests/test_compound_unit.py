@@ -1,7 +1,7 @@
 import pytest
 
 from units.base import make_dimension, make_unit
-from units.extras import Multiset, CompoundUnit
+from units.extras import Multiset, Compound
 
 
 @pytest.fixture
@@ -30,36 +30,36 @@ def unit_2(second_dimension):
 
 
 def test_creation(unit_1a, unit_2):
-    compound = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
+    compound = Compound(((unit_1a, 1), (unit_2, -1)))
 
     assert {unit_1a: 1, unit_2: -1} == compound.units.store
 
 
 def test_equality(unit_1a, unit_2):
-    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
-    b = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
+    a = Compound(((unit_1a, 1), (unit_2, -1)))
+    b = Compound(((unit_1a, 1), (unit_2, -1)))
 
     assert a == b
 
 
 def test_multiply(unit_1a, unit_2):
-    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
-    b = CompoundUnit(((unit_1a, 1), (unit_2, 2)))
+    a = Compound(((unit_1a, 1), (unit_2, -1)))
+    b = Compound(((unit_1a, 1), (unit_2, 2)))
 
     result = a * b
 
-    assert CompoundUnit(((unit_1a, 1), (unit_2, -1))) == a
-    assert CompoundUnit(((unit_1a, 2), (unit_2, 1))) == result
+    assert Compound(((unit_1a, 1), (unit_2, -1))) == a
+    assert Compound(((unit_1a, 2), (unit_2, 1))) == result
 
 
 def test_divide(unit_1a, unit_2):
-    a = CompoundUnit(((unit_1a, 1), (unit_2, -1)))
-    b = CompoundUnit(((unit_1a, 1), (unit_2, 2)))
+    a = Compound(((unit_1a, 1), (unit_2, -1)))
+    b = Compound(((unit_1a, 1), (unit_2, 2)))
 
     result = a / b
 
-    assert CompoundUnit(((unit_1a, 1), (unit_2, -1))) == a
-    assert CompoundUnit(((unit_2, -3),)) == result
+    assert Compound(((unit_1a, 1), (unit_2, -1))) == a
+    assert Compound(((unit_2, -3),)) == result
 
 
 def test_creation_pairs(unit_1a, unit_1b):

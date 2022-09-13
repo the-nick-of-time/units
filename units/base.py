@@ -3,7 +3,7 @@ from decimal import Decimal
 from numbers import Number
 
 from units.exceptions import OperationError, ImplicitConversionError
-from units.extras import CompoundUnit, Pairs
+from units.extras import Compound, Pairs
 
 ScaleType = typing.Union[Decimal, int]
 
@@ -96,7 +96,7 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
 
     # can only be defined after the initial class definition
     dimension.DIMENSION = dimension
-    dimension.UNITS = CompoundUnit(exponents if exponents else ((dimension, 1),))
+    dimension.UNITS = Compound(exponents if exponents else ((dimension, 1),))
 
     return dimension
 
