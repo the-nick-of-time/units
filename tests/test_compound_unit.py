@@ -1,7 +1,7 @@
 import pytest
 
+from base import Multiset, Compound
 from units.base import make_dimension, make_unit
-from units.extras import Multiset, Compound
 
 
 @pytest.fixture

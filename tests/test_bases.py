@@ -153,7 +153,6 @@ def test_multiply_compound_scalar(compound_dimension):
     assert expected == a * 3
 
 
-@pytest.mark.skip("Might need some serious reworking")
 def test_multiply_simple_unit(compound_dimension, dimension, dimension2):
     compound = make_compound_unit(compound_dimension, 1)
     simple = make_unit("simple", dimension2, 1)
