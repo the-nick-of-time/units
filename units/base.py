@@ -5,8 +5,6 @@ from numbers import Number
 from units.exceptions import OperationError, ImplicitConversionError
 from units.extras import Compound, Pairs
 
-ScaleType = typing.Union[Decimal, int]
-
 
 def make_dimension(name: str) -> typing.Type:
     """Create a dimension, a class representing a quantity about the world.
@@ -15,9 +13,9 @@ def make_dimension(name: str) -> typing.Type:
     return dimension
 
 
-def make_unit(name: str, dimension: type, scale: ScaleType) -> type:
+def make_unit(name: str, dimension: type, scale) -> type:
     unit = type(name, (dimension,), {
-        "scale": scale,
+        "scale": Decimal(scale),
         "instances": {},
     })
 
@@ -101,7 +99,7 @@ def make_compound_dimension(name: str, exponents: Pairs) -> type:
     return dimension
 
 
-def make_compound_unit(dimension: type, scale: ScaleType):
+def make_compound_unit(dimension: type, scale):
     name = ""
     for unit in dimension.UNITS:
         name += _exponent_name(unit, dimension.UNITS[unit])
