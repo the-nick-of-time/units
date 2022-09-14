@@ -47,3 +47,9 @@ def test_subtract_different_unit():
     b = kilometers(1)
     with pytest.raises(OperationError):
         print(a - b)
+
+
+def test_area_conversion():
+    a = meters(2)
+    b = feet("6.56168")
+    assert (a * a).equivalent_to(b * b, 1e-4)

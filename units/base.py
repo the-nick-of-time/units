@@ -38,6 +38,9 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
             raise ImplicitConversionError(type(other), type(self))
         return self.value * self.scale == other.value * other.scale
 
+    def equivalent(self, other, within=0):
+        return abs(self.value * self.scale - other.value * other.scale) <= within
+
     def multiply(self, other):
         if isinstance(other, Number):
             return type(self)(self.value * other)
@@ -45,7 +48,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
                                              (
                                                      self.dimension.composition * other.dimension.composition).units)
         result_unit = make_compound_unit(result_dim, self.scale * other.scale)
-        return result_unit(self.value * other.value / (self.scale * other.scale))
+        return result_unit(self.value * other.value)
 
     def divide(self, other):
         if isinstance(other, Number):
@@ -70,6 +73,9 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         if key.startswith("to_"):
             return lambda: getattr(self.dimension, key)(self)
 
+    def tostring(self):
+        return f"{self.value} {self.__name__}"
+
     unit = type(name, (object,), {
         "__new__": new,
         "__init__": init,
@@ -80,11 +86,14 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         "__mul__": multiply,
         "__truediv__": divide,
         "__getattr__": getattribute,
+        "__str__": tostring,
+        "__repr__": tostring,
         "__name__": name,
         "is_dimension": instance_of,
         "scale": Decimal(scale),
         "instances": {},
         "dimension": dimension,
+        "equivalent_to": equivalent,
     })
     unit.composition = Compound(((unit, 1),))
 
