@@ -22,12 +22,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         self.value = Decimal(value)
 
     def add(self, other):
-        if not isinstance(other, type(self)):
+        if type(other).composition != type(self).composition:
             raise OperationError("add", type(self), type(other))
         return type(self)(self.value + other.value)
 
     def subtract(self, other):
-        if not isinstance(other, type(self)):
+        if type(other).composition != type(self).composition:
             raise OperationError("subtract", type(self), type(other))
         return type(self)(self.value - other.value)
 
@@ -70,7 +70,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
                                          self.scale / other.scale, unit_composition)
         return result_unit(result_value)
 
-    def instance_of(self, dim):
+    def is_dimension(self, dim):
         try:
             return dim.composition == self.dimension.composition
         except AttributeError:
@@ -97,7 +97,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         "__str__": tostring,
         "__repr__": tostring,
         "__name__": name,
-        "is_dimension": instance_of,
+        "is_dimension": is_dimension,
         "scale": Decimal(scale),
         "instances": {},
         "dimension": dimension,
@@ -121,7 +121,7 @@ def make_compound_dimension(name: str, exponents: Pairs) -> 'DimensionBase':
     return dimension
 
 
-def make_compound_unit(name: str, dimension: 'DimensionBase', scale: Number, exponents: Pairs):
+def make_compound_unit(name: str, dimension: 'DimensionBase', scale, exponents: Pairs):
     unit = make_unit(name, dimension, scale)
     unit.composition = Compound(exponents)
     return unit

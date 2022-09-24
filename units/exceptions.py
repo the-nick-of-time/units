@@ -9,7 +9,7 @@ class OperationError(UnitException):
         self.right = right
 
     def __str__(self):
-        return f"Cannot {self.operation} {self.left} to {self.right}"
+        return f"Cannot {self.operation} {self.left} and {self.right}"
 
 
 class ImplicitConversionError(UnitException):
