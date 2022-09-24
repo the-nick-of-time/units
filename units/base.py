@@ -16,10 +16,9 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def new(cls, value):
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
-        return cls.instances[value]
-
-    def init(self, value):
-        self.value = Decimal(value)
+        instance = cls.instances[value]
+        instance.value = Decimal(value)
+        return instance
 
     def add(self, other):
         if type(other).composition != type(self).composition:
@@ -86,7 +85,6 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
 
     unit = type(name, (object,), {
         "__new__": new,
-        "__init__": init,
         "__add__": add,
         "__radd__": add,
         "__sub__": subtract,
