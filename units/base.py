@@ -1,4 +1,5 @@
 from decimal import Decimal
+from fractions import Fraction
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
@@ -9,7 +10,7 @@ __all__ = [
     "make_unit", "make_compound_unit",
 ]
 UnitOperand = Union['UnitInterface', Number]
-Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
+Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int], Fraction]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
 Pairs = Tuple[Tuple[Unitlike, int], ...]
 Exponents = Union[Pairs, Dict[Unitlike, int]]
