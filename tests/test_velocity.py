@@ -35,7 +35,7 @@ def test_mph_to_kph(kph_approx):
     imperial = miles_per_hour(60)
     metric = kilometers_per_hour("96.56064")
 
-    assert quantities_approx_equal(metric, imperial.to_KilometersPerHour())
+    assert quantities_approx_equal(metric, imperial.to_kilometers_per_hour())
 
 
 # noinspection PyUnusedLocal

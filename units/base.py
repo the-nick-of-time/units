@@ -127,13 +127,13 @@ def make_compound_unit(name: str, dimension: 'DimensionBase', scale, exponents: 
 def _exponent_name(unit: type, exponent: int) -> str:
     value_names = {
         1: "",
-        2: "Squared",
-        3: "Cubed",
-        4: "ToTheFourth",
-        5: "ToTheFifth",
+        2: "_squared",
+        3: "_cubed",
+        4: "_to_the_fourth",
+        5: "_to_the_fifth",
         # that's the highest I've ever seen
     }
-    prefix = 'Per' if exponent < 0 else ''
+    prefix = 'per_' if exponent < 0 else ''
     body = unit.__name__.rstrip("s") if exponent < 0 else unit.__name__
     return f"{prefix}{body}{value_names[abs(exponent)]}"
 
