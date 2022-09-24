@@ -108,9 +108,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
 
 Unitlike = typing.Union[typing.Type['UnitInterface'], 'DimensionBase']
 Pairs = typing.Tuple[typing.Tuple[Unitlike, int], ...]
+Exponents = typing.Union[Pairs, typing.Dict[Unitlike, int]]
 
 
-def make_compound_dimension(exponents: Pairs, name: str = None) -> 'DimensionBase':
+def make_compound_dimension(exponents: Exponents, name: str = None) -> 'DimensionBase':
+    if isinstance(exponents, dict):
+        exponents = tuple(exponents.items())
     if name is None:
         name = str(Multiset(exponents))
     dimension = DimensionBase(name, exponents)
@@ -118,7 +121,10 @@ def make_compound_dimension(exponents: Pairs, name: str = None) -> 'DimensionBas
     return dimension
 
 
-def make_compound_unit(dimension: 'DimensionBase', scale, exponents: Pairs, name: str = None):
+def make_compound_unit(dimension: 'DimensionBase', scale, exponents: Exponents,
+                       name: str = None):
+    if isinstance(exponents, dict):
+        exponents = tuple(exponents.items())
     if name is None:
         name = str(Multiset(exponents))
     unit = make_unit(name, dimension, scale)
