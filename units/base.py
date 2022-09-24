@@ -48,9 +48,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         dim_composition = (self.dimension.composition * other.dimension.composition).units
         result_dim = make_compound_dimension(dim_composition)
         unit_composition = (self.composition * other.composition).units
-        unit_name = str(unit_composition)
-        result_unit = make_compound_unit(unit_name, result_dim, self.scale * other.scale,
-                                         unit_composition)
+        result_unit = make_compound_unit(result_dim, self.scale * other.scale, unit_composition)
         return result_unit(self.value * other.value)
 
     def divide(self, other):
@@ -63,8 +61,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         dim_composition = (self.dimension.composition / other.dimension.composition).units
         result_dim = make_compound_dimension(dim_composition)
         unit_composition = (self.composition / other.composition).units
-        result_unit = make_compound_unit(str(unit_composition), result_dim,
-                                         self.scale / other.scale, unit_composition)
+        result_unit = make_compound_unit(result_dim, self.scale / other.scale, unit_composition)
         return result_unit(result_value)
 
     def is_dimension(self, dim):
@@ -119,7 +116,9 @@ def make_compound_dimension(exponents: Pairs, name: str = None) -> 'DimensionBas
     return dimension
 
 
-def make_compound_unit(name: str, dimension: 'DimensionBase', scale, exponents: Pairs):
+def make_compound_unit(dimension: 'DimensionBase', scale, exponents: Pairs, name: str = None):
+    if name is None:
+        name = str(Multiset(exponents))
     unit = make_unit(name, dimension, scale)
     unit.composition = Compound(exponents)
     return unit

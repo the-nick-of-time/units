@@ -52,3 +52,7 @@ def test_distance_over_time():
     v = meters_per_second(5)
 
     assert (d / t) == v
+
+
+def test_name():
+    assert kilometers_per_hour.__name__ == "kilometers_per_hour"
