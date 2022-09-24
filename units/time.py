@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from base import make_unit, make_dimension
+from units.base import make_unit, make_dimension
 
 Time = make_dimension("Time")
 seconds = make_unit("seconds", Time, 1)

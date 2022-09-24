@@ -1,4 +1,4 @@
-from base import make_dimension, make_unit
+from units.base import make_dimension, make_unit
 
 Mass = make_dimension("Mass")
 

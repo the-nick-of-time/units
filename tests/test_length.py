@@ -1,7 +1,7 @@
 import pytest
 
 from units.exceptions import OperationError
-from units.length import kilometers, meters, feet
+from units.length import kilometers, meters, feet, inches, yards
 
 
 def test_km_to_m():
@@ -53,3 +53,12 @@ def test_area_conversion():
     a = meters(2)
     b = feet("6.56168")
     assert (a * a).equivalent_to(b * b, 1e-4)
+
+
+def test_imperial():
+    i = inches(36)
+    f = feet(3)
+    y = yards(1)
+
+    assert i.equivalent_to(f)
+    assert f.equivalent_to(y)

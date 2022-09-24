@@ -1,3 +1,4 @@
+import functools
 import typing
 from decimal import Decimal
 from numbers import Number
@@ -45,9 +46,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def multiply(self, other):
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        dim_name = _exponent_name(self, 1) + _exponent_name(other, 1)
         dim_composition = (self.dimension.composition * other.dimension.composition).units
-        result_dim = make_compound_dimension(dim_name, dim_composition)
+        result_dim = make_compound_dimension(str(dim_composition), dim_composition)
         unit_composition = (self.composition * other.composition).units
         unit_name = str(unit_composition)
         result_unit = make_compound_unit(unit_name, result_dim, self.scale * other.scale,
@@ -164,11 +164,14 @@ class DimensionBase:
 class Multiset:
     # just different enough from collections.Counter to be worth writing
     def __init__(self, pairs: typing.Union[Pairs, 'Multiset', dict]):
-        self.store: typing.Dict[type, int]
         if isinstance(pairs, Multiset):
             self.store = pairs.store.copy()
+        # Split these cases from each other just because it makes pycharm's
+        # type inference work properly
+        elif isinstance(pairs, dict):
+            self.store = pairs.copy()
         else:
-            self.store = dict(pairs)
+            self.store = {u: e for u, e in pairs}
 
     def __hash__(self):
         return hash(tuple(self.store.items()))
@@ -259,6 +262,11 @@ class Compound:
             other = other.units
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.remove(other))
+
+    def base_scale(self):
+        """The total effect of the factors"""
+        factors = [unit.scale ** exponent for unit, exponent in self.units.to_pairs()]
+        return functools.reduce(lambda a, b: a * b, factors)
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
         existing_dimensions = {unit.dimension: unit for unit in self.units}
