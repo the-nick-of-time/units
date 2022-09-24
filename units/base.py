@@ -46,10 +46,13 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def multiply(self, other):
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        result_dim = make_compound_dimension(_exponent_name(self, 1) + _exponent_name(other, 1),
-                                             (
-                                                     self.dimension.composition * other.dimension.composition).units)
-        result_unit = make_compound_unit(result_dim, self.scale * other.scale)
+        dim_name = _exponent_name(self, 1) + _exponent_name(other, 1)
+        dim_composition = (self.dimension.composition * other.dimension.composition).units
+        result_dim = make_compound_dimension(dim_name, dim_composition)
+        unit_composition = (self.composition * other.composition).units
+        unit_name = str(unit_composition)
+        result_unit = make_compound_unit(unit_name, result_dim, self.scale * other.scale,
+                                         unit_composition)
         return result_unit(self.value * other.value)
 
     def divide(self, other):
@@ -59,10 +62,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         result_value = (self.value / self.scale) / (other.value / other.scale)
         if len(result_units) == 0:
             return result_value
-        result_dim = make_compound_dimension(
-            _exponent_name(self, 1) + _exponent_name(other, -1),
-            (self.dimension.composition / other.dimension.composition).units)
-        result_unit = make_compound_unit(result_dim, self.scale / other.scale)
+        dim_name = _exponent_name(self, 1) + _exponent_name(other, -1)
+        dim_composition = (self.dimension.composition / other.dimension.composition).units
+        result_dim = make_compound_dimension(dim_name, dim_composition)
+        unit_composition = (self.composition / other.composition).units
+        result_unit = make_compound_unit(str(unit_composition), result_dim,
+                                         self.scale / other.scale, unit_composition)
         return result_unit(result_value)
 
     def instance_of(self, dim):
@@ -74,6 +79,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def getattribute(self, key: str):
         if key.startswith("to_"):
             return lambda: getattr(self.dimension, key)(self)
+        raise AttributeError()
 
     def tostring(self):
         return f"{self.value} {self.__name__}"
@@ -115,12 +121,10 @@ def make_compound_dimension(name: str, exponents: Pairs) -> 'DimensionBase':
     return dimension
 
 
-def make_compound_unit(dimension: 'DimensionBase', scale):
-    name = ""
-    for unit in dimension.composition:
-        name += _exponent_name(unit, dimension.composition[unit])
-
-    return make_unit(name, dimension, scale)
+def make_compound_unit(name: str, dimension: 'DimensionBase', scale: Number, exponents: Pairs):
+    unit = make_unit(name, dimension, scale)
+    unit.composition = Compound(exponents)
+    return unit
 
 
 def _exponent_name(unit: type, exponent: int) -> str:
@@ -187,6 +191,11 @@ class Multiset:
 
     def __len__(self):
         return len(self.store)
+
+    def __str__(self):
+        positives = [_exponent_name(k, v) for k, v in self.store.items() if v > 0]
+        negatives = [_exponent_name(k, v) for k, v in self.store.items() if v < 0]
+        return "".join(positives + negatives)
 
     def add(self, elem: typing.Union[type, 'Multiset']):
         if isinstance(elem, type):

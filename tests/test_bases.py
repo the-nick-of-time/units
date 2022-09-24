@@ -11,8 +11,18 @@ def dimension():
 
 
 @pytest.fixture
+def unit(dimension):
+    return make_unit('TESTUNIT', dimension, 1)
+
+
+@pytest.fixture
 def dimension2():
     return make_dimension("TEST2")
+
+
+@pytest.fixture
+def unit2(dimension2):
+    return make_unit('TESTUNIT2', dimension2, 1)
 
 
 @pytest.fixture
@@ -21,8 +31,18 @@ def compound_dimension(dimension, dimension2):
 
 
 @pytest.fixture
+def compound_unit(compound_dimension, unit, unit2):
+    return make_compound_unit("COMPOUNDUNIT", compound_dimension, 1, ((unit, 1), (unit2, -1)))
+
+
+@pytest.fixture
 def compound_dimension2(dimension, dimension2):
     return make_compound_dimension("COMPOUND2", ((dimension, 1), (dimension2, -2)))
+
+
+@pytest.fixture
+def compound_unit2(compound_dimension2, unit, unit2):
+    return make_compound_unit("COMPOUNDUNIT2", compound_dimension2, 1, ((unit, 1), (unit2, -2)))
 
 
 def test_flyweights(dimension):
@@ -119,8 +139,8 @@ def test_isinstance(dimension, dimension2):
     assert unit_a(1).is_dimension(b)
 
 
-def test_add(compound_dimension):
-    unit = make_compound_unit(compound_dimension, 1)
+def test_add(compound_dimension, compound_unit):
+    unit = make_compound_unit('foo', compound_dimension, 1, compound_unit.composition.units)
     a = unit(1)
     b = unit(2)
     expected = unit(3)
@@ -132,8 +152,8 @@ def test_add_equivalent():
     pass
 
 
-def test_subtract(compound_dimension):
-    unit = make_compound_unit(compound_dimension, 1)
+def test_subtract(compound_dimension, compound_unit):
+    unit = make_compound_unit('foo', compound_dimension, 1, compound_unit.composition.units)
     a = unit(5)
     b = unit(2)
     expected = unit(3)
@@ -145,56 +165,53 @@ def test_subtract_equivalent():
     pass
 
 
-def test_multiply_compound_scalar(compound_dimension):
-    unit = make_compound_unit(compound_dimension, 1)
+def test_multiply_compound_scalar(compound_dimension, compound_unit):
+    unit = make_compound_unit('multiply', compound_dimension, 1,
+                              compound_unit.composition.units)
     a = unit(1)
     expected = unit(3)
 
     assert expected == a * 3
 
 
-def test_multiply_simple_unit(compound_dimension, dimension, dimension2):
-    compound = make_compound_unit(compound_dimension, 1)
-    simple = make_unit("simple", dimension2, 1)
+def test_multiply_simple_unit(compound_dimension, dimension, compound_unit, unit2):
+    compound = make_compound_unit('multiply', compound_dimension, 1,
+                                  compound_unit.composition.units)
     expected_unit = make_unit('expected', dimension, 1)
 
     expected = expected_unit(2)
-    result = compound(2) * simple(1)
+    result = compound(2) * unit2(1)
 
     assert result.is_dimension(dimension)
-    assert expected == result
+    assert result.equivalent_to(expected)
 
 
-def test_multiply_complex_unit(compound_dimension, compound_dimension2, dimension, dimension2):
-    first = make_compound_unit(compound_dimension, 1)
-    second = make_compound_unit(compound_dimension2, 1)
-
+def test_multiply_complex_unit(dimension, dimension2,
+                               compound_unit, compound_unit2, unit, unit2):
     expected_dim = make_compound_dimension("EXPECTED", ((dimension, 2),
                                                         (dimension2, -3)))
-    expected_unit = make_compound_unit(expected_dim, 1)
+    expected_unit = make_compound_unit('EXPECTEDUNIT', expected_dim, 1,
+                                       ((unit, 2), (unit2, -3)))
 
     expected = expected_unit(1)
-    result = first(1) * second(1)
+    result = compound_unit(1) * compound_unit2(1)
 
     assert result.is_dimension(expected_dim)
     assert expected == result
 
 
-def test_divide_compound_scalar(compound_dimension):
-    unit = make_compound_unit(compound_dimension, 1)
+def test_divide_compound_scalar(compound_dimension, compound_unit):
+    unit = make_compound_unit('foo', compound_dimension, 1, compound_unit.composition.units)
     a = unit(3)
     expected = unit(1)
 
     assert expected == a / 3
 
 
-def test_divide_simple_unit(dimension, dimension2, compound_dimension):
-    a = make_unit("a", dimension, 1)
-    b = make_unit("b", dimension2, 1)
-    expected_unit = make_compound_unit(compound_dimension, 1)
-    expected = expected_unit(1)
+def test_divide_simple_unit(compound_dimension, compound_unit, unit, unit2):
+    expected = compound_unit(1)
 
-    result = a(1) / b(1)
+    result = unit(1) / unit2(1)
 
     assert result.is_dimension(compound_dimension)
     assert expected == result
@@ -211,23 +228,3 @@ def test_divide_to_dimensionless(dimension):
 
 def test_divide_complex_unit():
     pass
-
-
-def test_unit_name(dimension, dimension2):
-    length = make_unit('Meters', dimension, 1)
-    time = make_unit('Seconds', dimension2, 1)
-
-    velocity = make_compound_dimension("Velocity", ((length, 1), (time, -1)))
-    mps = make_compound_unit(velocity, 1)
-
-    assert "MetersPerSecond" == mps.__name__
-
-
-def test_unit_name_exponent(dimension, dimension2):
-    length = make_unit('Meters', dimension, 1)
-    time = make_unit('Seconds', dimension2, 1)
-
-    acceleration = make_compound_dimension("Acceleration", ((length, 1), (time, -2)))
-    mpss = make_compound_unit(acceleration, 1)
-
-    assert "MetersPerSecondSquared" == mpss.__name__
