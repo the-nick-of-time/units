@@ -78,22 +78,22 @@ def test_subtract_different_unit(dimension):
         print(a - b)
 
 
-def test_equal_same_dimension(dimension):
+def test_equivalent_same_dimension(dimension):
     first = make_unit("first", dimension, 1)
     second = make_unit("second", dimension, 10)
     ten_ones = first(10)
     one_ten = second(1)
-    assert ten_ones == one_ten
+    assert ten_ones.equivalent_to(one_ten)
 
 
-def test_equal_different_dimension(dimension):
+def test_equivalence_different_dimension(dimension):
     dim2 = make_dimension("dim2")
     first = make_unit("first", dimension, 1)
     a = first(1)
     second = make_unit("second", dim2, 1)
     b = second(1)
     with pytest.raises(ImplicitConversionError):
-        print(a == b)
+        print(a.equivalent_to(b))
 
 
 def test_multiply_scalar(dimension):

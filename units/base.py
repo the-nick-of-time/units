@@ -34,11 +34,13 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def equal(self, other):
         if self is other:
             return True
-        if not other.is_dimension(self.dimension):
-            raise ImplicitConversionError(type(other), type(self))
+        if type(other).composition != type(self).composition:
+            return False
         return self.value * self.scale == other.value * other.scale
 
     def equivalent(self, other, within=0):
+        if not other.is_dimension(self.dimension):
+            raise ImplicitConversionError(type(other), type(self))
         return abs(self.value * self.scale - other.value * other.scale) <= within
 
     def multiply(self, other):
@@ -60,7 +62,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         result_dim = make_compound_dimension(
             _exponent_name(self, 1) + _exponent_name(other, -1),
             (self.dimension.composition / other.dimension.composition).units)
-        result_unit = make_compound_unit(result_dim, self.scale * other.scale)
+        result_unit = make_compound_unit(result_dim, self.scale / other.scale)
         return result_unit(result_value)
 
     def instance_of(self, dim):

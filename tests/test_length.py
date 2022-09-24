@@ -19,7 +19,7 @@ def test_ft_to_m():
 def test_equal():
     km_in_m = meters(1000)
     km = kilometers(1)
-    assert km == km_in_m
+    assert km == km_in_m.to_kilometers()
 
 
 def test_add_same_unit():
