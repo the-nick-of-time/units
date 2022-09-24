@@ -2,7 +2,7 @@ import units.length as length
 import units.time as time
 from units.base import make_compound_unit, make_compound_dimension
 
-Velocity = make_compound_dimension("Velocity", ((length.Length, 1), (time.Time, -1)))
+Velocity = make_compound_dimension(((length.Length, 1), (time.Time, -1)), "Velocity")
 
 meters_per_second = make_compound_unit("meters_per_second", Velocity, 1,
                                        ((length.meters, 1), (time.seconds, -1)))

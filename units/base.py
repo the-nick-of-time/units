@@ -8,7 +8,7 @@ from units.exceptions import OperationError, ImplicitConversionError
 def make_dimension(name: str) -> 'DimensionBase':
     """Create a dimension, a class representing a quantity about the world.
     """
-    dimension = make_compound_dimension(name, ())
+    dimension = make_compound_dimension((), name)
     return dimension
 
 
@@ -46,7 +46,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         if isinstance(other, Number):
             return type(self)(self.value * other)
         dim_composition = (self.dimension.composition * other.dimension.composition).units
-        result_dim = make_compound_dimension(str(dim_composition), dim_composition)
+        result_dim = make_compound_dimension(dim_composition)
         unit_composition = (self.composition * other.composition).units
         unit_name = str(unit_composition)
         result_unit = make_compound_unit(unit_name, result_dim, self.scale * other.scale,
@@ -60,9 +60,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
         result_value = (self.value / self.scale) / (other.value / other.scale)
         if len(result_units) == 0:
             return result_value
-        dim_name = _exponent_name(self, 1) + _exponent_name(other, -1)
         dim_composition = (self.dimension.composition / other.dimension.composition).units
-        result_dim = make_compound_dimension(dim_name, dim_composition)
+        result_dim = make_compound_dimension(dim_composition)
         unit_composition = (self.composition / other.composition).units
         result_unit = make_compound_unit(str(unit_composition), result_dim,
                                          self.scale / other.scale, unit_composition)
@@ -112,7 +111,9 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
 Pairs = typing.Tuple[typing.Tuple[type, int], ...]
 
 
-def make_compound_dimension(name: str, exponents: Pairs) -> 'DimensionBase':
+def make_compound_dimension(exponents: Pairs, name: str = None) -> 'DimensionBase':
+    if name is None:
+        name = str(Multiset(exponents))
     dimension = DimensionBase(name, exponents)
 
     return dimension
@@ -195,7 +196,7 @@ class Multiset:
     def __str__(self):
         positives = [_exponent_name(k, v) for k, v in self.store.items() if v > 0]
         negatives = [_exponent_name(k, v) for k, v in self.store.items() if v < 0]
-        return "".join(positives + negatives)
+        return "_".join(positives + negatives)
 
     def add(self, elem: typing.Union[type, 'Multiset']):
         if isinstance(elem, type):

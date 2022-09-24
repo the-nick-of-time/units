@@ -27,7 +27,7 @@ def unit2(dimension2):
 
 @pytest.fixture
 def compound_dimension(dimension, dimension2):
-    return make_compound_dimension("COMPOUND", ((dimension, 1), (dimension2, -1)))
+    return make_compound_dimension(((dimension, 1), (dimension2, -1)))
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def compound_unit(compound_dimension, unit, unit2):
 
 @pytest.fixture
 def compound_dimension2(dimension, dimension2):
-    return make_compound_dimension("COMPOUND2", ((dimension, 1), (dimension2, -2)))
+    return make_compound_dimension(((dimension, 1), (dimension2, -2)))
 
 
 @pytest.fixture
@@ -131,8 +131,8 @@ def test_divide_scalar(dimension):
 
 
 def test_isinstance(dimension, dimension2):
-    a = make_compound_dimension("baseline", ((dimension, 1), (dimension2, -1)))
-    b = make_compound_dimension("compare", ((dimension, 1), (dimension2, -1)))
+    a = make_compound_dimension(((dimension, 1), (dimension2, -1)), "baseline")
+    b = make_compound_dimension(((dimension, 1), (dimension2, -1)), "compare")
     unit_a = make_unit("fromA", a, 1)
 
     assert unit_a(1).is_dimension(a)
@@ -188,8 +188,8 @@ def test_multiply_simple_unit(compound_dimension, dimension, compound_unit, unit
 
 def test_multiply_complex_unit(dimension, dimension2,
                                compound_unit, compound_unit2, unit, unit2):
-    expected_dim = make_compound_dimension("EXPECTED", ((dimension, 2),
-                                                        (dimension2, -3)))
+    expected_dim = make_compound_dimension(((dimension, 2),
+                                            (dimension2, -3)), "EXPECTED")
     expected_unit = make_compound_unit('EXPECTEDUNIT', expected_dim, 1,
                                        ((unit, 2), (unit2, -3)))
 
@@ -228,3 +228,7 @@ def test_divide_to_dimensionless(dimension):
 
 def test_divide_complex_unit():
     pass
+
+
+def test_dimension_auto_name(compound_dimension2):
+    assert compound_dimension2.__name__ == "TEST_per_TEST2_squared"
