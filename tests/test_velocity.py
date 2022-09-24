@@ -18,11 +18,12 @@ def patch_factory(unit, name):
         monkeypatch.setattr(unit, "__abs__", abs_, raising=False)
         monkeypatch.setattr(unit, "__le__", le, raising=False)
 
+    globals()[name] = patcher
     return patcher
 
 
-kph_approx = patch_factory(kilometers_per_hour, "kph_approx")
-km_approx = patch_factory(kilometers, "km_approx")
+patch_factory(kilometers_per_hour, "kph_approx")
+patch_factory(kilometers, "km_approx")
 
 
 def quantities_approx_equal(expected, actual, tol=1e-6):
