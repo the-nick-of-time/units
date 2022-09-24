@@ -4,48 +4,86 @@ from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
 from units.exceptions import OperationError, ImplicitConversionError
 
+__all__ = [
+    "make_dimension", "make_compound_dimension",
+    "make_unit", "make_compound_unit",
+]
+UnitOperand = Union['UnitInterface', Number]
+Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
+Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
+Pairs = Tuple[Tuple[Unitlike, int], ...]
+Exponents = Union[Pairs, Dict[Unitlike, int]]
+
 
 def make_dimension(name: str) -> 'DimensionBase':
-    """Create a dimension, a class representing a quantity about the world.
+    """Dimensions are the basic measurable quantities about the world, like length and time.
+
+    For complex dimensions, see make_compound_dimension.
+
+    :param name: The name of this dimension.
+    :return: An object that captures information about the dimension and the
+        units that implement it.
     """
     dimension = make_compound_dimension((), name)
     return dimension
 
 
-Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
-
-
 def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['UnitInterface']:
-    def new(cls, value):
+    """A unit is a particular convention for measuring a dimension.
+
+    :param name: The name of the new unit, like "meters". Should be in its
+        plural form.
+    :param dimension: The dimension this unit measures.
+    :param scale: How many of the base unit it would take to get one of the
+        current unit. For instance, one kilometer has a scale of 1000 when the
+        base unit is meters.
+    :return: A class representing the unit. Instances of this class are
+        measurements using the unit.
+    """
+
+    def new(cls, value: Scale):
+        """Create a new measurement using this unit."""
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
         instance = cls.instances[value]
         instance.value = Decimal(value)
         return instance
 
-    def add(self, other):
+    def add(self, other: UnitInterface) -> UnitInterface:
+        """Add two measurements of the same unit together."""
         if type(other).composition != type(self).composition:
             raise OperationError("add", type(self), type(other))
         return type(self)(self.value + other.value * other.scale / self.scale)
 
-    def subtract(self, other):
+    def subtract(self, other: UnitInterface) -> UnitInterface:
+        """Subtract a measurement of the same unit from this."""
         if type(other).composition != type(self).composition:
             raise OperationError("subtract", type(self), type(other))
         return type(self)(self.value - other.value * other.scale / self.scale)
 
-    def equal(self, other):
+    def equal(self, other: UnitInterface) -> bool:
+        """Check if this measurement is the same value and unit of another."""
         if self is other:
             return True
         if type(other).composition != type(self).composition:
             return False
         return self.value * self.scale == other.value * other.scale
 
-    def equivalent(self, other, within=0):
+    def equivalent(self, other: UnitInterface, within=0) -> bool:
+        """Check if this measurement is the same dimension as another and that
+            its value is equivalent, within a certain precision.
+
+        :param other: The other measurement.
+        :param within: An absolute tolerance on the approximation, expressed in
+            the base unit.
+        :return: Boolean
+        """
         if not other.is_dimension(self.dimension):
             raise ImplicitConversionError(type(other), type(self))
         return abs(self.value * self.scale - other.value * other.scale) <= within
 
-    def multiply(self, other):
+    def multiply(self, other: UnitInterface) -> UnitInterface:
+        """Multiply two measurements. Produces a new compound unit for the result."""
         if isinstance(other, Number):
             return type(self)(self.value * other)
         dim_composition = self.dimension.composition * other.dimension.composition
@@ -54,7 +92,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         result_unit = make_compound_unit(result_dim, self.scale * other.scale, unit_composition)
         return result_unit(self.value * other.value)
 
-    def divide(self, other):
+    def divide(self, other: UnitInterface) -> UnitInterface:
+        """Multiply two measurements. Produces a new compound unit for the result."""
         if isinstance(other, Number):
             return type(self)(self.value / other)
         result_units = self.composition / other.composition
@@ -67,19 +106,21 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
                                          result_units.to_pairs())
         return result_unit(result_value)
 
-    def is_dimension(self, dim):
+    def is_dimension(self, dim: DimensionBase):
+        """Check if this unit is of the given dimension."""
         try:
             return dim.composition == self.dimension.composition
         except AttributeError:
             return False
 
     def getattribute(self, key: str):
+        """Forward conversion requests to the dimension."""
         if key.startswith("to_"):
             return lambda: getattr(self.dimension, key)(self)
         raise AttributeError()
 
     def tostring(self):
-        return f"{self.value}\u00d7{self.scale}  {self.__name__}"
+        return f"{self.value * self.scale} {self.__name__}"
 
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
@@ -103,18 +144,25 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     unit.composition = Compound(((unit, 1),))
 
     def converter(self):
+        f"""Convert the current unit to {name}"""
         return unit(self.value * self.scale / unit.scale)
 
     setattr(dimension, "to_" + name.replace(" ", "_"), converter)
     return unit
 
 
-Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
-Pairs = Tuple[Tuple[Unitlike, int], ...]
-Exponents = Union[Pairs, Dict[Unitlike, int]]
-
-
 def make_compound_dimension(exponents: Exponents, name: str = None) -> 'DimensionBase':
+    """Create a dimension that's composed of basic dimensions.
+
+    :param exponents: A sequence of tuples or dict that pair existing
+        dimensions with the exponent they should be raised to.
+    :param name: A name to give this dimension, like velocity for length/time.
+        If there isn't a physically useful name for it, leave it unfilled and
+        a name will automatically be created by using the names of its
+        constituents.
+    :return: An object that captures information about the dimension and the
+        units that implement it.
+    """
     if isinstance(exponents, dict):
         exponents = tuple(exponents.items())
     if name is None:
@@ -126,6 +174,24 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
 
 def make_compound_unit(dimension: 'DimensionBase', scale: Scale, exponents: Exponents,
                        name: str = None):
+    """A unit composed of other units.
+
+    :param dimension: The dimension this unit is measuring.
+    :param scale: How many of the base unit one of this unit is equivalent to.
+        Note that the scale factors of the constituent units are not taken into
+        account. For instance, even though the conversion factor from meters per
+        second to miles per hour could be determined strictly from the scale
+        factors already defined for miles -> meters and hours -> seconds, doing
+        that calculation is up to the constructor of the unit. I think this
+        obeys the principle of least surprise, but I might be wrong.
+    :param exponents: A sequence of tuples or dict that pair existing units
+        with the exponent they should be raised to.
+    :param name: A name to give this unit, like joules. If no particular
+        physical name exists, leave it unfilled and a name will be automatically
+        constructed using the names of its component units and their exponents.
+    :return: A class representing this unit. Instances of the class are
+        measurements with a magnitude.
+    """
     if isinstance(exponents, dict):
         exponents = tuple(exponents.items())
     if name is None:
@@ -317,9 +383,6 @@ class Compound:
 
     def to_pairs(self):
         return self.units.to_pairs()
-
-
-UnitOperand = Union['UnitInterface', Number]
 
 
 class UnitInterface:
