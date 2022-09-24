@@ -1,6 +1,6 @@
-import typing
 from decimal import Decimal
 from numbers import Number
+from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
 from units.exceptions import OperationError, ImplicitConversionError
 
@@ -12,7 +12,10 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['UnitInterface']:
+Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
+
+
+def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['UnitInterface']:
     def new(cls, value):
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
@@ -79,7 +82,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
         return f"{self.value} {self.__name__}"
 
     # noinspection PyTypeChecker
-    unit: typing.Type[UnitInterface] = type(name, (object,), {
+    unit: Type[UnitInterface] = type(name, (object,), {
         "__new__": new,
         "__add__": add,
         "__radd__": add,
@@ -106,9 +109,9 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
     return unit
 
 
-Unitlike = typing.Union[typing.Type['UnitInterface'], 'DimensionBase']
-Pairs = typing.Tuple[typing.Tuple[Unitlike, int], ...]
-Exponents = typing.Union[Pairs, typing.Dict[Unitlike, int]]
+Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
+Pairs = Tuple[Tuple[Unitlike, int], ...]
+Exponents = Union[Pairs, Dict[Unitlike, int]]
 
 
 def make_compound_dimension(exponents: Exponents, name: str = None) -> 'DimensionBase':
@@ -121,7 +124,7 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
     return dimension
 
 
-def make_compound_unit(dimension: 'DimensionBase', scale, exponents: Exponents,
+def make_compound_unit(dimension: 'DimensionBase', scale: Scale, exponents: Exponents,
                        name: str = None):
     if isinstance(exponents, dict):
         exponents = tuple(exponents.items())
@@ -189,7 +192,7 @@ class DimensionBase:
 
 class Multiset:
     # just different enough from collections.Counter to be worth writing
-    def __init__(self, pairs: typing.Union[Pairs, 'Multiset', dict]):
+    def __init__(self, pairs: Union[Pairs, 'Multiset', dict]):
         if isinstance(pairs, Multiset):
             self.store = pairs.store.copy()
         # Split these cases from each other just because it makes pycharm's
@@ -202,7 +205,7 @@ class Multiset:
     def __hash__(self):
         return hash(tuple(self.store.items()))
 
-    def __iter__(self) -> typing.Iterator[Unitlike]:
+    def __iter__(self) -> Iterator[Unitlike]:
         return iter(self.store.keys())
 
     def __getitem__(self, item):
@@ -224,12 +227,12 @@ class Multiset:
         negatives = [_exponent_name(k, v) for k, v in self.store.items() if v < 0]
         return "_".join(positives + negatives)
 
-    def add(self, elem: typing.Union[type, 'Multiset']):
+    def add(self, elem: Union[type, 'Multiset']):
         if isinstance(elem, type):
             elem = Multiset({elem: 1})
         return self.__merge(elem)
 
-    def remove(self, elem: typing.Union[type, 'Multiset']):
+    def remove(self, elem: Union[type, 'Multiset']):
         if isinstance(elem, type):
             elem = Multiset({elem: -1})
         else:
@@ -262,7 +265,7 @@ class Multiset:
 
 
 class Compound:
-    def __init__(self, units: typing.Union[Pairs, Multiset]):
+    def __init__(self, units: Union[Pairs, Multiset]):
         if isinstance(units, Multiset):
             self.units = Multiset(units)
         else:
@@ -287,7 +290,7 @@ class Compound:
     def __len__(self):
         return len(self.units)
 
-    def __mul__(self, other: typing.Union[type, Multiset, 'Compound']) -> 'Compound':
+    def __mul__(self, other: Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):
             other = Multiset({other: 1})
         elif isinstance(other, Compound):
@@ -295,7 +298,7 @@ class Compound:
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.add(other))
 
-    def __truediv__(self, other: typing.Union[type, Multiset, 'Compound']) -> 'Compound':
+    def __truediv__(self, other: Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):
             other = Multiset({other: -1})
         elif isinstance(other, Compound):
@@ -316,7 +319,7 @@ class Compound:
         return self.units.to_pairs()
 
 
-UnitOperand = typing.Union['UnitInterface', Number]
+UnitOperand = Union['UnitInterface', Number]
 
 
 class UnitInterface:
@@ -324,7 +327,7 @@ class UnitInterface:
     composition: 'Compound'
     scale: 'Decimal'
 
-    def __init__(self, value):
+    def __init__(self, value: Scale):
         pass
 
     def __add__(self, other: UnitOperand) -> 'UnitInterface':
