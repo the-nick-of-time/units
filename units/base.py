@@ -26,12 +26,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     def add(self, other):
         if type(other).composition != type(self).composition:
             raise OperationError("add", type(self), type(other))
-        return type(self)(self.value + other.value)
+        return type(self)(self.value + other.value * other.scale / self.scale)
 
     def subtract(self, other):
         if type(other).composition != type(self).composition:
             raise OperationError("subtract", type(self), type(other))
-        return type(self)(self.value - other.value)
+        return type(self)(self.value - other.value * other.scale / self.scale)
 
     def equal(self, other):
         if self is other:
@@ -79,7 +79,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         raise AttributeError()
 
     def tostring(self):
-        return f"{self.value} {self.__name__}"
+        return f"{self.value}\u00d7{self.scale}  {self.__name__}"
 
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {

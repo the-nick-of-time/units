@@ -11,6 +11,7 @@ __all__ = [
     "yards",
     "inches",
     "astronomical_unit",
+    "au",
 ]
 
 Length = make_dimension("Length")
