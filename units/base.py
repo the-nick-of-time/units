@@ -12,7 +12,7 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
+def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['UnitInterface']:
     def new(cls, value):
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
@@ -78,7 +78,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     def tostring(self):
         return f"{self.value} {self.__name__}"
 
-    unit = type(name, (object,), {
+    # noinspection PyTypeChecker
+    unit: typing.Type[UnitInterface] = type(name, (object,), {
         "__new__": new,
         "__add__": add,
         "__radd__": add,
@@ -105,7 +106,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> type:
     return unit
 
 
-Pairs = typing.Tuple[typing.Tuple[type, int], ...]
+Unitlike = typing.Union[typing.Type['UnitInterface'], 'DimensionBase']
+Pairs = typing.Tuple[typing.Tuple[Unitlike, int], ...]
 
 
 def make_compound_dimension(exponents: Pairs, name: str = None) -> 'DimensionBase':
@@ -175,7 +177,7 @@ class Multiset:
     def __hash__(self):
         return hash(tuple(self.store.items()))
 
-    def __iter__(self) -> typing.Iterator[type]:
+    def __iter__(self) -> typing.Iterator[Unitlike]:
         return iter(self.store.keys())
 
     def __getitem__(self, item):
@@ -273,3 +275,12 @@ class Compound:
 
     def to_pairs(self):
         return self.units.to_pairs()
+
+
+class UnitInterface:
+    """A dummy class for type checking purposes, defining the interface of a unit class."""
+    composition: 'Compound'
+    scale: 'Decimal'
+
+    def __init__(self, value):
+        pass
