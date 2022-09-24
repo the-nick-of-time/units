@@ -4,20 +4,25 @@ from units.length import meters, kilometers
 from units.time import seconds, hours
 from units.velocity import meters_per_second, kilometers_per_hour, miles_per_hour
 
-abs_ = lambda self: type(self)(abs(self.value))
-le = lambda self, other: self.composition == other.composition and self.value <= other.value
+
+def patch_factory(unit, name):
+    def abs_(self):
+        return type(self)(abs(self.value))
+
+    def le(self, other):
+        return (self.composition == other.composition
+                and self.value * self.scale <= other.value * other.scale)
+
+    @pytest.fixture(name=name)
+    def patcher(monkeypatch):
+        monkeypatch.setattr(unit, "__abs__", abs_, raising=False)
+        monkeypatch.setattr(unit, "__le__", le, raising=False)
+
+    return patcher
 
 
-@pytest.fixture
-def kph_approx(monkeypatch):
-    monkeypatch.setattr(kilometers_per_hour, "__abs__", abs_, raising=False)
-    monkeypatch.setattr(kilometers_per_hour, "__le__", le, raising=False)
-
-
-@pytest.fixture
-def km_approx(monkeypatch):
-    monkeypatch.setattr(kilometers, "__abs__", abs_, raising=False)
-    monkeypatch.setattr(kilometers, "__le__", le, raising=False)
+kph_approx = patch_factory(kilometers_per_hour, "kph_approx")
+km_approx = patch_factory(kilometers, "km_approx")
 
 
 def quantities_approx_equal(expected, actual, tol=1e-6):
