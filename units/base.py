@@ -90,8 +90,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         dim_composition = self.dimension.composition * other.dimension.composition
         result_dim = make_compound_dimension(dim_composition.to_pairs())
         unit_composition = (self.composition * other.composition).units
-        result_unit = make_compound_unit(result_dim, self.scale * other.scale, unit_composition)
-        return result_unit(self.value * other.value)
+        result_unit = make_compound_unit(result_dim, 1, unit_composition)
+        return result_unit(self.value * self.scale * other.value * other.scale)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
         """Multiply two measurements. Produces a new compound unit for the result."""
@@ -103,8 +103,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
             return result_value
         dim_composition = self.dimension.composition / other.dimension.composition
         result_dim = make_compound_dimension(dim_composition.to_pairs())
-        result_unit = make_compound_unit(result_dim, self.scale / other.scale,
-                                         result_units.to_pairs())
+        result_unit = make_compound_unit(result_dim, 1, result_units.to_pairs())
         return result_unit(result_value)
 
     def is_dimension(self, dim: DimensionBase):
