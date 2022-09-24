@@ -32,8 +32,11 @@ def _construct_standard_gravity():
 
 
 c = speed_of_light = meters_per_second(299_792_458)
-G = gravity = _construct_gravitational_constant()
+G = gravitational_constant = _construct_gravitational_constant()
 N_A = avogadro = Decimal("6.02214076e23")
 σ = stefan_boltzmann = sigma = _construct_stefan_boltzmann_constant()
 atm = standard_atmosphere = pascals(101325)
 g = earth_gravity = _construct_standard_gravity()
+# Actually the equatorial radius/semimajor axis
+R_E = earth_radius = meters(6378137)
+M_E = earth_mass = kilograms("5.9722e24")

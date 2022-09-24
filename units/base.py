@@ -1,5 +1,4 @@
 from decimal import Decimal
-from fractions import Fraction
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
@@ -10,7 +9,7 @@ __all__ = [
     "make_unit", "make_compound_unit",
 ]
 UnitOperand = Union['UnitInterface', Number]
-Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int], Fraction]
+Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
 Pairs = Tuple[Tuple[Unitlike, int], ...]
 Exponents = Union[Pairs, Dict[Unitlike, int]]
@@ -106,6 +105,17 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         result_unit = make_compound_unit(result_dim, 1, result_units.to_pairs())
         return result_unit(result_value)
 
+    def exponent(self, other: int) -> UnitInterface:
+        """Raise this unit to an integer power. Roots not allowed."""
+        if not isinstance(other, int):
+            raise TypeError("Units can only be raised to integral powers")
+        result_composition = self.composition ** other
+        result_value = self.value ** other
+        dim_composition = self.dimension.composition ** other
+        result_dim = make_compound_dimension(dim_composition.to_pairs())
+        result_unit = make_compound_unit(result_dim, 1, result_composition.to_pairs())
+        return result_unit(result_value)
+
     def is_dimension(self, dim: DimensionBase):
         """Check if this unit is of the given dimension."""
         try:
@@ -134,6 +144,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         "__getattr__": getattribute,
         "__str__": tostring,
         "__repr__": tostring,
+        "__pow__": exponent,
         "__name__": name,
         "is_dimension": is_dimension,
         "scale": Decimal(scale),
@@ -372,6 +383,10 @@ class Compound:
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.remove(other))
 
+    def __pow__(self, power: int):
+        pairs = tuple((t, e * power) for t, e in self.to_pairs())
+        return Compound(pairs)
+
     def __verify_no_dimension_mismatch(self, extra: Multiset):
         existing_dimensions = {unit.dimension: unit for unit in self.units}
         for unit in extra:
@@ -389,6 +404,7 @@ class UnitInterface:
     """A dummy class for type checking purposes, defining the interface of a unit class."""
     composition: 'Compound'
     scale: 'Decimal'
+    __slots__ = ["value"]
 
     def __init__(self, value: Scale):
         pass
@@ -408,5 +424,5 @@ class UnitInterface:
     def is_dimension(self, dim: DimensionBase) -> bool:
         pass
 
-    def equivalent_to(self, quantity: 'UnitInterface') -> bool:
+    def equivalent_to(self, quantity: 'UnitInterface', within=0) -> bool:
         pass
