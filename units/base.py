@@ -45,8 +45,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
     def multiply(self, other):
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        dim_composition = (self.dimension.composition * other.dimension.composition).units
-        result_dim = make_compound_dimension(dim_composition)
+        dim_composition = self.dimension.composition * other.dimension.composition
+        result_dim = make_compound_dimension(dim_composition.to_pairs())
         unit_composition = (self.composition * other.composition).units
         result_unit = make_compound_unit(result_dim, self.scale * other.scale, unit_composition)
         return result_unit(self.value * other.value)
@@ -54,14 +54,14 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
     def divide(self, other):
         if isinstance(other, Number):
             return type(self)(self.value / other)
-        result_units = (self.composition / other.composition).units
+        result_units = self.composition / other.composition
         result_value = (self.value / self.scale) / (other.value / other.scale)
         if len(result_units) == 0:
             return result_value
-        dim_composition = (self.dimension.composition / other.dimension.composition).units
-        result_dim = make_compound_dimension(dim_composition)
-        unit_composition = (self.composition / other.composition).units
-        result_unit = make_compound_unit(result_dim, self.scale / other.scale, unit_composition)
+        dim_composition = self.dimension.composition / other.dimension.composition
+        result_dim = make_compound_dimension(dim_composition.to_pairs())
+        result_unit = make_compound_unit(result_dim, self.scale / other.scale,
+                                         result_units.to_pairs())
         return result_unit(result_value)
 
     def is_dimension(self, dim):
@@ -140,6 +140,25 @@ def _exponent_name(unit: type, exponent: int) -> str:
     return f"{prefix}{body}{value_names[abs(exponent)]}"
 
 
+def _decompose_all(exponents: Pairs) -> Pairs:
+    accumulator = []
+    for unitish, exponent in exponents:
+        accumulator.extend(_decompose(unitish, exponent))
+    return tuple(accumulator)
+
+
+def _decompose(unit: Unitlike, factor: int) -> Pairs:
+    if not hasattr(unit, "composition"):
+        # must be a unit currently under construction and doesn't have composition yet
+        return (unit, factor),
+    if len(unit.composition) == 1:
+        return tuple((k, e * factor) for k, e in unit.composition.to_pairs())
+    accumulator = []
+    for k, e in unit.composition.to_pairs():
+        accumulator.extend(_decompose(k, e * factor))
+    return tuple(accumulator)
+
+
 class DimensionBase:
     __INSTANCES = {}
 
@@ -148,8 +167,8 @@ class DimensionBase:
             # Base dimensions are identified by name
             key = name
         else:
-            # Compound dimensions with the same composition must refer to the same thing
-            key = exponents
+            # Compound dimensions with the same base dimensions must refer to the same thing
+            key = _decompose_all(exponents)
         if key not in cls.__INSTANCES:
             cls.__INSTANCES[key] = super(DimensionBase, cls).__new__(cls)
         this = cls.__INSTANCES[key]
@@ -172,7 +191,7 @@ class Multiset:
         elif isinstance(pairs, dict):
             self.store = pairs.copy()
         else:
-            self.store = {u: e for u, e in pairs}
+            self.store = self.__dedupe(pairs)
 
     def __hash__(self):
         return hash(tuple(self.store.items()))
@@ -225,10 +244,24 @@ class Multiset:
                 del copy[key]
         return Multiset(copy)
 
+    @staticmethod
+    def __dedupe(pairs: Pairs):
+        accumulator = {}
+        for unitish, num in pairs:
+            if unitish in accumulator:
+                accumulator[unitish] += num
+            else:
+                accumulator[unitish] = num
+        return accumulator
+
 
 class Compound:
     def __init__(self, units: typing.Union[Pairs, Multiset]):
-        self.units = Multiset(units)
+        if isinstance(units, Multiset):
+            self.units = Multiset(units)
+        else:
+            decomposed = _decompose_all(units)
+            self.units = Multiset(decomposed)
 
     def __hash__(self):
         return hash(self.units)
@@ -248,7 +281,7 @@ class Compound:
     def __len__(self):
         return len(self.units)
 
-    def __mul__(self, other: typing.Union[type, Multiset, 'Compound']):
+    def __mul__(self, other: typing.Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):
             other = Multiset({other: 1})
         elif isinstance(other, Compound):
@@ -256,7 +289,7 @@ class Compound:
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.add(other))
 
-    def __truediv__(self, other: typing.Union[type, Multiset, 'Compound']):
+    def __truediv__(self, other: typing.Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):
             other = Multiset({other: -1})
         elif isinstance(other, Compound):

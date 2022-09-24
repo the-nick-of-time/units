@@ -236,3 +236,9 @@ def test_dimension_auto_name(compound_dimension2):
 
 def test_unit_auto_name(compound_unit):
     assert compound_unit.__name__ == "TESTUNIT_per_TESTUNIT2"
+
+
+def test_dimension_decompose(dimension, dimension2, compound_dimension):
+    double_compound = make_compound_dimension(((dimension, 2), (dimension2, -2)))
+    double_from_other = make_compound_dimension(((compound_dimension, 2),))
+    assert double_compound is double_from_other
