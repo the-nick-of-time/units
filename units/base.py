@@ -102,7 +102,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale) -> typing.Type['Unit
     def converter(self):
         return unit(self.value * self.scale / unit.scale)
 
-    setattr(dimension, "to_" + name, converter)
+    setattr(dimension, "to_" + name.replace(" ", "_"), converter)
     return unit
 
 
