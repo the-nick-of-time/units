@@ -1,4 +1,3 @@
-import functools
 import typing
 from decimal import Decimal
 from numbers import Number
@@ -263,11 +262,6 @@ class Compound:
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.remove(other))
 
-    def base_scale(self):
-        """The total effect of the factors"""
-        factors = [unit.scale ** exponent for unit, exponent in self.units.to_pairs()]
-        return functools.reduce(lambda a, b: a * b, factors)
-
     def __verify_no_dimension_mismatch(self, extra: Multiset):
         existing_dimensions = {unit.dimension: unit for unit in self.units}
         for unit in extra:
@@ -276,3 +270,6 @@ class Compound:
                 # the dimension is already represented in the current unit, but it isn't the
                 # same unit
                 raise ImplicitConversionError(unit, existing_dimensions[unit.dimension])
+
+    def to_pairs(self):
+        return self.units.to_pairs()

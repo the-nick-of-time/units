@@ -8,3 +8,5 @@ Energy = make_compound_dimension("Energy",
 
 joule = make_compound_unit("Joule", Energy, 1,
                            ((mass.kilograms, 1), (length.meters, 2), (time.seconds, -2)))
+kilojoule = make_compound_unit("kilojoule", Energy, 1000, joule.composition.to_pairs())
+calorie = make_compound_unit("calorie", Energy, "4.184", joule.composition.to_pairs())
