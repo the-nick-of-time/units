@@ -242,3 +242,9 @@ def test_dimension_decompose(dimension, dimension2, compound_dimension):
     double_compound = make_compound_dimension(((dimension, 2), (dimension2, -2)))
     double_from_other = make_compound_dimension(((compound_dimension, 2),))
     assert double_compound is double_from_other
+
+
+def test_dimension_sort_consistent(dimension, dimension2, compound_dimension):
+    double_compound = make_compound_dimension(((dimension2, -2), (dimension, 2)))
+    double_from_other = make_compound_dimension(((compound_dimension, 2),))
+    assert double_compound is double_from_other

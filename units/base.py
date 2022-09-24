@@ -144,7 +144,7 @@ def _decompose_all(exponents: Pairs) -> Pairs:
     accumulator = []
     for unitish, exponent in exponents:
         accumulator.extend(_decompose(unitish, exponent))
-    return tuple(accumulator)
+    return tuple(sorted(accumulator, key=lambda p: (-p[1], p[0].__name__)))
 
 
 def _decompose(unit: Unitlike, factor: int) -> Pairs:
