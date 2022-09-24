@@ -310,10 +310,31 @@ class Compound:
         return self.units.to_pairs()
 
 
+UnitOperand = typing.Union['UnitInterface', Number]
+
+
 class UnitInterface:
     """A dummy class for type checking purposes, defining the interface of a unit class."""
     composition: 'Compound'
     scale: 'Decimal'
 
     def __init__(self, value):
+        pass
+
+    def __add__(self, other: UnitOperand) -> 'UnitInterface':
+        pass
+
+    def __sub__(self, other: UnitOperand) -> 'UnitInterface':
+        pass
+
+    def __mul__(self, other: UnitOperand) -> 'UnitInterface':
+        pass
+
+    def __truediv__(self, other: UnitOperand) -> 'UnitInterface':
+        pass
+
+    def is_dimension(self, dim: DimensionBase) -> bool:
+        pass
+
+    def equivalent_to(self, quantity: 'UnitInterface') -> bool:
         pass
