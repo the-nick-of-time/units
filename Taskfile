@@ -25,15 +25,31 @@ function already_open {
 
 ### TASKS
 function task_test() {
-    poetry run pytest --no-header -v
+	:  "Run unit test suite"
+	poetry run pytest --no-header -v
 }
 
 function task_coverage() {
+	: "Compile and open unit test coverage statistics"
 	target="htmlcov/index.html"
 	poetry run make "$target"
 	if ! already_open "$target" ; then
 		firefox "$target"
 	fi
+}
+
+function task_docs() {
+	: "Build and open docs"
+	target="docs/_build/index.html"
+	poetry run make "$target"
+	if ! already_open "$target" ; then
+		firefox "$target"
+	fi
+}
+
+function task:build {
+	: "Build wheel from the sources"
+	poetry run make "dist/dndice-$(poetry version --short)-py3-none-any.whl"
 }
 
 # Print documentation for tasks

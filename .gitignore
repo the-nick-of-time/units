@@ -3,3 +3,4 @@
 /.coverage
 /htmlcov
 list-fftabs.py
+/docs/_build

@@ -13,6 +13,7 @@ pytest = "^7.0"
 
 [tool.poetry.group.dev.dependencies]
 lz4 = "^4.0.2"
+Sphinx = "^5.2.0.post0"
 
 [build-system]
 requires = ["poetry>=0.12"]
