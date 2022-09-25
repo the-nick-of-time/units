@@ -123,11 +123,11 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         """
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        result_value = self.value * self.scale * other.value * other.scale
+        result_value = self.value * other.value
         unit_composition = (self.composition * other.composition).units
         if len(unit_composition) == 0:
             return result_value
-        result_unit = make_compound_unit(1, unit_composition)
+        result_unit = make_compound_unit(self.scale * other.scale, unit_composition)
         return result_unit(result_value)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
@@ -138,10 +138,10 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         if isinstance(other, Number):
             return type(self)(self.value / other)
         result_units = self.composition / other.composition
-        result_value = (self.value * self.scale) / (other.value * other.scale)
+        result_value = self.value / other.value
         if len(result_units) == 0:
             return result_value
-        result_unit = make_compound_unit(1, result_units.to_pairs())
+        result_unit = make_compound_unit(self.scale / other.scale, result_units.to_pairs())
         return result_unit(result_value)
 
     def exponent(self, other: int) -> UnitInterface:
