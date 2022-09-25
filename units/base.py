@@ -5,6 +5,8 @@ from decimal import Decimal
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
+import sigfig
+
 from units.exceptions import OperationError, ImplicitConversionError
 
 __all__ = [
@@ -195,6 +197,10 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     def tostring(self):
         return f"{self.value}\u00d7{self.scale} {self.__name__}"
 
+    def sig_figs(self, figs=3) -> str:
+        rounded = sigfig.round(self.value, sigfigs=figs)
+        return type(self)(rounded)
+
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
         "__new__": new,
@@ -214,6 +220,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         "instances": {},
         "dimension": dimension,
         "equivalent_to": equivalent,
+        "sig_figs": sig_figs,
     })
     unit.composition = Compound(((unit, 1),))
 

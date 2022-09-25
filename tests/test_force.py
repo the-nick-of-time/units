@@ -1,3 +1,4 @@
+from units.constants import atm
 from units.energy import joules
 from units.force import pounds, kgf, newtons
 from units.length import meters
@@ -32,3 +33,11 @@ def test_work():
     expected = joules(20)
 
     assert displacement * force == expected
+
+
+def test_sig_figs():
+    area = meters(2) ** 2
+    pressure = atm
+    rounded = newtons(405000)  # exact is 405300
+
+    assert (area * pressure).sig_figs(3) == rounded
