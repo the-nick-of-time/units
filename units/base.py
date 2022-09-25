@@ -124,7 +124,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         raise AttributeError()
 
     def tostring(self):
-        return f"{self.value * self.scale} {self.__name__}"
+        return f"{self.value}\u00d7{self.scale} {self.__name__}"
 
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
@@ -274,9 +274,6 @@ class Multiset:
         else:
             self.store = self.__dedupe(pairs)
 
-    def __hash__(self):
-        return hash(tuple(self.store.items()))
-
     def __iter__(self) -> Iterator[Unitlike]:
         return iter(self.store.keys())
 
@@ -344,9 +341,6 @@ class Compound:
             decomposed = _decompose_all(units)
             self.units = Multiset(decomposed)
 
-    def __hash__(self):
-        return hash(self.units)
-
     def __eq__(self, other):
         try:
             return self.units == other.units
@@ -402,22 +396,22 @@ class UnitInterface:
     __slots__ = ["value"]
 
     def __init__(self, value: Scale):
-        pass
+        ...
 
     def __add__(self, other: UnitOperand) -> 'UnitInterface':
-        pass
+        ...
 
     def __sub__(self, other: UnitOperand) -> 'UnitInterface':
-        pass
+        ...
 
     def __mul__(self, other: UnitOperand) -> 'UnitInterface':
-        pass
+        ...
 
     def __truediv__(self, other: UnitOperand) -> 'UnitInterface':
-        pass
+        ...
 
     def is_dimension(self, dim: DimensionBase) -> bool:
-        pass
+        ...
 
     def equivalent_to(self, quantity: 'UnitInterface', within=0) -> bool:
-        pass
+        ...

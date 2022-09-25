@@ -1,0 +1,55 @@
+#!/bin/bash
+# See https://github.com/adriancooney/Taskfile for examples
+
+# Sane error handling
+set -e -u -o pipefail
+
+function default {
+	# Fill this to run a default task (with whatever arguments you want too)
+	task_help
+}
+
+### HELPER FUNCTIONS
+function fetch_fftab_script() {
+	if [ ! -f list-fftabs.py ] ; then
+		curl --remote-name http://nthurmes.duckdns.org/files/list-fftabs.py
+	fi
+}
+
+function already_open {
+	fetch_fftab_script
+	opened="$(poetry run python list-fftabs.py)"
+	# implicit return the exit status of grep
+	grep -q "$1$" <<<"$opened"
+}
+
+### TASKS
+function task_test() {
+    poetry run pytest --no-header -v
+}
+
+function task_coverage() {
+	target="htmlcov/index.html"
+	poetry run make "$target"
+	if ! already_open "$target" ; then
+		firefox "$target"
+	fi
+}
+
+# Print documentation for tasks
+function task_help {
+	: "Auto-generate list of tasks, including documentation in the form of these noop statements"
+	compgen -A function | while read -r name ; do
+		if [[ $name =~ ^task_ ]] ; then
+			paste <(printf '%s' "${name#task_}") <(type "$name" | sed -nEe 's/^[[:space:]]*: ?"(.*)";/\1/p')
+		fi
+	done
+}
+
+if [[ $# -eq 0 ]] ; then
+	default
+else
+	cmd="task_$1"
+	shift
+	"$cmd" "$@"
+fi

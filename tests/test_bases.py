@@ -1,7 +1,6 @@
 import pytest
 
-from units.base import make_dimension, make_unit, Decimal, make_compound_dimension, \
-    make_compound_unit
+from units.base import make_dimension, make_unit, make_compound_dimension, make_compound_unit
 from units.exceptions import OperationError, ImplicitConversionError
 
 
@@ -46,7 +45,7 @@ def compound_unit2(compound_dimension2, unit, unit2):
 
 
 def test_flyweights(dimension):
-    unit = make_unit("testunit", dimension, Decimal("2"))
+    unit = make_unit("testunit", dimension, "2")
     a = unit(1)
     b = unit(1)
     c = unit(2)
@@ -139,7 +138,7 @@ def test_isinstance(dimension, dimension2):
     assert unit_a(1).is_dimension(b)
 
 
-def test_add(compound_dimension, compound_unit):
+def test_add(compound_unit):
     unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(1)
     b = unit(2)
@@ -152,7 +151,7 @@ def test_add_equivalent():
     pass
 
 
-def test_subtract(compound_dimension, compound_unit):
+def test_subtract(compound_unit):
     unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(5)
     b = unit(2)
@@ -165,7 +164,7 @@ def test_subtract_equivalent():
     pass
 
 
-def test_multiply_compound_scalar(compound_dimension, compound_unit):
+def test_multiply_compound_scalar(compound_unit):
     unit = make_compound_unit(1, compound_unit.composition.units,
                               'multiply')
     a = unit(1)
@@ -174,7 +173,7 @@ def test_multiply_compound_scalar(compound_dimension, compound_unit):
     assert expected == a * 3
 
 
-def test_multiply_simple_unit(compound_dimension, dimension, compound_unit, unit2):
+def test_multiply_simple_unit(dimension, compound_unit, unit2):
     compound = make_compound_unit(1, compound_unit.composition.units,
                                   'multiply')
     expected_unit = make_unit('expected', dimension, 1)
@@ -200,7 +199,7 @@ def test_multiply_complex_unit(dimension, dimension2,
     assert expected == result
 
 
-def test_divide_compound_scalar(compound_dimension, compound_unit):
+def test_divide_compound_scalar(compound_unit):
     unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(3)
     expected = unit(1)
@@ -248,3 +247,12 @@ def test_dimension_sort_consistent(dimension, dimension2, compound_dimension):
     double_compound = make_compound_dimension(((dimension2, -2), (dimension, 2)))
     double_from_other = make_compound_dimension(((compound_dimension, 2),))
     assert double_compound is double_from_other
+
+
+def test_is_nondimension(unit):
+    assert not unit(1).is_dimension(object)
+
+
+def test_nonintegral_exponent(unit):
+    with pytest.raises(TypeError):
+        print(unit(4) ** (1 / 2))

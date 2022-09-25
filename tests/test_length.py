@@ -22,6 +22,12 @@ def test_equal():
     assert km == km_in_m.to_kilometers()
 
 
+def test_equal_different_unit():
+    km = kilometers(1)
+    m = meters(1000)
+    assert km != m
+
+
 def test_add_same_unit():
     a = meters(1)
     b = meters(2)
@@ -62,3 +68,9 @@ def test_imperial():
 
     assert i.equivalent_to(f)
     assert f.equivalent_to(y)
+
+
+def test_tostring():
+    val = kilometers(3)
+    expected = "3\u00d71000 kilometers"
+    assert str(val) == expected

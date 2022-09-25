@@ -1,0 +1,15 @@
+[report]
+exclude_lines =
+	# Ellipses as the whole line like in typing overloads
+	\.\.\.$
+	def __repr__
+	if __name__ == ["']__main__['"]
+fail_under = 90
+sort = Cover
+
+[run]
+source = units
+branch = True
+
+[html]
+title = Units Test Coverage

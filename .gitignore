@@ -1,2 +1,5 @@
 *.pyc
 .pytest_cache/
+/.coverage
+/htmlcov
+list-fftabs.py
