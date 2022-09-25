@@ -1,7 +1,7 @@
 import pytest
 
-from units.length import meters, kilometers
-from units.time import seconds, hours
+from units.length import meters, kilometers, feet
+from units.time import seconds, hours, minutes
 from units.velocity import meters_per_second, kilometers_per_hour, miles_per_hour
 
 
@@ -56,3 +56,11 @@ def test_distance_over_time():
 
 def test_name():
     assert kilometers_per_hour.__name__ == "kilometers_per_hour"
+
+
+def test_scaled_divisions():
+    d = feet("393.7")
+    t = minutes(2)
+    v = meters_per_second(1)
+
+    assert (d / t).equivalent_to(v, within=0.0001)

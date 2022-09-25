@@ -138,7 +138,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         if isinstance(other, Number):
             return type(self)(self.value / other)
         result_units = self.composition / other.composition
-        result_value = (self.value / self.scale) / (other.value / other.scale)
+        result_value = (self.value * self.scale) / (other.value * other.scale)
         if len(result_units) == 0:
             return result_value
         result_unit = make_compound_unit(1, result_units.to_pairs())
