@@ -1,6 +1,8 @@
-"""Conversions between these units are deltas, as the systems have different units."""
+"""Conversions between these units are deltas, as the systems have different zeros."""
 
 from units.base import make_unit, make_dimension
+
+__all__ = ["Temperature", "kelvin", "celsius", "fahrenheit", "rankine"]
 
 Temperature = make_dimension("Temperature")
 

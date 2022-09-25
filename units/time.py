@@ -2,6 +2,12 @@ from decimal import Decimal
 
 from units.base import make_unit, make_dimension
 
+__all__ = [
+    "Time",
+    "seconds", "minutes", "hours",
+    "days", "sidereal_days",
+    "julian_years",
+]
 Time = make_dimension("Time")
 seconds = make_unit("seconds", Time, 1)
 
