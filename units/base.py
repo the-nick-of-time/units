@@ -1,3 +1,6 @@
+"""This module provides the core API of the module, the mechanisms for defining
+new dimensions and units.
+"""
 from decimal import Decimal
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
@@ -42,7 +45,11 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     """
 
     def new(cls, value: Scale):
-        """Create a new measurement using this unit."""
+        """Create a new measurement using this unit.
+
+        Instances are flyweights; two invocations of meters(1) will return the
+        same object.
+        """
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
         instance = cls.instances[value]
@@ -50,19 +57,38 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         return instance
 
     def add(self, other: UnitInterface) -> UnitInterface:
-        """Add two measurements of the same unit together."""
+        """Add two measurements of the same unit together.
+
+        Checks compatibility rather than type for determining "same unit". For
+        example, a calculation that outputs the dynamically created unit
+        kg*m*s^-2 is equivalent to a defined expression using newtons.
+
+        :param other: Another measurement, with the same units
+        """
         if type(other).composition != type(self).composition:
             raise OperationError("add", type(self), type(other))
         return type(self)(self.value + other.value * other.scale / self.scale)
 
     def subtract(self, other: UnitInterface) -> UnitInterface:
-        """Subtract a measurement of the same unit from this."""
+        """Subtract a measurement of the same unit from this.
+
+        Checks compatibility rather than type for determining "same unit". For
+        example, a calculation that outputs the dynamically created unit
+        kg*m*s^-2 is equivalent to a defined expression using newtons.
+
+        :param other: Another measurement, with the same units
+        """
         if type(other).composition != type(self).composition:
             raise OperationError("subtract", type(self), type(other))
         return type(self)(self.value - other.value * other.scale / self.scale)
 
     def equal(self, other: UnitInterface) -> bool:
-        """Check if this measurement is the same value and unit of another."""
+        """Check if this measurement is the same value and unit of another.
+
+        Checks compatibility rather than type for determining "same unit". For
+        example, a calculation that outputs the dynamically created unit
+        kg*m*s^-2 is equivalent to a defined expression using newtons.
+        """
         if self is other:
             return True
         if type(other).composition != type(self).composition:
@@ -70,20 +96,31 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         return self.value * self.scale == other.value * other.scale
 
     def equivalent(self, other: UnitInterface, within=0) -> bool:
-        """Check if this measurement is the same dimension as another and that
-            its value is equivalent, within a certain precision.
+        """Check if this measurement represents the same quantity as another,
+        within a certain precision.
+
+        You can think of it as converting both measurements to their shared base
+        unit, then checking whether they are within the specified difference of
+        each other.
 
         :param other: The other measurement.
         :param within: An absolute tolerance on the approximation, expressed in
             the base unit.
-        :return: Boolean
+        :return: Whether the two measurements are approximately equal.
         """
         if not other.is_dimension(self.dimension):
             raise ImplicitConversionError(type(other), type(self))
         return abs(self.value * self.scale - other.value * other.scale) <= within
 
     def multiply(self, other: UnitInterface) -> UnitInterface:
-        """Multiply two measurements. Produces a new compound unit for the result."""
+        """Multiply two measurements. Produces a new compound unit for the result.
+
+        If the two quantities completely cancel (like a frequency times a
+        duration), the result will be returned as a plain number.
+
+        :param other: Another measurement, with any units.
+        :return: The result of the calculation, with the compound units.
+        """
         if isinstance(other, Number):
             return type(self)(self.value * other)
         unit_composition = (self.composition * other.composition).units
@@ -91,7 +128,10 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         return result_unit(self.value * self.scale * other.value * other.scale)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
-        """Multiply two measurements. Produces a new compound unit for the result."""
+        """Multiply two measurements. Produces a new compound unit for the result.
+
+        :param other: Another measurement, with any units.
+        """
         if isinstance(other, Number):
             return type(self)(self.value / other)
         result_units = self.composition / other.composition
@@ -102,7 +142,13 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         return result_unit(result_value)
 
     def exponent(self, other: int) -> UnitInterface:
-        """Raise this unit to an integer power. Roots not allowed."""
+        """Raise this unit to an integer power. Roots not allowed.
+
+        For instance, ``meters(4) ** 2 == meters_squared(16)``.
+
+        :param other: Any integer, the power to raise this measurement to.
+        :return: A measurement with the value and units raised to the power.
+        """
         if not isinstance(other, int):
             raise TypeError("Units can only be raised to integral powers")
         result_composition = self.composition ** other
@@ -111,14 +157,34 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         return result_unit(result_value)
 
     def is_dimension(self, dim: DimensionBase):
-        """Check if this unit is of the given dimension."""
+        """Check if this unit is of the given dimension.
+
+        Most useful for checking whether two measurements can be reasonably
+        compared with ``.equivalent_to`` or converted into the other.
+
+        :param dim: The dimension to
+        :return: Whether this unit is of the given dimension.
+        """
         try:
             return dim.composition == self.dimension.composition
         except AttributeError:
             return False
 
     def getattribute(self, key: str):
-        """Forward conversion requests to the dimension."""
+        """Forward conversion requests to the dimension.
+
+        The dimension, being the one thing all compatible units have in common,
+        is the logical place to store all conversion functions between different
+        units.
+
+        Any ``x.to_*`` method calls are therefore passed to the dimension.
+
+        :param key: The method name.
+        :return: A pseudo-bound method of the conversion function.
+        :raise AttributeError: If the requested method doesn't look like a
+            conversion function, or if there isn't a conversion function by that
+            name.
+        """
         if key.startswith("to_"):
             return lambda: getattr(self.dimension, key)(self)
         raise AttributeError()

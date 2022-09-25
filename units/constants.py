@@ -48,6 +48,7 @@ N_A = avogadro = Decimal("6.02214076e23")
 σ = stefan_boltzmann = sigma = _construct_stefan_boltzmann_constant()
 atm = standard_atmosphere = pascals(101325)
 g = earth_gravity = _construct_standard_gravity()
-# Actually the equatorial radius/semimajor axis
+# https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
+# Actually the equatorial radius/semimajor axis of the WGS 84 ellipsoid
 R_E = earth_radius = meters(6378137)
 M_E = earth_mass = kilograms("5.9722e24")
