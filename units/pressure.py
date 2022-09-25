@@ -6,6 +6,6 @@ __all__ = ["Pressure", "pascals", "bars", "psi"]
 
 Pressure = make_compound_dimension({Force: 1, Length: -2})
 
-pascals = make_compound_unit(Pressure, 1, {newtons: 1, meters: -2}, name="pascals")
-bars = make_compound_unit(Pressure, 1e5, {newtons: 1, meters: -2}, name="bars")
-psi = make_compound_unit(Pressure, "6.894757e3", {pounds: 1, inches: -2}, name="psi")
+pascals = make_compound_unit(1, {newtons: 1, meters: -2}, name="pascals")
+bars = make_compound_unit(1e5, {newtons: 1, meters: -2}, name="bars")
+psi = make_compound_unit("6.894757e3", {pounds: 1, inches: -2}, name="psi")

@@ -32,7 +32,7 @@ def compound_dimension(dimension, dimension2):
 
 @pytest.fixture
 def compound_unit(compound_dimension, unit, unit2):
-    return make_compound_unit(compound_dimension, 1, ((unit, 1), (unit2, -1)))
+    return make_compound_unit(1, ((unit, 1), (unit2, -1)))
 
 
 @pytest.fixture
@@ -42,7 +42,7 @@ def compound_dimension2(dimension, dimension2):
 
 @pytest.fixture
 def compound_unit2(compound_dimension2, unit, unit2):
-    return make_compound_unit(compound_dimension2, 1, ((unit, 1), (unit2, -2)))
+    return make_compound_unit(1, ((unit, 1), (unit2, -2)))
 
 
 def test_flyweights(dimension):
@@ -140,7 +140,7 @@ def test_isinstance(dimension, dimension2):
 
 
 def test_add(compound_dimension, compound_unit):
-    unit = make_compound_unit(compound_dimension, 1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(1)
     b = unit(2)
     expected = unit(3)
@@ -153,7 +153,7 @@ def test_add_equivalent():
 
 
 def test_subtract(compound_dimension, compound_unit):
-    unit = make_compound_unit(compound_dimension, 1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(5)
     b = unit(2)
     expected = unit(3)
@@ -166,7 +166,7 @@ def test_subtract_equivalent():
 
 
 def test_multiply_compound_scalar(compound_dimension, compound_unit):
-    unit = make_compound_unit(compound_dimension, 1, compound_unit.composition.units,
+    unit = make_compound_unit(1, compound_unit.composition.units,
                               'multiply')
     a = unit(1)
     expected = unit(3)
@@ -175,7 +175,7 @@ def test_multiply_compound_scalar(compound_dimension, compound_unit):
 
 
 def test_multiply_simple_unit(compound_dimension, dimension, compound_unit, unit2):
-    compound = make_compound_unit(compound_dimension, 1, compound_unit.composition.units,
+    compound = make_compound_unit(1, compound_unit.composition.units,
                                   'multiply')
     expected_unit = make_unit('expected', dimension, 1)
 
@@ -190,7 +190,7 @@ def test_multiply_complex_unit(dimension, dimension2,
                                compound_unit, compound_unit2, unit, unit2):
     expected_dim = make_compound_dimension(((dimension, 2),
                                             (dimension2, -3)), "EXPECTED")
-    expected_unit = make_compound_unit(expected_dim, 1, ((unit, 2), (unit2, -3)),
+    expected_unit = make_compound_unit(1, ((unit, 2), (unit2, -3)),
                                        'EXPECTEDUNIT')
 
     expected = expected_unit(1)
@@ -201,7 +201,7 @@ def test_multiply_complex_unit(dimension, dimension2,
 
 
 def test_divide_compound_scalar(compound_dimension, compound_unit):
-    unit = make_compound_unit(compound_dimension, 1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
     a = unit(3)
     expected = unit(1)
 

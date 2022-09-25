@@ -7,8 +7,8 @@ __all__ = ["Force", "newtons", "pounds", "kgf", "kilograms_force"]
 
 Force = make_compound_dimension(((Mass, 1), (Length, 1), (Time, -2)))
 
-newtons = make_compound_unit(Force, 1, {kilograms: 1, meters: 1, seconds: -2}, "newtons")
-kgf = kilograms_force = make_compound_unit(Force, "9.80665", {kilograms: 1,
-                                                              meters: 1,
-                                                              seconds: -2})
-pounds = make_compound_unit(Force, "4.4482216152605", {slug: 1, feet: 1, seconds: -2}, "pounds")
+newtons = make_compound_unit(1, {kilograms: 1, meters: 1, seconds: -2}, "newtons")
+kgf = kilograms_force = make_compound_unit("9.80665", {kilograms: 1,
+                                                       meters: 1,
+                                                       seconds: -2})
+pounds = make_compound_unit("4.4482216152605", {slug: 1, feet: 1, seconds: -2}, "pounds")

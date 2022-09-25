@@ -86,10 +86,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         """Multiply two measurements. Produces a new compound unit for the result."""
         if isinstance(other, Number):
             return type(self)(self.value * other)
-        dim_composition = self.dimension.composition * other.dimension.composition
-        result_dim = make_compound_dimension(dim_composition.to_pairs())
         unit_composition = (self.composition * other.composition).units
-        result_unit = make_compound_unit(result_dim, 1, unit_composition)
+        result_unit = make_compound_unit(1, unit_composition)
         return result_unit(self.value * self.scale * other.value * other.scale)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
@@ -100,9 +98,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         result_value = (self.value / self.scale) / (other.value / other.scale)
         if len(result_units) == 0:
             return result_value
-        dim_composition = self.dimension.composition / other.dimension.composition
-        result_dim = make_compound_dimension(dim_composition.to_pairs())
-        result_unit = make_compound_unit(result_dim, 1, result_units.to_pairs())
+        result_unit = make_compound_unit(1, result_units.to_pairs())
         return result_unit(result_value)
 
     def exponent(self, other: int) -> UnitInterface:
@@ -111,9 +107,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
             raise TypeError("Units can only be raised to integral powers")
         result_composition = self.composition ** other
         result_value = self.value ** other
-        dim_composition = self.dimension.composition ** other
-        result_dim = make_compound_dimension(dim_composition.to_pairs())
-        result_unit = make_compound_unit(result_dim, 1, result_composition.to_pairs())
+        result_unit = make_compound_unit(1, result_composition.to_pairs())
         return result_unit(result_value)
 
     def is_dimension(self, dim: DimensionBase):
@@ -183,11 +177,9 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
     return dimension
 
 
-def make_compound_unit(dimension: 'DimensionBase', scale: Scale, exponents: Exponents,
-                       name: str = None):
+def make_compound_unit(scale: Scale, exponents: Exponents, name: str = None):
     """A unit composed of other units.
 
-    :param dimension: The dimension this unit is measuring.
     :param scale: How many of the base unit one of this unit is equivalent to.
         Note that the scale factors of the constituent units are not taken into
         account. For instance, even though the conversion factor from meters per
@@ -207,8 +199,11 @@ def make_compound_unit(dimension: 'DimensionBase', scale: Scale, exponents: Expo
         exponents = tuple(exponents.items())
     if name is None:
         name = str(Multiset(exponents))
+    composition = Compound(exponents)
+    dims = tuple(((unit.dimension, exp) for unit, exp in composition.to_pairs()))
+    dimension = make_compound_dimension(dims)
     unit = make_unit(name, dimension, scale)
-    unit.composition = Compound(exponents)
+    unit.composition = composition
     return unit
 
 

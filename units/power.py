@@ -8,5 +8,5 @@ __all__ = ["Power", "watts", "horsepower"]
 
 Power = make_compound_dimension({Energy: 1, Time: -1})
 
-watts = make_compound_unit(Power, 1, {joules: 1, seconds: -1}, "watts")
-horsepower = make_compound_unit(Power, "7.456999e2", {feet: 1, pounds: 1, seconds: -1})
+watts = make_compound_unit(1, {joules: 1, seconds: -1}, "watts")
+horsepower = make_compound_unit("7.456999e2", {feet: 1, pounds: 1, seconds: -1})
