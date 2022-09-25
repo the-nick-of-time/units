@@ -123,9 +123,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         """
         if isinstance(other, Number):
             return type(self)(self.value * other)
+        result_value = self.value * self.scale * other.value * other.scale
         unit_composition = (self.composition * other.composition).units
+        if len(unit_composition) == 0:
+            return result_value
         result_unit = make_compound_unit(1, unit_composition)
-        return result_unit(self.value * self.scale * other.value * other.scale)
+        return result_unit(result_value)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
         """Multiply two measurements. Produces a new compound unit for the result.
