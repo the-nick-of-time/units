@@ -1,4 +1,4 @@
-from units import make_compound_dimension, make_compound_unit
+from units._api import make_compound_dimension, make_compound_unit
 from units.length import Length, meters
 from units.mass import Mass, kilograms
 from units.time import seconds, Time

@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from units import make_dimension, make_unit
+from units._api import make_dimension, make_unit
 
 __all__ = [
     "Length",

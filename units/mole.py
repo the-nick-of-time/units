@@ -1,4 +1,4 @@
-from units import make_dimension, make_unit
+from units._api import make_dimension, make_unit
 
 Quantity = make_dimension("Quantity")
 

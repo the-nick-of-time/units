@@ -1,6 +1,6 @@
 import pytest
 
-from units.exceptions import UnitException
+from units._exceptions import UnitException
 from units.temperature import celsius, celsius_to_kelvin_absolute, kelvin, fahrenheit
 
 

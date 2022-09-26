@@ -1,4 +1,4 @@
-from units import make_unit
+from units._api import make_unit
 from units.angle import arcsecond
 from units.constants import c
 from units.length import Length, au

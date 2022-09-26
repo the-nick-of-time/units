@@ -1,6 +1,6 @@
 import pytest
 
-from units.exceptions import OperationError
+from units._exceptions import OperationError
 from units.length import kilometers, meters, feet, inches, yards
 
 

@@ -46,7 +46,6 @@ from units.length import inches
 from units.pressure import psi
 from units.constants import R, air_molar_mass
 from units.temperature import celsius, celsius_to_kelvin_absolute
-from units.volume import cubic_meter
 from math import pi
 
 volume = (pi * inches(8) * (inches("12.5") ** 2 - inches(6) ** 2)).to_meters_cubed()

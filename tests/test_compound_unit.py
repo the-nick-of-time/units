@@ -1,6 +1,6 @@
 import pytest
 
-from units import make_dimension, make_unit, Multiset, Compound
+from units._api import make_dimension, make_unit, Multiset, Compound
 
 
 @pytest.fixture

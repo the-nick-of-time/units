@@ -1,7 +1,7 @@
 import pytest
 
-from units import make_dimension, make_unit, make_compound_dimension, make_compound_unit
-from units.exceptions import OperationError, ImplicitConversionError
+from units._api import make_dimension, make_unit, make_compound_dimension, make_compound_unit
+from units._exceptions import OperationError, ImplicitConversionError
 
 
 @pytest.fixture

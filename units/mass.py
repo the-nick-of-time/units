@@ -1,4 +1,4 @@
-from units import make_dimension, make_unit
+from units._api import make_dimension, make_unit
 
 __all__ = ["Mass", "kilograms", "av_pound", "troy_pound", "slug", "grams"]
 
