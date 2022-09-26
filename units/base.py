@@ -1,6 +1,7 @@
 """This module provides the core API of the module, the mechanisms for defining
 new dimensions and units.
 """
+import textwrap
 from decimal import Decimal, getcontext
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
@@ -33,8 +34,14 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['UnitInterface']:
+def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Type[
+    'UnitInterface']:
     """A unit is a particular convention for measuring a dimension.
+
+    The resulting class represents the abstract concept of the unit, say meters.
+    Instances of the class associate that unit with a number, defining in this
+    example a particular length like 8 meters. Instances of a unit class are
+    called "measurements" within this documentation.
 
     :param name: The name of the new unit, like "meters". Should be in its
         plural form.
@@ -42,6 +49,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     :param scale: How many of the base unit it would take to get one of the
         current unit. For instance, one kilometer has a scale of 1000 when the
         base unit is meters.
+    :param doc: Documentation for this unit, optional.
     :return: A class representing the unit. Instances of this class are
         measurements using the unit.
     """
@@ -202,7 +210,12 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
     def tostring(self):
         return f"{self.value}\u00d7{self.scale} {self.__name__}"
 
-    def sig_figs(self, figs=3) -> str:
+    def sig_figs(self, figs=3) -> UnitInterface:
+        """Produce a version of this measurement rounded to significant figures.
+
+        :param figs: How many significant figures to round to.
+        :return: A new measurement with a rounded value.
+        """
         rounded = sigfig.round(self.value, sigfigs=figs)
         return type(self)(rounded)
 
@@ -220,6 +233,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         "__repr__": tostring,
         "__pow__": exponent,
         "__name__": name,
+        "__doc__": textwrap.dedent(doc),
         "is_dimension": is_dimension,
         "scale": Decimal(scale),
         "instances": {},

@@ -52,6 +52,17 @@ function task_build {
 	poetry run make "dist/units-$(poetry version --short)-py3-none-any.whl"
 }
 
+function task_clean {
+	: "Delete build and doc files for a fresh start"
+	(
+		cd "$(git rev-parse --show-toplevel)"
+		rm -f .coverage
+		rm -rf docs/_build
+		rm -rf dist
+		rm -rf htmlcov
+	)
+}
+
 # Print documentation for tasks
 function task_help {
 	: "Auto-generate list of tasks, including documentation in the form of these noop statements"

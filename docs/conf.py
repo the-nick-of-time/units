@@ -30,3 +30,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'nature'
 html_static_path = ['_static']
+
+# -- Autodoc configuration ---------------------------------------------------
+
+# Group module members by type: class, then function, then constant
+# Also gets it to respect the order of __all__
+autodoc_member_order = 'groupwise'
+# Don't automatically include class members
+autoclass_content = 'class'
