@@ -11,7 +11,7 @@ version := $(shell poetry version --short)
 htmlcov/index.html: .coverage
 	coverage html
 
-dist/dndice-$(version).tar.gz dist/dndice-$(version)-py3-none-any.whl: .coverage docs/_build/html/index.html
+dist/units-$(version).tar.gz dist/units-$(version)-py3-none-any.whl: .coverage docs/_build/index.html
 	poetry build
 
 docs/_build/index.html: $(documentation) $(sources)

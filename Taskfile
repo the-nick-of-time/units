@@ -47,9 +47,9 @@ function task_docs() {
 	fi
 }
 
-function task:build {
+function task_build {
 	: "Build wheel from the sources"
-	poetry run make "dist/dndice-$(poetry version --short)-py3-none-any.whl"
+	poetry run make "dist/units-$(poetry version --short)-py3-none-any.whl"
 }
 
 # Print documentation for tasks
