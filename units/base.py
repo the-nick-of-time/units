@@ -17,7 +17,8 @@ __all__ = [
 UnitOperand = Union['UnitInterface', Number]
 Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
-Pairs = Tuple[Tuple[Unitlike, int], ...]
+Pair = Tuple[Unitlike, int]
+Pairs = Tuple[Pair, ...]
 Exponents = Union[Pairs, Dict[Unitlike, int]]
 
 
@@ -123,7 +124,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
             raise ImplicitConversionError(type(other), type(self))
         return abs(self.value * self.scale - other.value * other.scale) <= within
 
-    def multiply(self, other: UnitInterface) -> UnitInterface:
+    def multiply(self, other: Union[UnitInterface, Number]) -> UnitInterface:
         """Multiply two measurements. Produces a new compound unit for the result.
 
         If the two quantities completely cancel (like a frequency times a
@@ -133,7 +134,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         :return: The result of the calculation, with the compound units.
         """
         if isinstance(other, Number):
-            return type(self)(self.value * other)
+            return type(self)(self.value * Decimal(other))
         result_value = self.value * other.value
         unit_composition = (self.composition * other.composition).units
         if len(unit_composition) == 0:
@@ -142,13 +143,13 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
                                          exponents=unit_composition)
         return result_unit(result_value)
 
-    def divide(self, other: UnitInterface) -> UnitInterface:
+    def divide(self, other: Union[UnitInterface, Number]) -> UnitInterface:
         """Multiply two measurements. Produces a new compound unit for the result.
 
         :param other: Another measurement, with any units.
         """
         if isinstance(other, Number):
-            return type(self)(self.value / other)
+            return type(self)(self.value / Decimal(other))
         result_units = self.composition / other.composition
         result_value = self.value / other.value
         if len(result_units) == 0:
@@ -230,7 +231,9 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         "__sub__": subtract,
         "__eq__": equal,
         "__mul__": multiply,
+        "__rmul__": multiply,
         "__truediv__": divide,
+        "__rtruediv__": divide,
         "__getattr__": getattribute,
         "__str__": tostring,
         "__repr__": tostring,
@@ -300,7 +303,8 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     if name is None:
         name = str(Multiset(exponents))
     composition = Compound(exponents)
-    dims = tuple(((unit.dimension, exp) for unit, exp in composition.to_pairs()))
+    dims = _sort(_dedupe((unit.dimension, exp)
+                         for unit, exp in composition.to_pairs()))
     dimension = make_compound_dimension(dims)
     unit = make_unit(name=name, dimension=dimension, scale=scale, doc=doc)
     unit.composition = composition
@@ -340,12 +344,33 @@ def _decompose(unit: Unitlike, factor: int) -> Pairs:
     return tuple(accumulator)
 
 
+def _dedupe(pairs: Iterator[Pair]) -> Dict[Unitlike, int]:
+    accumulator = {}
+    for unitish, num in pairs:
+        if unitish in accumulator:
+            accumulator[unitish] += num
+        else:
+            accumulator[unitish] = num
+    return accumulator
+
+
+def _sort(d: Exponents) -> Pairs:
+    if isinstance(d, dict):
+        pairs = tuple(d.items())
+    else:
+        pairs = d
+    return tuple(sorted(pairs, key=lambda p: (-p[1], p[0].__name__)))
+
+
 class DimensionBase:
     __INSTANCES = {}
 
     def __new__(cls, name: str, exponents: Pairs):
         if len(exponents) == 0:
             # Base dimensions are identified by name
+            key = name
+        elif len(exponents) == 1 and exponents[0][1] == 1:
+            # If you end up with a base unit after a calculation
             key = name
         else:
             # Compound dimensions with the same base dimensions must refer to the same thing
@@ -361,6 +386,9 @@ class DimensionBase:
     def __hash__(self):
         return hash(self.__name__)
 
+    def __repr__(self):
+        return self.__name__
+
 
 class Multiset:
     # just different enough from collections.Counter to be worth writing
@@ -372,7 +400,7 @@ class Multiset:
         elif isinstance(pairs, dict):
             self.store = pairs.copy()
         else:
-            self.store = self.__dedupe(pairs)
+            self.store = _dedupe(pairs)
 
     def __iter__(self) -> Iterator[Unitlike]:
         return iter(self.store.keys())
@@ -421,16 +449,6 @@ class Multiset:
             if copy[key] == 0:
                 del copy[key]
         return Multiset(copy)
-
-    @staticmethod
-    def __dedupe(pairs: Pairs):
-        accumulator = {}
-        for unitish, num in pairs:
-            if unitish in accumulator:
-                accumulator[unitish] += num
-            else:
-                accumulator[unitish] = num
-        return accumulator
 
 
 class Compound:

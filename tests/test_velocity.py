@@ -1,6 +1,6 @@
 import pytest
 
-from units.length import meters, kilometers, feet
+from units.length import meters, kilometers, feet, Length
 from units.time import seconds, hours, minutes
 from units.velocity import meters_per_second, kilometers_per_hour, miles_per_hour
 
@@ -44,6 +44,7 @@ def test_speed_for_time(km_approx):
     t = hours(2)
 
     assert quantities_approx_equal(kilometers(160), v * t)
+    assert (v * t).is_dimension(Length)
 
 
 def test_distance_over_time():
