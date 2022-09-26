@@ -29,27 +29,27 @@ __all__ = [
 # https://physics.nist.gov/cuu/Constants/Table/allascii.txt
 
 def _construct_gravitational_constant():
-    g_unit = make_compound_unit(1, ((meters, 3), (kilograms, -1), (seconds, -2)))
+    g_unit = make_compound_unit(scale=1, exponents={meters: 3, kilograms: -1, seconds: -2})
     return g_unit("6.67430e-11")
 
 
 def _construct_stefan_boltzmann_constant():
-    unit = make_compound_unit(1, ((watts, 1), (meters, -2), (kelvin, -4)))
+    unit = make_compound_unit(scale=1, exponents={watts: 1, meters: -2, kelvin: -4})
     return unit("5.670374419e-8")
 
 
 def _construct_standard_gravity():
-    unit = make_compound_unit(1, {meters: 1, seconds: -2})
+    unit = make_compound_unit(scale=1, exponents={meters: 1, seconds: -2})
     return unit("9.80665")
 
 
 def _construct_gas_constant():
-    unit = make_compound_unit(1, {joules: 1, mol: -1, kelvin: -1})
+    unit = make_compound_unit(scale=1, exponents={joules: 1, mol: -1, kelvin: -1})
     return unit("8.314462618")
 
 
 def _construct_air_molar_mass():
-    unit = make_compound_unit(1, {kilograms: 1, mol: -1})
+    unit = make_compound_unit(scale=1, exponents={kilograms: 1, mol: -1})
     # https://www.engineeringtoolbox.com/molecular-mass-air-d_679.html
     return unit(".0289647")
 

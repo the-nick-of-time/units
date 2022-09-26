@@ -34,7 +34,7 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Type[
+def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Type[
     'UnitInterface']:
     """A unit is a particular convention for measuring a dimension.
 
@@ -43,6 +43,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Ty
     example a particular length like 8 meters. Instances of a unit class are
     called "measurements" within this documentation.
 
+    :param *:
     :param name: The name of the new unit, like "meters". Should be in its
         plural form.
     :param dimension: The dimension this unit measures.
@@ -137,7 +138,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Ty
         unit_composition = (self.composition * other.composition).units
         if len(unit_composition) == 0:
             return result_value
-        result_unit = make_compound_unit(self.scale * other.scale, unit_composition)
+        result_unit = make_compound_unit(scale=self.scale * other.scale,
+                                         exponents=unit_composition)
         return result_unit(result_value)
 
     def divide(self, other: UnitInterface) -> UnitInterface:
@@ -151,7 +153,8 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Ty
         result_value = self.value / other.value
         if len(result_units) == 0:
             return result_value
-        result_unit = make_compound_unit(self.scale / other.scale, result_units.to_pairs())
+        result_unit = make_compound_unit(scale=self.scale / other.scale,
+                                         exponents=result_units.to_pairs())
         return result_unit(result_value)
 
     def exponent(self, other: Scale) -> UnitInterface:
@@ -171,7 +174,7 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Ty
         """
         result_composition = self.composition ** other
         result_value = getcontext().power(self.value, Decimal(other))
-        result_unit = make_compound_unit(1, result_composition.to_pairs())
+        result_unit = make_compound_unit(scale=1, exponents=result_composition.to_pairs())
         return result_unit(result_value)
 
     def is_dimension(self, dim: DimensionBase):
@@ -272,9 +275,11 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
     return dimension
 
 
-def make_compound_unit(scale: Scale, exponents: Exponents, name: str = None):
+def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, doc=""):
     """A unit composed of other units.
 
+    :param *:
+    :param doc:
     :param scale: How many of the base unit one of this unit is equivalent to.
         Note that the scale factors of the constituent units are not taken into
         account. For instance, even though the conversion factor from meters per
@@ -297,7 +302,7 @@ def make_compound_unit(scale: Scale, exponents: Exponents, name: str = None):
     composition = Compound(exponents)
     dims = tuple(((unit.dimension, exp) for unit, exp in composition.to_pairs()))
     dimension = make_compound_dimension(dims)
-    unit = make_unit(name, dimension, scale)
+    unit = make_unit(name=name, dimension=dimension, scale=scale, doc=doc)
     unit.composition = composition
     return unit
 

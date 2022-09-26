@@ -16,11 +16,11 @@ __all__ = [
 
 Length = make_dimension("Length")
 
-meters = make_unit("meters", Length, 1)
+meters = make_unit(name="meters", dimension=Length, scale=1)
 
-kilometers = make_unit("kilometers", Length, 1000)
-feet = make_unit("feet", Length, Decimal("0.3048"))
-miles = make_unit("miles", Length, "1609.344")
-yards = make_unit("yards", Length, "0.9144")
-inches = make_unit("inches", Length, "0.0254")
-astronomical_unit = au = make_unit("au", Length, 149_597_870_700)
+kilometers = make_unit(name="kilometers", dimension=Length, scale=1000)
+feet = make_unit(name="feet", dimension=Length, scale=Decimal("0.3048"))
+miles = make_unit(name="miles", dimension=Length, scale="1609.344")
+yards = make_unit(name="yards", dimension=Length, scale="0.9144")
+inches = make_unit(name="inches", dimension=Length, scale="0.0254")
+astronomical_unit = au = make_unit(name="au", dimension=Length, scale=149_597_870_700)

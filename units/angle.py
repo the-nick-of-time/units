@@ -13,9 +13,9 @@ __all__ = [
 Angle = make_dimension("Angle")
 
 # Radians are better to be defined as a base unit but are dimensionless
-degree = make_unit("degree", Angle, 1)
-arcminute = make_unit("arcminute", Angle, 1 / 60)
-arcsecond = make_unit("arcsecond", Angle, 1 / 3600)
+degree = make_unit(name="degree", dimension=Angle, scale=1)
+arcminute = make_unit(name="arcminute", dimension=Angle, scale=Decimal(1) / 60)
+arcsecond = make_unit(name="arcsecond", dimension=Angle, scale=Decimal(1) / 3600)
 
 
 def __to_rad(deg):

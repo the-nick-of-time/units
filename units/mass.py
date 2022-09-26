@@ -4,8 +4,8 @@ __all__ = ["Mass", "kilograms", "av_pound", "troy_pound", "slug", "grams"]
 
 Mass = make_dimension("Mass")
 
-kilograms = make_unit("kilograms", Mass, 1)
-grams = make_unit("grams", Mass, "0.001")
-av_pound = make_unit("avoirdupois pounds_mass", Mass, "0.45359237")
-troy_pound = make_unit("troy pounds_mass", Mass, "0.3732417")
-slug = make_unit("slug", Mass, "14.59390")
+kilograms = make_unit(name="kilograms", dimension=Mass, scale=1)
+grams = make_unit(name="grams", dimension=Mass, scale="0.001")
+av_pound = make_unit(name="avoirdupois_pounds_mass", dimension=Mass, scale="0.45359237")
+troy_pound = make_unit(name="troy_pounds_mass", dimension=Mass, scale="0.3732417")
+slug = make_unit(name="slug", dimension=Mass, scale="14.59390")

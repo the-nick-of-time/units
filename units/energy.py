@@ -12,6 +12,9 @@ __all__ = [
 
 Energy = make_compound_dimension({Mass: 1, Length: 2, Time: -2}, "Energy")
 
-joules = make_compound_unit(1, {kilograms: 1, meters: 2, seconds: -2}, "joules")
-kilojoule = make_compound_unit(1000, joules.composition.to_pairs(), "kilojoule")
-calorie = make_compound_unit("4.184", joules.composition.to_pairs(), "calorie")
+joules = make_compound_unit(scale=1, exponents={kilograms: 1, meters: 2, seconds: -2},
+                            name="joules")
+kilojoule = make_compound_unit(scale=1000, exponents=joules.composition.to_pairs(),
+                               name="kilojoule")
+calorie = make_compound_unit(scale="4.184", exponents=joules.composition.to_pairs(),
+                             name="calorie")

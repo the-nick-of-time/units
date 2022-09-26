@@ -11,7 +11,7 @@ def dimension():
 
 @pytest.fixture
 def unit(dimension):
-    return make_unit('TESTUNIT', dimension, 1)
+    return make_unit(name='TESTUNIT', dimension=dimension, scale=1)
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def dimension2():
 
 @pytest.fixture
 def unit2(dimension2):
-    return make_unit('TESTUNIT2', dimension2, 1)
+    return make_unit(name='TESTUNIT2', dimension=dimension2, scale=1)
 
 
 @pytest.fixture
@@ -31,7 +31,7 @@ def compound_dimension(dimension, dimension2):
 
 @pytest.fixture
 def compound_unit(compound_dimension, unit, unit2):
-    return make_compound_unit(1, ((unit, 1), (unit2, -1)))
+    return make_compound_unit(scale=1, exponents=((unit, 1), (unit2, -1)))
 
 
 @pytest.fixture
@@ -41,11 +41,11 @@ def compound_dimension2(dimension, dimension2):
 
 @pytest.fixture
 def compound_unit2(compound_dimension2, unit, unit2):
-    return make_compound_unit(1, ((unit, 1), (unit2, -2)))
+    return make_compound_unit(scale=1, exponents=((unit, 1), (unit2, -2)))
 
 
 def test_flyweights(dimension):
-    unit = make_unit("testunit", dimension, "2")
+    unit = make_unit(name="testunit", dimension=dimension, scale="2")
     a = unit(1)
     b = unit(1)
     c = unit(2)
@@ -56,15 +56,15 @@ def test_flyweights(dimension):
 
 
 def test_conversion(dimension):
-    first = make_unit("first", dimension, 1)
-    second = make_unit("second", dimension, 10)
+    first = make_unit(name="first", dimension=dimension, scale=1)
+    second = make_unit(name="second", dimension=dimension, scale=10)
     ten_ones = first(10)
     one_ten = second(1)
     assert ten_ones.to_second() == one_ten
 
 
 def test_add_same_unit(dimension):
-    unit = make_unit("unit", dimension, 1)
+    unit = make_unit(name="unit", dimension=dimension, scale=1)
     one = unit(1)
     two = unit(2)
     three = unit(3)
@@ -72,8 +72,8 @@ def test_add_same_unit(dimension):
 
 
 def test_add_different_unit(dimension):
-    first = make_unit("first", dimension, 1)
-    second = make_unit("second", dimension, 10)
+    first = make_unit(name="first", dimension=dimension, scale=1)
+    second = make_unit(name="second", dimension=dimension, scale=10)
     a = first(10)
     b = second(1)
     with pytest.raises(OperationError):
@@ -81,7 +81,7 @@ def test_add_different_unit(dimension):
 
 
 def test_subtract_same_unit(dimension):
-    unit = make_unit("unit", dimension, 1)
+    unit = make_unit(name="unit", dimension=dimension, scale=1)
     one = unit(1)
     two = unit(2)
     three = unit(3)
@@ -89,8 +89,8 @@ def test_subtract_same_unit(dimension):
 
 
 def test_subtract_different_unit(dimension):
-    first = make_unit("first", dimension, 1)
-    second = make_unit("second", dimension, 10)
+    first = make_unit(name="first", dimension=dimension, scale=1)
+    second = make_unit(name="second", dimension=dimension, scale=10)
     a = first(10)
     b = second(1)
     with pytest.raises(OperationError):
@@ -98,8 +98,8 @@ def test_subtract_different_unit(dimension):
 
 
 def test_equivalent_same_dimension(dimension):
-    first = make_unit("first", dimension, 1)
-    second = make_unit("second", dimension, 10)
+    first = make_unit(name="first", dimension=dimension, scale=1)
+    second = make_unit(name="second", dimension=dimension, scale=10)
     ten_ones = first(10)
     one_ten = second(1)
     assert ten_ones.equivalent_to(one_ten)
@@ -107,23 +107,23 @@ def test_equivalent_same_dimension(dimension):
 
 def test_equivalence_different_dimension(dimension):
     dim2 = make_dimension("dim2")
-    first = make_unit("first", dimension, 1)
+    first = make_unit(name="first", dimension=dimension, scale=1)
     a = first(1)
-    second = make_unit("second", dim2, 1)
+    second = make_unit(name="second", dimension=dim2, scale=1)
     b = second(1)
     with pytest.raises(ImplicitConversionError):
         print(a.equivalent_to(b))
 
 
 def test_multiply_scalar(dimension):
-    unit = make_unit("unit", dimension, 1)
+    unit = make_unit(name="unit", dimension=dimension, scale=1)
     one = unit(1)
     five = unit(5)
     assert five == one * 5
 
 
 def test_divide_scalar(dimension):
-    unit = make_unit("unit", dimension, 1)
+    unit = make_unit(name="unit", dimension=dimension, scale=1)
     two = unit(2)
     four = unit(4)
     assert two == four / 2
@@ -132,14 +132,14 @@ def test_divide_scalar(dimension):
 def test_isinstance(dimension, dimension2):
     a = make_compound_dimension(((dimension, 1), (dimension2, -1)), "baseline")
     b = make_compound_dimension(((dimension, 1), (dimension2, -1)), "compare")
-    unit_a = make_unit("fromA", a, 1)
+    unit_a = make_unit(name="fromA", dimension=a, scale=1)
 
     assert unit_a(1).is_dimension(a)
     assert unit_a(1).is_dimension(b)
 
 
 def test_add(compound_unit):
-    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(1)
     b = unit(2)
     expected = unit(3)
@@ -152,7 +152,7 @@ def test_add_equivalent():
 
 
 def test_subtract(compound_unit):
-    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(5)
     b = unit(2)
     expected = unit(3)
@@ -165,8 +165,8 @@ def test_subtract_equivalent():
 
 
 def test_multiply_compound_scalar(compound_unit):
-    unit = make_compound_unit(1, compound_unit.composition.units,
-                              'multiply')
+    unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units,
+                              name='multiply')
     a = unit(1)
     expected = unit(3)
 
@@ -174,9 +174,9 @@ def test_multiply_compound_scalar(compound_unit):
 
 
 def test_multiply_simple_unit(dimension, compound_unit, unit2):
-    compound = make_compound_unit(1, compound_unit.composition.units,
-                                  'multiply')
-    expected_unit = make_unit('expected', dimension, 1)
+    compound = make_compound_unit(scale=1, exponents=compound_unit.composition.units,
+                                  name='multiply')
+    expected_unit = make_unit(name='expected', dimension=dimension, scale=1)
 
     expected = expected_unit(2)
     result = compound(2) * unit2(1)
@@ -189,8 +189,8 @@ def test_multiply_complex_unit(dimension, dimension2,
                                compound_unit, compound_unit2, unit, unit2):
     expected_dim = make_compound_dimension(((dimension, 2),
                                             (dimension2, -3)), "EXPECTED")
-    expected_unit = make_compound_unit(1, ((unit, 2), (unit2, -3)),
-                                       'EXPECTEDUNIT')
+    expected_unit = make_compound_unit(scale=1, exponents=((unit, 2), (unit2, -3)),
+                                       name='EXPECTEDUNIT')
 
     expected = expected_unit(1)
     result = compound_unit(1) * compound_unit2(1)
@@ -200,7 +200,7 @@ def test_multiply_complex_unit(dimension, dimension2,
 
 
 def test_divide_compound_scalar(compound_unit):
-    unit = make_compound_unit(1, compound_unit.composition.units, 'foo')
+    unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(3)
     expected = unit(1)
 
@@ -217,7 +217,7 @@ def test_divide_simple_unit(compound_dimension, compound_unit, unit, unit2):
 
 
 def test_divide_to_dimensionless(dimension):
-    simple = make_unit("simple", dimension, 1)
+    simple = make_unit(name="simple", dimension=dimension, scale=1)
     expected = 2
 
     result = simple(4) / simple(2)
