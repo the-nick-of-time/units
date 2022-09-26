@@ -1,4 +1,4 @@
-from units.base import make_compound_unit, make_compound_dimension
+from units import make_compound_dimension, make_compound_unit
 from units.length import Length, meters, feet
 from units.mass import Mass, kilograms, slug
 from units.time import Time, seconds

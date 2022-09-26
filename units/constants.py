@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from units.base import make_compound_unit
+from units import make_compound_unit
 from units.energy import joules
 from units.length import meters
 from units.mass import kilograms

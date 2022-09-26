@@ -1,4 +1,4 @@
-from units.base import make_compound_unit, make_compound_dimension
+from units import make_compound_dimension, make_compound_unit
 from units.length import Length, meters
 
 Volume = make_compound_dimension({Length: 3}, "Volume")

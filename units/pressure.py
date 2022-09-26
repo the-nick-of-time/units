@@ -1,4 +1,4 @@
-from units.base import make_compound_unit, make_compound_dimension
+from units import make_compound_dimension, make_compound_unit
 from units.force import Force, pounds, newtons
 from units.length import Length, meters, inches
 

@@ -1,7 +1,7 @@
 import math
 from decimal import Decimal
 
-from units.base import make_dimension, make_unit
+from units import make_dimension, make_unit
 
 __all__ = [
     "Angle",

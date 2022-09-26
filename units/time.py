@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from units.base import make_unit, make_dimension, make_compound_dimension, make_compound_unit
+from units import make_dimension, make_unit, make_compound_dimension, make_compound_unit
 
 __all__ = [
     "Time",

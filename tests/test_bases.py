@@ -1,6 +1,6 @@
 import pytest
 
-from units.base import make_dimension, make_unit, make_compound_dimension, make_compound_unit
+from units import make_dimension, make_unit, make_compound_dimension, make_compound_unit
 from units.exceptions import OperationError, ImplicitConversionError
 
 

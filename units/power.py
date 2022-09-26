@@ -1,4 +1,4 @@
-from units.base import make_compound_dimension, make_compound_unit
+from units import make_compound_dimension, make_compound_unit
 from units.energy import Energy, joules
 from units.force import pounds
 from units.length import feet

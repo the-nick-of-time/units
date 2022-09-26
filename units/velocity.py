@@ -1,4 +1,4 @@
-from units.base import make_compound_unit, make_compound_dimension
+from units import make_compound_dimension, make_compound_unit
 from units.length import Length, kilometers, meters, miles
 from units.time import seconds, hours, Time
 
