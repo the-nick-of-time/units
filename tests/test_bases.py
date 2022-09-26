@@ -254,5 +254,5 @@ def test_is_nondimension(unit):
 
 
 def test_nonintegral_exponent(unit):
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         print(unit(4) ** (1 / 2))

@@ -74,3 +74,10 @@ def test_tostring():
     val = kilometers(3)
     expected = "3\u00d71000 kilometers"
     assert str(val) == expected
+
+
+def test_sqrt():
+    vec = [meters(4), meters(3)]
+    mag = (vec[0] ** 2 + vec[1] ** 2) ** (1 / 2)
+
+    assert mag == meters(5)

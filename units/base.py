@@ -1,7 +1,7 @@
 """This module provides the core API of the module, the mechanisms for defining
 new dimensions and units.
 """
-from decimal import Decimal
+from decimal import Decimal, getcontext
 from numbers import Number
 from typing import Type, Dict, Iterator, Sequence, Union, Tuple
 
@@ -146,18 +146,23 @@ def make_unit(name: str, dimension: 'DimensionBase', scale: Scale) -> Type['Unit
         result_unit = make_compound_unit(self.scale / other.scale, result_units.to_pairs())
         return result_unit(result_value)
 
-    def exponent(self, other: int) -> UnitInterface:
-        """Raise this unit to an integer power. Roots not allowed.
+    def exponent(self, other: Scale) -> UnitInterface:
+        """Raise this measurement to a power such that the result has no
+        non-integer exponents.
 
-        For instance, ``meters(4) ** 2 == meters_squared(16)``.
+        For instance, ``meters(4) ** 2 == meters_squared(16)``. You can also
+        compute the magnitude of a vector with
+        ``vec = [meters(4), meters(3)]; mag = (vec[0] ** 2 + vec[1] ** 2) ** (1/2)``.
+
+        If the resulting calculation has any units with non-integer powers,
+        ``ValueError`` is raised.
 
         :param other: Any integer, the power to raise this measurement to.
+        :raises ValueError: If the resulting unit has fractional exponents.
         :return: A measurement with the value and units raised to the power.
         """
-        if not isinstance(other, int):
-            raise TypeError("Units can only be raised to integral powers")
         result_composition = self.composition ** other
-        result_value = self.value ** other
+        result_value = getcontext().power(self.value, Decimal(other))
         result_unit = make_compound_unit(1, result_composition.to_pairs())
         return result_unit(result_value)
 
@@ -449,8 +454,14 @@ class Compound:
         return Compound(self.units.remove(other))
 
     def __pow__(self, power: int):
-        pairs = tuple((t, e * power) for t, e in self.to_pairs())
-        return Compound(pairs)
+        pairs = []
+        for t, e in self.to_pairs():
+            new_exponent = e * power
+            if int(new_exponent) != new_exponent:
+                raise ValueError(
+                    f"The exponentiation has caused a non-integer exponent on {t}, which is not allowed.")
+            pairs.append((t, new_exponent))
+        return Compound(tuple(pairs))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
         existing_dimensions = {unit.dimension: unit for unit in self.units}

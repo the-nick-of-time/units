@@ -1,3 +1,5 @@
+import pytest
+
 from units.constants import atm
 from units.energy import joules
 from units.force import pounds, kgf, newtons
@@ -41,3 +43,9 @@ def test_sig_figs():
     rounded = newtons(405000)  # exact is 405300
 
     assert (area * pressure).sig_figs(3) == rounded
+
+
+def test_component_cannot_sqrt():
+    f = joules(100)
+    with pytest.raises(ValueError):
+        print(f ** (1 / 2))
