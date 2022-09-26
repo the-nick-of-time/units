@@ -46,11 +46,11 @@ celsius = make_unit(
     """
 )
 fahrenheit = make_unit(
-    "fahrenheit",
-    Temperature,
-    5 / 9
+    name="fahrenheit",
+    dimension=Temperature,
+    scale=5 / 9
 )
-rankine = make_unit("rankine", Temperature, 5 / 9)
+rankine = make_unit(name="rankine", dimension=Temperature, scale=5 / 9)
 
 absolute_zero_celsius = celsius("-273.15")
 absolute_zero_fahrenheit = fahrenheit("-459.67")
