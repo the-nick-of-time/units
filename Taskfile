@@ -25,8 +25,14 @@ function already_open {
 
 ### TASKS
 function task_test() {
-	:  "Run unit test suite"
+	: "Run unit test suite"
 	poetry run pytest --no-header -v
+}
+
+function task_test_setup() {
+	: "Set up the test environment, since pytest-readme needs an extra file around"
+	: "Exposed so pycharm can use it"
+	printf 'from pytest_readme import setup\nsetup()' >conftest.py
 }
 
 function task_coverage() {
@@ -60,6 +66,8 @@ function task_clean {
 		rm -rf docs/_build
 		rm -rf dist
 		rm -rf htmlcov
+		rm -f conftest.py
+		rm -f test_readme.py
 	)
 }
 

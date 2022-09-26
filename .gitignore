@@ -5,3 +5,5 @@
 list-fftabs.py
 /docs/_build
 /dist
+/conftest.py
+/test_readme.py
