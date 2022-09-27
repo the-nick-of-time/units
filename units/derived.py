@@ -11,6 +11,7 @@ parsec = make_unit(
     name="parsec",
     dimension=Length,
     scale=parsec_calc.to_meters().value,
+    abbrev="pc",
     doc="""\
     One parsec is an astronomical distance defined by observation of the stars.
     As we orbit the sun, nearer stars move with respect to the extremely distant
@@ -27,6 +28,7 @@ lightyear = make_unit(
     name="lightyear",
     dimension=Length,
     scale=c.value * julian_years.scale,
+    abbrev="ly",
     doc="""\
     A lightyear is the distance light travels in one year.
     As the real duration of a year changes over time (we're not going to say a

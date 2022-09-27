@@ -11,6 +11,7 @@ mole = make_unit(
     name="mole",
     dimension=Quantity,
     scale=1,
+    abbrev="mol",
     doc="""\
     A mole is the number of atoms in 12 grams of carbon-12.
     

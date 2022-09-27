@@ -17,6 +17,7 @@ degree = make_unit(
     name="degree",
     dimension=Angle,
     scale=1,
+    abbrev="\xb0",
     doc="""\
     Degrees are a measure of angles. 360 degrees extend around a circle. The 
     true base unit of angle is the dimensionless radian, but degrees see common 
@@ -31,12 +32,14 @@ arcminute = make_unit(
     name="arcminute",
     dimension=Angle,
     scale=Decimal(1) / 60,
+    abbrev="\u2032",
     doc="""An arcminute is 1/60 of a degree."""
 )
 arcsecond = make_unit(
     name="arcsecond",
     dimension=Angle,
     scale=Decimal(1) / 3600,
+    abbrev="\u2033",
     doc="""An arcsecond is 1/60 of an arcminute, and therefore 1/3600 of a degree."""
 )
 

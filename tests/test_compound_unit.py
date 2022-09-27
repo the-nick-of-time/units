@@ -15,17 +15,17 @@ def second_dimension():
 
 @pytest.fixture
 def unit_1a(first_dimension):
-    return make_unit(name="unit_1a", dimension=first_dimension, scale=1)
+    return make_unit(name="unit_1a", dimension=first_dimension, scale=1, abbrev="")
 
 
 @pytest.fixture
 def unit_1b(first_dimension):
-    return make_unit(name="unit_1b", dimension=first_dimension, scale=10)
+    return make_unit(name="unit_1b", dimension=first_dimension, scale=10, abbrev="")
 
 
 @pytest.fixture
 def unit_2(second_dimension):
-    return make_unit(name="unit_2", dimension=second_dimension, scale=1)
+    return make_unit(name="unit_2", dimension=second_dimension, scale=1, abbrev="")
 
 
 def test_creation(unit_1a, unit_2):

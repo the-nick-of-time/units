@@ -11,18 +11,21 @@ newtons = make_compound_unit(
     name="newtons",
     scale=1,
     exponents={kilograms: 1, meters: 1, seconds: -2},
+    abbrev="N",
     doc="""The newton is the base SI unit of force."""
 )
 kgf = kilograms_force = make_compound_unit(
     name="kilograms_force",
     scale="9.80665",
     exponents={kilograms: 1, meters: 1, seconds: -2},
+    abbrev="kgf",
     doc="""One kgf is the weight of a kilogram in standard earth gravity."""
 )
 pounds = make_compound_unit(
     name="pounds",
     scale="4.4482216152605",
     exponents={slug: 1, feet: 1, seconds: -2},
+    abbrev="lb",
     doc="""\
     Pounds are a more elementary unit in |ucs| than an actual mass.
     """

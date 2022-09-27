@@ -28,7 +28,7 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") -> Type[
+def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, doc="") -> Type[
     'UnitInterface']:
     """A unit is a particular convention for measuring a dimension.
 
@@ -43,6 +43,8 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
     :param scale: How many of the base unit it would take to get one of the
         current unit. For instance, one kilometer has a scale of 1000 when the
         base unit is meters.
+    :param abbrev: The canonical abbreviation for this unit, like "lb" for
+        pounds or "g" for grams. Used for output.
     :param doc: Documentation for this unit, optional.
     :return: A class representing the unit. Instances of this class are
         measurements using the unit.
@@ -211,7 +213,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         raise AttributeError()
 
     def tostring(self):
-        return f"{self.value} {self.__name__}"
+        return f"{self.value} {self.abbreviation}"
 
     def sig_figs(self, figs=3) -> UnitInterface:
         """Produce a version of this measurement rounded to significant figures.
@@ -223,6 +225,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         return type(self)(rounded)
 
     # noinspection PyTypeChecker
+    # @formatter:off
     unit: Type[UnitInterface] = type(name, (object,), {
         "__new__": new,
         "__add__": add,
@@ -245,7 +248,9 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         "dimension": dimension,
         "equivalent_to": equivalent,
         "sig_figs": sig_figs,
+        "abbreviation": abbrev,
     })
+    # @formatter:on
     unit.composition = Compound(((unit, 1),))
 
     def converter(self):
@@ -277,9 +282,11 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
     return dimension
 
 
-def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, doc=""):
+def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, abbrev=None,
+                       doc=""):
     """A unit composed of other units.
 
+    :param abbrev:
     :param scale: How many of the base unit one of this unit is equivalent to.
         Note that the scale factors of the constituent units are not taken into
         account. For instance, even though the conversion factor from meters per
@@ -301,10 +308,16 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     if name is None:
         name = str(Multiset(exponents))
     composition = Compound(exponents)
-    dims = _sort(_dedupe((unit.dimension, exp)
-                         for unit, exp in composition.to_pairs()))
+    dims_extracted = tuple((unit.dimension, exp) for unit, exp in composition.to_pairs())
+    dims = _sort(_dedupe(dims_extracted))
     dimension = make_compound_dimension(dims)
-    unit = make_unit(name=name, dimension=dimension, scale=scale, doc=doc)
+    unit = make_unit(
+        name=name,
+        dimension=dimension,
+        scale=scale,
+        abbrev=abbrev if abbrev is not None else composition.make_abbreviation(),
+        doc=doc
+    )
     unit.composition = composition
     return unit
 
@@ -511,11 +524,22 @@ class Compound:
     def to_pairs(self):
         return self.units.to_pairs()
 
+    def make_abbreviation(self) -> str:
+        ordered = _sort(self.to_pairs())
+        chunks = []
+        for unit, exponent in ordered:
+            if exponent == 1:
+                chunks.append(unit.abbreviation)
+            else:
+                chunks.append(f"{unit.abbreviation}^{exponent}")
+        return " ".join(chunks)
+
 
 class UnitInterface:
     """A dummy class for type checking purposes, defining the interface of a unit class."""
     composition: 'Compound'
     scale: 'Decimal'
+    abbreviation: str
     __slots__ = ["value"]
 
     def __init__(self, value: Scale):
@@ -537,4 +561,7 @@ class UnitInterface:
         ...
 
     def equivalent_to(self, quantity: 'UnitInterface', within=0) -> bool:
+        ...
+
+    def sig_figs(self, figures=3):
         ...

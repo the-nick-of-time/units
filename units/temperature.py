@@ -15,7 +15,12 @@ __all__ = [
 
 Temperature = make_dimension("Temperature")
 
-kelvin = make_unit(name="kelvin", dimension=Temperature, scale=1, doc="""\
+kelvin = make_unit(
+    name="kelvin",
+    dimension=Temperature,
+    scale=1,
+    abbrev="K",
+    doc="""\
     Within this module, all temperatures are treated as deltas, ignoring the
     fact that the systems have different zeros. Thus, calling 
     ``celsius(25).to_kelvin()`` will *not* produce ``kelvin(298.15)`` as you
@@ -24,8 +29,14 @@ kelvin = make_unit(name="kelvin", dimension=Temperature, scale=1, doc="""\
     
     Kelvin is the absolute measure of temperature in the SI system.
     Its units are equal in size to the Celsius degree, but its zero point 
-    is at absolute zero.""")
-celsius = make_unit(name="celsius", dimension=Temperature, scale=1, doc="""\
+    is at absolute zero."""
+)
+celsius = make_unit(
+    name="celsius",
+    dimension=Temperature,
+    scale=1,
+    abbrev="\xb0C",
+    doc="""\
     Within this module, all temperatures are treated as deltas, ignoring the
     fact that the systems have different zeros. Thus, calling 
     ``celsius(25).to_kelvin()`` will *not* produce ``kelvin(298.15)`` as you
@@ -38,11 +49,12 @@ celsius = make_unit(name="celsius", dimension=Temperature, scale=1, doc="""\
     on how you are interpreting the results, but is certainly in line with 
     intention.
     """
-                    )
+)
 fahrenheit = make_unit(
     name="fahrenheit",
     dimension=Temperature,
     scale=Decimal(5) / 9,
+    abbrev="\xb0F",
     doc="""\
     Within this module, all temperatures are treated as deltas, ignoring the
     fact that the systems have different zeros. Thus, calling 
@@ -62,6 +74,7 @@ rankine = make_unit(
     name="rankine",
     dimension=Temperature,
     scale=Decimal(5) / 9,
+    abbrev="\xb0R",
     doc="""\
     Within this module, all temperatures are treated as deltas, ignoring the
     fact that the systems have different zeros. Thus, calling 
