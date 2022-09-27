@@ -1,5 +1,5 @@
 import textwrap
-from decimal import Decimal, getcontext
+from decimal import Decimal
 from numbers import Number
 from typing import Union, Tuple, Sequence, Type, Dict, Iterator
 
@@ -131,8 +131,10 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         unit_composition = (self.composition * other.composition).units
         if len(unit_composition) == 0:
             return result_value
-        result_unit = make_compound_unit(scale=self.scale * other.scale,
-                                         exponents=unit_composition)
+        result_unit = make_compound_unit(
+            scale=self.scale * other.scale,
+            exponents=unit_composition
+        )
         return result_unit(result_value)
 
     def divide(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
@@ -146,8 +148,10 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         result_value = self.value / other.value
         if len(result_units) == 0:
             return result_value
-        result_unit = make_compound_unit(scale=self.scale / other.scale,
-                                         exponents=result_units.to_pairs())
+        result_unit = make_compound_unit(
+            scale=self.scale / other.scale,
+            exponents=result_units.to_pairs()
+        )
         return result_unit(result_value)
 
     def exponent(self, other: Scale) -> UnitInterface:
@@ -166,8 +170,11 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         :return: A measurement with the value and units raised to the power.
         """
         result_composition = self.composition ** other
-        result_value = getcontext().power(self.value, Decimal(other))
-        result_unit = make_compound_unit(scale=1, exponents=result_composition.to_pairs())
+        result_value = self.value ** Decimal(other)
+        result_unit = make_compound_unit(
+            scale=self.scale ** Decimal(other),
+            exponents=result_composition.to_pairs()
+        )
         return result_unit(result_value)
 
     def is_dimension(self, dim: DimensionBase):
@@ -204,7 +211,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, doc="") ->
         raise AttributeError()
 
     def tostring(self):
-        return f"{self.value}\u00d7{self.scale} {self.__name__}"
+        return f"{self.value} {self.__name__}"
 
     def sig_figs(self, figs=3) -> UnitInterface:
         """Produce a version of this measurement rounded to significant figures.
@@ -487,7 +494,8 @@ class Compound:
             new_exponent = e * power
             if int(new_exponent) != new_exponent:
                 raise ValueError(
-                    f"The exponentiation has caused a non-integer exponent on {t}, which is not allowed.")
+                    f"The exponentiation has caused a non-integer exponent on {t}, which is not allowed."
+                )
             pairs.append((t, new_exponent))
         return Compound(tuple(pairs))
 

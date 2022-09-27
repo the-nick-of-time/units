@@ -15,7 +15,8 @@ Q. How many meters does light travel in a millisecond?
 from units.time import seconds
 from units.constants import c
 
-print(c * seconds("1e-3"))
+print((c * seconds("1e-3")).sig_figs(5))
+# 2.9979E+5 meters
 ```
 
 Q. What is that in feet?
@@ -24,7 +25,8 @@ Q. What is that in feet?
 from units.time import seconds
 from units.constants import c
 
-print((c * seconds("1e-3")).to_feet())
+print((c * seconds("1e-3")).to_feet().sig_figs(5))
+# 9.8357E+5 feet
 ```
 
 Q. How fast is someone on the equator moving around the center of the earth?
@@ -35,11 +37,12 @@ from units.constants import earth_radius
 from math import pi
 
 circumference = 2 * pi * earth_radius
-speed = (circumference / days(1)).to_meters_per_second()
+print((circumference / days(1)).to_meters_per_second().sig_figs(3))
+# 464 meters_per_second
 ```
 
 Q. What's the mass of air in one of your car tires, if the inner radius is 6 inches, the outer
-radius is 12.5 inches, the thickness is 8 inches, and it's filled to 42 psi?
+radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?
 
 ```python
 from units.length import inches
@@ -53,7 +56,8 @@ pressure = psi(42).to_pascals()
 temperature = celsius_to_kelvin_absolute(celsius(25))
 mols = pressure * volume / (R * temperature)
 mass = mols * air_molar_mass
-print(mass.to_avoirdupois_pounds_mass())
+print(mass.to_avoirdupois_pounds_mass().sig_figs(3))
+# 0.369 avoirdupois_pounds_mass
 ```
 
 All constants like `R` are defined in SI base units so you will need to convert your units, but

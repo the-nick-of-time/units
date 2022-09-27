@@ -72,7 +72,7 @@ def test_imperial():
 
 def test_tostring():
     val = kilometers(3)
-    expected = "3\u00d71000 kilometers"
+    expected = "3 kilometers"
     assert str(val) == expected
 
 
