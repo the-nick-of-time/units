@@ -383,6 +383,7 @@ class DimensionBase:
     __INSTANCES = {}
 
     def __new__(cls, name: str, exponents: Pairs):
+        exponents = tuple((k, v) for k, v in exponents if v != 0)
         if len(exponents) == 0:
             # Base dimensions are identified by name
             key = name
@@ -434,9 +435,6 @@ class Multiset:
             return self.store == other.store
         return False
 
-    def __contains__(self, item):
-        return item in self.store
-
     def __len__(self):
         return len(self.store)
 
@@ -484,12 +482,6 @@ class Compound:
             return self.units == other.units
         except AttributeError:
             return False
-
-    def __iter__(self):
-        return iter(self.units)
-
-    def __getitem__(self, item):
-        return self.units[item]
 
     def __len__(self):
         return len(self.units)

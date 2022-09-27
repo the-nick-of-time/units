@@ -43,3 +43,12 @@ def test_flyweight_one_complex():
     alias = DimensionBase('alias', ((complex, 1),))
 
     assert alias is complex
+
+
+def test_zero_exponent():
+    a = DimensionBase('a', ())
+    b = DimensionBase('b', ())
+    complex = DimensionBase('c', ((a, 2), (b, 0)))
+    alias = DimensionBase('alias', ((a, 2),))
+
+    assert complex is alias

@@ -32,6 +32,10 @@ def test_abbreviation():
     assert c.make_abbreviation() == "m^2 kg K^-1 s^-2"
 
 
+def test_eq_non_compound():
+    assert Compound(((meters, 1), (seconds, -1))) != {meters: 1, seconds: -1}
+
+
 def test_len():
     c = Compound(((kelvin, -1), (seconds, -2), (meters, 2), (kilograms, 1)))
 
@@ -60,6 +64,13 @@ def test_multiply_mismatch():
         print(c * kilometers)
 
 
+def test_multiply_set():
+    c = Compound(((meters, 1), (seconds, -1)))
+    m = Multiset({meters: -2})
+
+    assert c * m == Compound(((meters, -1), (seconds, -1)))
+
+
 def test_divide():
     c1 = Compound(((newtons, 1),))
     c2 = Compound(((kilograms, 1), (meters, 1)))
@@ -80,6 +91,13 @@ def test_divide_mismatch():
 
     with pytest.raises(ImplicitConversionError):
         print(c / kilometers)
+
+
+def test_divide_set():
+    c = Compound(((meters, 1), (seconds, -1)))
+    m = Multiset({meters: -2})
+
+    assert c / m == Compound(((meters, 3), (seconds, -1)))
 
 
 def test_pow_int():
