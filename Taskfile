@@ -107,6 +107,12 @@ function task_publish() {
 	task_coveralls
 }
 
+function task_deploy() {
+	: "Push docs to my pi for self hosting"
+	task_docs
+	rsync -rv docs/_build/ server@nthurmes.duckdns.org:/var/www/docs/pyunitx/
+}
+
 # Print documentation for tasks
 function task_help {
 	: "Auto-generate list of tasks, including documentation in the form of these noop statements"

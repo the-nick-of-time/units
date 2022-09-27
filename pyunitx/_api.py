@@ -26,6 +26,8 @@ Exponents = Union[Pairs, Dict[Unitlike, int]]
 SIUNITX_NEW = 3
 SIUNITX_OLD = 2
 
+_EXTANT_UNITS = {}
+
 
 def make_dimension(name: str) -> 'DimensionBase':
     """Dimensions are the basic measurable quantities about the world, like length and time.
@@ -221,6 +223,17 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
             name.
         """
         if key.startswith("to_"):
+            if not hasattr(self.dimension, key):
+                composition = Compound.from_string(key[3:])
+                base_scale = 1
+                for u, e in composition.to_pairs():
+                    base_scale *= u.scale ** e
+                make_compound_unit(
+                    scale=base_scale,
+                    exponents=composition.to_pairs(),
+                )
+                # It is automatically registered on the dimension on creation,
+                # no need to explicitly use it
             return lambda: getattr(self.dimension, key)(self)
         raise AttributeError()
 
@@ -301,6 +314,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
         return unit(self.value * self.scale / unit.scale)
 
     setattr(dimension, "to_" + name.replace(" ", "_"), converter)
+    _EXTANT_UNITS[unit.__name__] = unit
     return unit
 
 
@@ -572,6 +586,31 @@ class Compound:
             else:
                 chunks.append(f"{unit.abbreviation}^{exponent}")
         return " ".join(chunks)
+
+    @classmethod
+    def from_string(cls, spec: str) -> 'Compound':
+        value_names = {
+            "": 1,
+            "_squared": 2,
+            "_cubed": 3,
+            "_to_the_fourth": 4,
+            "_to_the_fifth": 5,
+            # that's the highest I've ever seen
+        }
+        pattern = re.compile(r"(per_)?([a-z]+)(_squared|_cubed|_to_the_fourth|_to_the_fifth)?")
+        pairs = []
+        for match in re.finditer(pattern, spec):
+            name = match.group(2)
+            if name not in _EXTANT_UNITS:
+                name = name + "s"
+                if name not in _EXTANT_UNITS:
+                    raise KeyError(f"The requested unit {name} does not exist")
+            unit = _EXTANT_UNITS[name]
+            power = value_names[match.group(3)]
+            if match.group(1):
+                power *= -1
+            pairs.append((unit, power))
+        return cls(tuple(pairs))
 
 
 class UnitInterface:
