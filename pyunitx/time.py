@@ -60,7 +60,7 @@ sidereal_days = make_unit(
     """
 )
 julian_years = make_unit(
-    name="julian years",
+    name="julian_years",
     dimension=Time,
     scale=days.scale * Decimal("365.25"),
     abbrev="year_jul",
@@ -72,9 +72,9 @@ julian_years = make_unit(
 
 Frequency = make_compound_dimension({Time: -1}, "Frequency")
 hertz = make_compound_unit(
+    name="hertz",
     scale=1,
     exponents={seconds: -1},
-    name="hertz",
     abbrev="Hz",
     doc="""\
     The hertz represents an occurrence once per second. Most commonly,
@@ -83,9 +83,9 @@ hertz = make_compound_unit(
     """
 )
 rpm = make_compound_unit(
+    name="rpm",
     scale=1 / 60,
     exponents={minutes: -1},
-    name="rpm",
     abbrev="rpm",
     doc="""\
     Revolutions per minute measure the action of a piston crank or of a wheel.
