@@ -102,6 +102,7 @@ function task_publish() {
 	: "Publish to PyPi"
 	task_build
 	tag
+	git push --tags github HEAD:main
 	poetry publish --username="$PYPI_USERNAME" --password="$PYPI_PASSWORD"
 	task_coveralls
 }
