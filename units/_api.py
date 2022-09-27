@@ -7,6 +7,12 @@ import sigfig
 
 from units._exceptions import OperationError, ImplicitConversionError
 
+__all__ = [
+    "make_dimension",
+    "make_unit",
+    "make_compound_dimension",
+    "make_compound_unit",
+]
 UnitOperand = Union['UnitInterface', Number]
 Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
@@ -365,7 +371,7 @@ def _dedupe(pairs: Iterator[Pair]) -> Dict[Unitlike, int]:
     return accumulator
 
 
-def _sort(d: Exponents) -> Pairs:
+def _sort(d: Union[Exponents, Iterator[Pair]]) -> Pairs:
     if isinstance(d, dict):
         pairs = tuple(d.items())
     else:
@@ -412,6 +418,7 @@ class Multiset:
             self.store = pairs.copy()
         else:
             self.store = _dedupe(pairs)
+        self.store = {k: v for k, v in self.store.items() if v != 0}
 
     def __iter__(self) -> Iterator[Unitlike]:
         return iter(self.store.keys())
@@ -431,9 +438,8 @@ class Multiset:
         return len(self.store)
 
     def __str__(self):
-        positives = [_exponent_name(k, v) for k, v in self.store.items() if v > 0]
-        negatives = [_exponent_name(k, v) for k, v in self.store.items() if v < 0]
-        return "_".join(positives + negatives)
+        names = [_exponent_name(k, v) for k, v in _sort(self.store)]
+        return "_".join(names)
 
     def add(self, elem: Union[type, 'Multiset']):
         if isinstance(elem, type):
@@ -448,7 +454,7 @@ class Multiset:
         return self.__merge(elem)
 
     def to_pairs(self) -> Pairs:
-        return tuple((key, self[key]) for key in self)
+        return _sort((key, self[key]) for key in self)
 
     def __merge(self, other: 'Multiset') -> 'Multiset':
         copy = self.store.copy()
@@ -495,19 +501,20 @@ class Compound:
 
     def __truediv__(self, other: Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):
-            other = Multiset({other: -1})
+            other = Multiset({other: 1})
         elif isinstance(other, Compound):
             other = other.units
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.remove(other))
 
-    def __pow__(self, power: int):
+    def __pow__(self, power: Union[int, float, Decimal]):
         pairs = []
         for t, e in self.to_pairs():
             new_exponent = e * power
             if int(new_exponent) != new_exponent:
                 raise ValueError(
-                    f"The exponentiation has caused a non-integer exponent on {t}, which is not allowed."
+                    f"The exponentiation has caused a non-integer exponent on {t}, "
+                    f"which is not allowed."
                 )
             pairs.append((t, new_exponent))
         return Compound(tuple(pairs))

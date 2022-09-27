@@ -44,6 +44,7 @@ def compound_unit2(compound_dimension2, unit, unit2):
     return make_compound_unit(scale=1, exponents=((unit, 1), (unit2, -2)))
 
 
+@pytest.mark.deprecated
 def test_flyweights(dimension):
     unit = make_unit(name="testunit", dimension=dimension, scale="2", abbrev="")
     a = unit(1)
@@ -55,6 +56,7 @@ def test_flyweights(dimension):
     assert c is d
 
 
+@pytest.mark.deprecated
 def test_conversion(dimension):
     first = make_unit(name="first", dimension=dimension, scale=1, abbrev="")
     second = make_unit(name="second", dimension=dimension, scale=10, abbrev="")
@@ -63,6 +65,7 @@ def test_conversion(dimension):
     assert ten_ones.to_second() == one_ten
 
 
+@pytest.mark.deprecated
 def test_add_same_unit(dimension):
     unit = make_unit(name="unit", dimension=dimension, scale=1, abbrev="")
     one = unit(1)
@@ -71,6 +74,7 @@ def test_add_same_unit(dimension):
     assert three == one + two
 
 
+@pytest.mark.deprecated
 def test_add_different_unit(dimension):
     first = make_unit(name="first", dimension=dimension, scale=1, abbrev="")
     second = make_unit(name="second", dimension=dimension, scale=10, abbrev="")
@@ -80,6 +84,7 @@ def test_add_different_unit(dimension):
         print(a + b)
 
 
+@pytest.mark.deprecated
 def test_subtract_same_unit(dimension):
     unit = make_unit(name="unit", dimension=dimension, scale=1, abbrev="")
     one = unit(1)
@@ -88,6 +93,7 @@ def test_subtract_same_unit(dimension):
     assert two == three - one
 
 
+@pytest.mark.deprecated
 def test_subtract_different_unit(dimension):
     first = make_unit(name="first", dimension=dimension, scale=1, abbrev="")
     second = make_unit(name="second", dimension=dimension, scale=10, abbrev="")
@@ -97,6 +103,7 @@ def test_subtract_different_unit(dimension):
         print(a - b)
 
 
+@pytest.mark.deprecated
 def test_equivalent_same_dimension(dimension):
     first = make_unit(name="first", dimension=dimension, scale=1, abbrev="")
     second = make_unit(name="second", dimension=dimension, scale=10, abbrev="")
@@ -105,6 +112,7 @@ def test_equivalent_same_dimension(dimension):
     assert ten_ones.equivalent_to(one_ten)
 
 
+@pytest.mark.deprecated
 def test_equivalence_different_dimension(dimension):
     dim2 = make_dimension("dim2")
     first = make_unit(name="first", dimension=dimension, scale=1, abbrev="")
@@ -115,6 +123,7 @@ def test_equivalence_different_dimension(dimension):
         print(a.equivalent_to(b))
 
 
+@pytest.mark.deprecated
 def test_multiply_scalar(dimension):
     unit = make_unit(name="unit", dimension=dimension, scale=1, abbrev="")
     one = unit(1)
@@ -122,6 +131,7 @@ def test_multiply_scalar(dimension):
     assert five == one * 5
 
 
+@pytest.mark.deprecated
 def test_divide_scalar(dimension):
     unit = make_unit(name="unit", dimension=dimension, scale=1, abbrev="")
     two = unit(2)
@@ -129,6 +139,7 @@ def test_divide_scalar(dimension):
     assert two == four / 2
 
 
+@pytest.mark.deprecated
 def test_isinstance(dimension, dimension2):
     a = make_compound_dimension(((dimension, 1), (dimension2, -1)), "baseline")
     b = make_compound_dimension(((dimension, 1), (dimension2, -1)), "compare")
@@ -138,6 +149,7 @@ def test_isinstance(dimension, dimension2):
     assert unit_a(1).is_dimension(b)
 
 
+@pytest.mark.deprecated
 def test_add(compound_unit):
     unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(1)
@@ -147,10 +159,12 @@ def test_add(compound_unit):
     assert expected == a + b
 
 
+@pytest.mark.deprecated
 def test_add_equivalent():
     pass
 
 
+@pytest.mark.deprecated
 def test_subtract(compound_unit):
     unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(5)
@@ -160,10 +174,12 @@ def test_subtract(compound_unit):
     assert expected == a - b
 
 
+@pytest.mark.deprecated
 def test_subtract_equivalent():
     pass
 
 
+@pytest.mark.deprecated
 def test_multiply_compound_scalar(compound_unit):
     unit = make_compound_unit(
         scale=1,
@@ -176,6 +192,7 @@ def test_multiply_compound_scalar(compound_unit):
     assert expected == a * 3
 
 
+@pytest.mark.deprecated
 def test_multiply_simple_unit(dimension, compound_unit, unit2):
     compound = make_compound_unit(
         scale=1,
@@ -191,6 +208,7 @@ def test_multiply_simple_unit(dimension, compound_unit, unit2):
     assert result.equivalent_to(expected)
 
 
+@pytest.mark.deprecated
 def test_multiply_complex_unit(dimension, dimension2,
                                compound_unit, compound_unit2, unit, unit2):
     expected_dim = make_compound_dimension(
@@ -210,6 +228,7 @@ def test_multiply_complex_unit(dimension, dimension2,
     assert expected == result
 
 
+@pytest.mark.deprecated
 def test_divide_compound_scalar(compound_unit):
     unit = make_compound_unit(scale=1, exponents=compound_unit.composition.units, name='foo')
     a = unit(3)
@@ -218,6 +237,7 @@ def test_divide_compound_scalar(compound_unit):
     assert expected == a / 3
 
 
+@pytest.mark.deprecated
 def test_divide_simple_unit(compound_dimension, compound_unit, unit, unit2):
     expected = compound_unit(1)
 
@@ -227,6 +247,7 @@ def test_divide_simple_unit(compound_dimension, compound_unit, unit, unit2):
     assert expected == result
 
 
+@pytest.mark.deprecated
 def test_divide_to_dimensionless(dimension):
     simple = make_unit(name="simple", dimension=dimension, scale=1, abbrev="")
     expected = 2
@@ -236,34 +257,41 @@ def test_divide_to_dimensionless(dimension):
     assert expected == result
 
 
+@pytest.mark.deprecated
 def test_divide_complex_unit():
     pass
 
 
+@pytest.mark.deprecated
 def test_dimension_auto_name(compound_dimension2):
     assert compound_dimension2.__name__ == "TEST_per_TEST2_squared"
 
 
+@pytest.mark.deprecated
 def test_unit_auto_name(compound_unit):
     assert compound_unit.__name__ == "TESTUNIT_per_TESTUNIT2"
 
 
+@pytest.mark.deprecated
 def test_dimension_decompose(dimension, dimension2, compound_dimension):
     double_compound = make_compound_dimension(((dimension, 2), (dimension2, -2)))
     double_from_other = make_compound_dimension(((compound_dimension, 2),))
     assert double_compound is double_from_other
 
 
+@pytest.mark.deprecated
 def test_dimension_sort_consistent(dimension, dimension2, compound_dimension):
     double_compound = make_compound_dimension(((dimension2, -2), (dimension, 2)))
     double_from_other = make_compound_dimension(((compound_dimension, 2),))
     assert double_compound is double_from_other
 
 
+@pytest.mark.deprecated
 def test_is_nondimension(unit):
     assert not unit(1).is_dimension(object)
 
 
+@pytest.mark.deprecated
 def test_nonintegral_exponent(unit):
     with pytest.raises(ValueError):
         print(unit(4) ** (1 / 2))

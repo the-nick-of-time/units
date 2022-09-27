@@ -28,12 +28,14 @@ def unit_2(second_dimension):
     return make_unit(name="unit_2", dimension=second_dimension, scale=1, abbrev="")
 
 
+@pytest.mark.deprecated
 def test_creation(unit_1a, unit_2):
     compound = Compound(((unit_1a, 1), (unit_2, -1)))
 
     assert {unit_1a: 1, unit_2: -1} == compound.units.store
 
 
+@pytest.mark.deprecated
 def test_equality(unit_1a, unit_2):
     a = Compound(((unit_1a, 1), (unit_2, -1)))
     b = Compound(((unit_1a, 1), (unit_2, -1)))
@@ -41,6 +43,7 @@ def test_equality(unit_1a, unit_2):
     assert a == b
 
 
+@pytest.mark.deprecated
 def test_multiply(unit_1a, unit_2):
     a = Compound(((unit_1a, 1), (unit_2, -1)))
     b = Compound(((unit_1a, 1), (unit_2, 2)))
@@ -51,6 +54,7 @@ def test_multiply(unit_1a, unit_2):
     assert Compound(((unit_1a, 2), (unit_2, 1))) == result
 
 
+@pytest.mark.deprecated
 def test_divide(unit_1a, unit_2):
     a = Compound(((unit_1a, 1), (unit_2, -1)))
     b = Compound(((unit_1a, 1), (unit_2, 2)))
@@ -61,6 +65,7 @@ def test_divide(unit_1a, unit_2):
     assert Compound(((unit_2, -3),)) == result
 
 
+@pytest.mark.deprecated
 def test_creation_pairs(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -69,6 +74,7 @@ def test_creation_pairs(unit_1a, unit_1b):
     assert {unit_1a: 1, unit_1b: -1} == multiset.store
 
 
+@pytest.mark.deprecated
 def test_creation_copy(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -78,6 +84,7 @@ def test_creation_copy(unit_1a, unit_1b):
     assert source == dest
 
 
+@pytest.mark.deprecated
 def test_multiset_equality(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -87,6 +94,7 @@ def test_multiset_equality(unit_1a, unit_1b):
     assert a == b
 
 
+@pytest.mark.deprecated
 def test_add(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -96,6 +104,7 @@ def test_add(unit_1a, unit_1b):
     assert {unit_1a: 2, unit_1b: -1} == added.store
 
 
+@pytest.mark.deprecated
 def test_add_zero(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -105,6 +114,7 @@ def test_add_zero(unit_1a, unit_1b):
     assert {unit_1a: 1} == added.store
 
 
+@pytest.mark.deprecated
 def test_add_compound(unit_1a, unit_1b):
     a = Multiset(((unit_1a, 1), (unit_1b, -1)))
     b = Multiset(((unit_1a, -1), (unit_1b, -1)))
@@ -114,6 +124,7 @@ def test_add_compound(unit_1a, unit_1b):
     assert {unit_1b: -2} == added.store
 
 
+@pytest.mark.deprecated
 def test_remove(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -123,6 +134,7 @@ def test_remove(unit_1a, unit_1b):
     assert {unit_1a: 1, unit_1b: -2} == subtracted.store
 
 
+@pytest.mark.deprecated
 def test_remove_zero(unit_1a, unit_1b):
     pairs = ((unit_1a, 1), (unit_1b, -1))
 
@@ -132,6 +144,7 @@ def test_remove_zero(unit_1a, unit_1b):
     assert {unit_1b: -1} == subtracted.store
 
 
+@pytest.mark.deprecated
 def test_remove_compound(unit_1a, unit_1b):
     a = Multiset(((unit_1a, 1), (unit_1b, -1)))
     b = Multiset(((unit_1a, -1), (unit_1b, -1)))
