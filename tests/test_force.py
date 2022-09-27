@@ -1,5 +1,6 @@
 import pytest
 
+from pyunitx import SIUNITX_OLD
 from pyunitx.constants import atm
 from pyunitx.energy import joules
 from pyunitx.force import pounds, kgf, newtons
@@ -60,3 +61,25 @@ def test_complex_tostring():
     assert str(force) == "10 N"
     assert str(expected) == "20 J"
     assert str(displacement * force) == "20 m^2 kg s^-2"
+
+
+def test_complex_to_latex():
+    displacement = meters(2)
+    force = newtons(10)
+    expected = joules(20)
+
+    assert displacement.to_latex() == r"\qty{2}{m}"
+    assert force.to_latex() == r"\qty{10}{N}"
+    assert expected.to_latex() == r"\qty{20}{J}"
+    assert (displacement * force).to_latex() == r"\qty{20}{m^{2}.kg.s^{-2}}"
+
+
+def test_complex_to_latex_old():
+    displacement = meters(2)
+    force = newtons(10)
+    expected = joules(20)
+
+    assert displacement.to_latex(SIUNITX_OLD) == r"\SI{2}{m}"
+    assert force.to_latex(SIUNITX_OLD) == r"\SI{10}{N}"
+    assert expected.to_latex(SIUNITX_OLD) == r"\SI{20}{J}"
+    assert (displacement * force).to_latex(SIUNITX_OLD) == r"\SI{20}{m^{2}.kg.s^{-2}}"

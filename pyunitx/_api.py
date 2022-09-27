@@ -1,3 +1,4 @@
+import re
 import textwrap
 from decimal import Decimal
 from numbers import Number
@@ -12,6 +13,8 @@ __all__ = [
     "make_unit",
     "make_compound_dimension",
     "make_compound_unit",
+    "SIUNITX_NEW",
+    "SIUNITX_OLD",
 ]
 UnitOperand = Union['UnitInterface', Number]
 Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
@@ -19,6 +22,9 @@ Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
 Pair = Tuple[Unitlike, int]
 Pairs = Tuple[Pair, ...]
 Exponents = Union[Pairs, Dict[Unitlike, int]]
+
+SIUNITX_NEW = 3
+SIUNITX_OLD = 2
 
 
 def make_dimension(name: str) -> 'DimensionBase':
@@ -230,8 +236,38 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
         rounded = sigfig.round(self.value, sigfigs=figs)
         return type(self)(rounded)
 
-    # noinspection PyTypeChecker
+    def to_latex(self, siunitx_major_version=SIUNITX_NEW):
+        r"""Output this unit value as it would be used in LaTeX with siunitx.
+
+        Maybe script your calculations, then write the output to a .tex file
+        and include it in your main document.
+
+        :param siunitx_major_version: siunitx changed the name of its macro
+            that outputs a number with a unit in version 3.0. Prior, it was
+            ``\SI{number}{units}``, and after it was ``\qty{number}{units}``.
+            Defaults to the most recent version. If you're using an older one,
+            for instance if your TeXLive distribution is a few years old, pass
+            in :data:`pyunitx.SIUNITX_OLD`, an alias for 2. I doubt anyone is
+            using version 1.
+        :return: A string formatted for direct inclusion in LaTeX.
+        """
+        if siunitx_major_version >= 3:
+            fmt = r"\qty{{{value}}}{{{unit}}}"
+        else:
+            fmt = r"\SI{{{value}}}{{{unit}}}"
+        if re.match(r"^\w+$", self.abbreviation):
+            # This unit has an elementary name, like J for joules
+            return fmt.format(value=self.value, unit=self.abbreviation)
+        units = []
+        for u, e in self.composition.to_pairs():
+            if e == 1:
+                units.append(u.abbreviation)
+            else:
+                units.append(f"{u.abbreviation}^{{{e}}}")
+        return fmt.format(value=self.value, unit=".".join(units))
+
     # @formatter:off
+    # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
         "__new__": new,
         "__add__": add,
@@ -255,6 +291,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
         "equivalent_to": equivalent,
         "sig_figs": sig_figs,
         "abbreviation": abbrev,
+        "to_latex": to_latex,
     })
     # @formatter:on
     unit.composition = Compound(((unit, 1),))

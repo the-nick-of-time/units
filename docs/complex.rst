@@ -21,14 +21,14 @@ Energy
 
 .. automodule:: pyunitx.energy
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 Power
 -----
 
 .. automodule:: pyunitx.power
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 
 Volume
@@ -36,7 +36,7 @@ Volume
 
 .. automodule:: pyunitx.volume
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 
 Derived Units
@@ -44,4 +44,4 @@ Derived Units
 
 .. automodule:: pyunitx.derived
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
