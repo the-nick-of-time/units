@@ -13,7 +13,6 @@ coverage = "^6.4.4"
 pytest = "^7.0"
 lz4 = "^4.0.2"
 Sphinx = "^5.2.0.post0"
-pytest-readme = "^1.0.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
@@ -22,5 +21,6 @@ build-backend = "poetry.masonry.api"
 [tool.pytest.ini_options]
 addopts = [
     "-v",
-    "-rP"
+    "-rP",
+    "--doctest-glob=README.md",
 ]

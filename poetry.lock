@@ -231,17 +231,6 @@ tomli = ">=1.0.0"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
-name = "pytest-readme"
-version = "1.0.1"
-description = "Test your README.md file"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytest = "*"
-
-[[package]]
 name = "pytz"
 version = "2022.2.1"
 description = "World timezone definitions, modern and historical"
@@ -441,7 +430,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "9153bdd4527b1d2279b6ad409cf70a1f8fa3a3a30ad75322e96bce1b509956c6"
+content-hash = "488c34fe832aee7cb2a84d32ffec3064a4628d9c4d3f2b52e2c1b189759e3ef0"
 
 [metadata.files]
 alabaster = [
@@ -632,9 +621,6 @@ pyparsing = [
 pytest = [
     { file = "pytest-7.1.3-py3-none-any.whl", hash = "sha256:1377bda3466d70b55e3f5cecfa55bb7cfcf219c7964629b967c37cf0bda818b7" },
     { file = "pytest-7.1.3.tar.gz", hash = "sha256:4f365fec2dff9c1162f834d9f18af1ba13062db0c708bf7b946f8a5c76180c39" },
-]
-pytest-readme = [
-    { file = "pytest-readme-1.0.1.tar.gz", hash = "sha256:9ee3f0317c57eface38678f838f08db22256f034e7fd0629fbdcd3f8db47afd7" },
 ]
 pytz = [
     { file = "pytz-2022.2.1-py2.py3-none-any.whl", hash = "sha256:220f481bdafa09c3955dfbdddb7b57780e9a94f5127e35456a48589b9e0c0197" },

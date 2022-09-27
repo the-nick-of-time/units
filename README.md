@@ -11,53 +11,57 @@ given as strings rather than float literals.
 
 Q. How many meters does light travel in a millisecond?
 
-```python
-from units.time import seconds
-from units.constants import c
+```pycon
+>>> from units.time import seconds
+>>> from units.constants import c
+>>> 
+>>> (c * seconds("1e-3")).sig_figs(5)
+2.9979E+5 m
 
-print((c * seconds("1e-3")).sig_figs(5))
-# 2.9979E+5 meters
 ```
 
 Q. What is that in feet?
 
-```python
-from units.time import seconds
-from units.constants import c
+```pycon
+>>> from units.time import seconds
+>>> from units.constants import c
+>>> 
+>>> (c * seconds("1e-3")).to_feet().sig_figs(5)
+9.8357E+5 ft
 
-print((c * seconds("1e-3")).to_feet().sig_figs(5))
-# 9.8357E+5 feet
 ```
 
 Q. How fast is someone on the equator moving around the center of the earth?
 
-```python
-from units.time import days
-from units.constants import earth_radius
-from math import pi
+```pycon
+>>> from units.time import days
+>>> from units.constants import earth_radius
+>>> from math import pi
+>>> 
+>>> circumference = 2 * pi * earth_radius
+>>> (circumference / days(1)).to_meters_per_second().sig_figs(3)
+464 m s^-1
 
-circumference = 2 * pi * earth_radius
-print((circumference / days(1)).to_meters_per_second().sig_figs(3))
-# 464 meters_per_second
 ```
 
 Q. What's the mass of air in one of your car tires, if the inner radius is 6 inches, the outer
 radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?
 
-```python
-from units.length import inches
-from units.pressure import psi
-from units.constants import R, air_molar_mass
-from units.temperature import celsius, celsius_to_kelvin_absolute
-from math import pi
+```pycon
+>>> from units.length import inches
+>>> from units.pressure import psi
+>>> from units.constants import R, air_molar_mass
+>>> from units.temperature import celsius, celsius_to_kelvin_absolute
+>>> from math import pi
+>>> 
+>>> volume = (pi * inches(8) * (inches("12.5") ** 2 - inches(6) ** 2)).to_meters_cubed()
+>>> pressure = psi(42).to_pascals()
+>>> temperature = celsius_to_kelvin_absolute(celsius(25))
+>>> mols = pressure * volume / (R * temperature)
+>>> mass = mols * air_molar_mass
+>>> mass.to_avoirdupois_pounds_mass().sig_figs(3)
+0.369 lbm_A
 
-volume = (pi * inches(8) * (inches("12.5") ** 2 - inches(6) ** 2)).to_meters_cubed()
-pressure = psi(42).to_pascals()
-temperature = celsius_to_kelvin_absolute(celsius(25))
-mols = pressure * volume / (R * temperature)
-mass = mols * air_molar_mass
-print(mass.to_avoirdupois_pounds_mass().sig_figs(3))
-# 0.369 avoirdupois_pounds_mass
 ```
 
 All constants like `R` are defined in SI base units so you will need to convert your units, but
