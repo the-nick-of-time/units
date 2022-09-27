@@ -4,14 +4,14 @@
 # Sane error handling
 set -e -u -o pipefail
 
-function default {
+function default() {
 	# Fill this to run a default task (with whatever arguments you want too)
 	task_help
 }
 
 ### HELPER FUNCTIONS
 function fetch_fftab_script() {
-	if [ ! -f list-fftabs.py ] ; then
+	if [ ! -f list-fftabs.py ]; then
 		curl --remote-name http://nthurmes.duckdns.org/files/list-fftabs.py
 	fi
 }
@@ -21,6 +21,29 @@ function already_open() {
 	opened="$(poetry run python list-fftabs.py)"
 	# implicit return the exit status of grep
 	grep -q "$1$" <<<"$opened"
+}
+
+function tag() {
+	version="$(poetry version --short)"
+
+	if [ -n "$(git status --short)" ]; then
+		echo >&2 Working tree not clean, make a commit to get into a publishable state
+		return 1
+	fi
+
+	if git tag "$version"; then
+		return 0
+	else
+		existing="$(git rev-parse "$version")"
+		head="$(git rev-parse HEAD)"
+		if [ "$existing" = "$head" ]; then
+			# already tagged the current commit, maybe with an aborted publish run
+			return 0
+		else
+			echo >&2 "$version" was already tagged on some other commit, bump the version or move that tag to the current commit
+			return 2
+		fi
+	fi
 }
 
 ### TASKS
@@ -33,7 +56,7 @@ function task_coverage() {
 	: "Compile and open unit test coverage statistics"
 	target="htmlcov/index.html"
 	poetry run make "$target"
-	if ! already_open "$target" ; then
+	if ! already_open "$target"; then
 		firefox "$target"
 	fi
 }
@@ -42,7 +65,7 @@ function task_docs() {
 	: "Build and open docs"
 	target="docs/_build/index.html"
 	poetry run make "$target"
-	if ! already_open "$target" ; then
+	if ! already_open "$target"; then
 		firefox "$target"
 	fi
 }
@@ -67,20 +90,33 @@ function task_clean() {
 
 function task_coveralls() {
 	: "Upload the coverage data to coveralls to update badge"
+	if [[ ! $(git rev-parse remotes/github/main) = $(git rev-parse HEAD) ]] || [[ -n "$(git status --porcelain)" ]]; then
+		echo "Must be up-to-date with published repo and have a clean working tree for results to be meaningful"
+		return 1
+	fi
+	task_coverage
 	COVERALLS_REPO_TOKEN="$COVERALLS_PYUNITX" poetry run coveralls
+}
+
+function task_publish() {
+	: "Publish to PyPi"
+	task_build
+	tag
+	poetry publish --username="$PYPI_USERNAME" --password="$PYPI_PASSWORD"
+	task_coveralls
 }
 
 # Print documentation for tasks
 function task_help {
 	: "Auto-generate list of tasks, including documentation in the form of these noop statements"
-	compgen -A function | while read -r name ; do
-		if [[ $name =~ ^task_ ]] ; then
+	compgen -A function | while read -r name; do
+		if [[ $name =~ ^task_ ]]; then
 			paste <(printf '%s' "${name#task_}") <(type "$name" | sed -nEe 's/^[[:space:]]*: ?"(.*)";/\1/p')
 		fi
 	done
 }
 
-if [[ $# -eq 0 ]] ; then
+if [[ $# -eq 0 ]]; then
 	default
 else
 	cmd="task_$1"
