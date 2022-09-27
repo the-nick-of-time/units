@@ -95,7 +95,7 @@ function task_coveralls() {
 		return 1
 	fi
 	task_coverage
-	COVERALLS_REPO_TOKEN="$COVERALLS_PYUNITX" poetry run coveralls
+	COVERALLS_REPO_TOKEN="$COVERALLS_PYUNITX" CI_BRANCH=main poetry run coveralls
 }
 
 function task_publish() {
