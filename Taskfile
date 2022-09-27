@@ -26,7 +26,8 @@ function already_open {
 ### TASKS
 function task_test() {
 	: "Run unit test suite"
-	poetry run pytest --no-header -v -rP "$@"
+	task_test_setup
+	poetry run pytest "$@"
 }
 
 function task_test_setup() {
