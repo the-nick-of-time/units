@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "pyunitx"
 version = "0.1.0"
-description = ""
+description = "First-class manipulation of physical quantities"
 authors = ["Nick Thurmes <nthurmes@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
