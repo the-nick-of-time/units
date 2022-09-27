@@ -101,3 +101,9 @@ def test_pow_sqrt_failure():
 
     with pytest.raises(ValueError):
         print(c ** (1 / 2))
+
+
+def test_decompose():
+    c = Compound(((newtons, 2),))
+
+    assert c.to_pairs() == ((kilograms, 2), (meters, 2), (seconds, -4))

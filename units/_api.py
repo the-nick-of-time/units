@@ -346,7 +346,7 @@ def _decompose_all(exponents: Pairs) -> Pairs:
     accumulator = []
     for unitish, exponent in exponents:
         accumulator.extend(_decompose(unitish, exponent))
-    return tuple(sorted(accumulator, key=lambda p: (-p[1], p[0].__name__)))
+    return _sort(accumulator)
 
 
 def _decompose(unit: Unitlike, factor: int) -> Pairs:
@@ -388,7 +388,11 @@ class DimensionBase:
             key = name
         elif len(exponents) == 1 and exponents[0][1] == 1:
             # If you end up with a base unit after a calculation
-            key = name
+            decomposed = _decompose_all(exponents)
+            if len(decomposed) == 1 and decomposed[0][1] == 1:
+                key = name
+            else:
+                key = decomposed
         else:
             # Compound dimensions with the same base dimensions must refer to the same thing
             key = _decompose_all(exponents)
@@ -397,7 +401,6 @@ class DimensionBase:
         this = cls.__INSTANCES[key]
         this.__name__ = name
         this.composition = Compound(exponents or ((this, 1),))
-        this.dimension = this
         return this
 
     def __hash__(self):
