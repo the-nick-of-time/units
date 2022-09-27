@@ -4,7 +4,7 @@ from units._api import make_compound_unit
 from units.energy import joules
 from units.length import meters
 from units.mass import kilograms
-from units.mole import mol
+from units.mole import mole
 from units.power import watts
 from units.pressure import pascals
 from units.temperature import kelvin
@@ -44,12 +44,12 @@ def _construct_standard_gravity():
 
 
 def _construct_gas_constant():
-    unit = make_compound_unit(scale=1, exponents={joules: 1, mol: -1, kelvin: -1})
+    unit = make_compound_unit(scale=1, exponents={joules: 1, mole: -1, kelvin: -1})
     return unit("8.314462618")
 
 
 def _construct_air_molar_mass():
-    unit = make_compound_unit(scale=1, exponents={kilograms: 1, mol: -1})
+    unit = make_compound_unit(scale=1, exponents={kilograms: 1, mole: -1})
     # https://www.engineeringtoolbox.com/molecular-mass-air-d_679.html
     return unit(".0289647")
 

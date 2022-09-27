@@ -29,9 +29,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'nature'
-html_static_path = ['_static']
 
 # -- Autodoc configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 
 # Group module members by type: class, then function, then constant
 # Also gets it to respect the order of __all__

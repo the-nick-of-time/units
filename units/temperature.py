@@ -37,9 +37,43 @@ celsius = make_unit(name="celsius", dimension=Temperature, scale=1, doc="""\
     The ``to_kelvin`` at the end is of course not strictly necessary, depending
     on how you are interpreting the results, but is certainly in line with 
     intention.
-    """)
-fahrenheit = make_unit(name="fahrenheit", dimension=Temperature, scale=Decimal(5) / 9)
-rankine = make_unit(name="rankine", dimension=Temperature, scale=Decimal(5) / 9)
+    """
+                    )
+fahrenheit = make_unit(
+    name="fahrenheit",
+    dimension=Temperature,
+    scale=Decimal(5) / 9,
+    doc="""\
+    Within this module, all temperatures are treated as deltas, ignoring the
+    fact that the systems have different zeros. Thus, calling 
+    ``fahrenheit(25).to_rankine()`` will *not* produce ``rankine(484.67)`` as 
+    you might expect, but rather ``rankine(25)``. To help out, the value of 
+    absolute zero has been provided in each of the non-absolute units.
+    
+    To convert from a direct measurement in degrees Fahrenheit to one in degrees 
+    Rankine, use 
+    ``(<fahrenheit measurement> - absolute_zero_fahrenheit).to_rankine()``.
+    The ``to_rankine`` at the end is of course not strictly necessary, depending
+    on how you are interpreting the results, but is certainly in line with 
+    intention.
+    """
+)
+rankine = make_unit(
+    name="rankine",
+    dimension=Temperature,
+    scale=Decimal(5) / 9,
+    doc="""\
+    Within this module, all temperatures are treated as deltas, ignoring the
+    fact that the systems have different zeros. Thus, calling 
+    ``fahrenheit(25).to_rankine()`` will *not* produce ``rankine(484.67)`` as 
+    you might expect, but rather ``rankine(25)``. To help out, the value of 
+    absolute zero has been provided in each of the non-absolute units.
+    
+    Degrees Rankine are the US Customary scale's absolute temperature scale.
+    Its degrees are the same size as Fahrenheit but its zero is at absolute 
+    zero.
+    """
+)
 
 absolute_zero_celsius = celsius("-273.15")
 absolute_zero_fahrenheit = fahrenheit("-459.67")
