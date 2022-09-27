@@ -1,4 +1,4 @@
-from units._api import DimensionBase
+from pyunitx._api import DimensionBase
 
 
 def test_base_create():

@@ -1,4 +1,4 @@
-from units._api import make_dimension, make_unit
+from pyunitx._api import make_dimension, make_unit
 
 __all__ = [
     "Length",
@@ -68,6 +68,6 @@ astronomical_unit = au = make_unit(
     doc="""\
     One astronomical unit, or AU, is the average distance between Earth and the
     Sun. It's used in astronomical measurements, and is part of the definition
-    of the :class:`parsec <units.derived.parsec>`.
+    of the :class:`parsec <pyunitx.derived.parsec>`.
     """
 )

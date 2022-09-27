@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from units._api import make_dimension, make_unit, make_compound_dimension, make_compound_unit
+from pyunitx._api import make_dimension, make_unit, make_compound_dimension, make_compound_unit
 
 __all__ = [
     "Time",

@@ -1,8 +1,8 @@
 import pytest
 
-from units._api import Multiset
-from units.length import meters
-from units.time import seconds
+from pyunitx._api import Multiset
+from pyunitx.length import meters
+from pyunitx.time import seconds
 
 
 @pytest.fixture

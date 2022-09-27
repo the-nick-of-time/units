@@ -1,4 +1,4 @@
-from units.constants import g, R_E, M_E, G
+from pyunitx.constants import g, R_E, M_E, G
 
 
 def test_gravity_derivation():

@@ -1,7 +1,7 @@
-Welcome to units's documentation!
-=================================
+pyunitx
+=======
 
-.. automodule:: units
+.. automodule:: pyunitx
 
 .. toctree::
    :maxdepth: 2

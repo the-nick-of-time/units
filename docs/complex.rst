@@ -5,28 +5,28 @@ Compound Dimensions and Units
 Force
 -----
 
-.. automodule:: units.force
+.. automodule:: pyunitx.force
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
 Pressure
 --------
 
-.. automodule:: units.pressure
+.. automodule:: pyunitx.pressure
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
 Energy
 ------
 
-.. automodule:: units.energy
+.. automodule:: pyunitx.energy
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
 Power
 -----
 
-.. automodule:: units.power
+.. automodule:: pyunitx.power
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
@@ -34,7 +34,7 @@ Power
 Volume
 ------
 
-.. automodule:: units.volume
+.. automodule:: pyunitx.volume
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
@@ -42,6 +42,6 @@ Volume
 Derived Units
 -------------
 
-.. automodule:: units.derived
+.. automodule:: pyunitx.derived
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to

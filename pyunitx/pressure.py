@@ -1,6 +1,6 @@
-from units._api import make_compound_dimension, make_compound_unit
-from units.force import Force, pounds, newtons
-from units.length import Length, meters, inches
+from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx.force import Force, pounds, newtons
+from pyunitx.length import Length, meters, inches
 
 __all__ = ["Pressure", "pascals", "bars", "psi"]
 

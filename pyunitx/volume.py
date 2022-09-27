@@ -1,5 +1,5 @@
-from units._api import make_compound_dimension, make_compound_unit
-from units.length import Length, meters, feet
+from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx.length import Length, meters, feet
 
 __all__ = [
     "meters_cubed",

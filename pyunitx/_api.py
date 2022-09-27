@@ -5,7 +5,7 @@ from typing import Union, Tuple, Sequence, Type, Dict, Iterator
 
 import sigfig
 
-from units._exceptions import OperationError, ImplicitConversionError
+from pyunitx._exceptions import OperationError, ImplicitConversionError
 
 __all__ = [
     "make_dimension",

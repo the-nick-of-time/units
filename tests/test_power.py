@@ -1,4 +1,4 @@
-from units.power import watts, Power, kilowatts, horsepower
+from pyunitx.power import watts, Power, kilowatts, horsepower
 
 
 def test_dimension():

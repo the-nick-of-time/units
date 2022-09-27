@@ -10,32 +10,32 @@ The full suite of functions on a unit is shown for :class:`units.length.meters` 
 All units have exactly the same interface so the copies are omitted for brevity.
 
 .. _unit-example:
-.. autoclass:: units.length.meters
+.. autoclass:: pyunitx.length.meters
 	:members:
 	:special-members: __new__, __add__, __sub__, __eq__, __mul__, __truediv__, __getattr__, __pow__
 
-.. automodule:: units.length
+.. automodule:: pyunitx.length
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, meters
 
 Time
 ----
 
-.. automodule:: units.time
+.. automodule:: pyunitx.time
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
 Mass
 ----
 
-.. automodule:: units.mass
+.. automodule:: pyunitx.mass
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
 Temperature
 -----------
 
-.. automodule:: units.temperature
+.. automodule:: pyunitx.temperature
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
@@ -43,7 +43,7 @@ Temperature
 Angle
 -----
 
-.. automodule:: units.angle
+.. automodule:: pyunitx.angle
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to
 
@@ -51,6 +51,6 @@ Angle
 Moles
 -----
 
-.. automodule:: units.mole
+.. automodule:: pyunitx.mole
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to

@@ -1,7 +1,7 @@
 import pytest
 
-from units._exceptions import UnitException
-from units.temperature import celsius, celsius_to_kelvin_absolute, kelvin, fahrenheit
+from pyunitx._exceptions import UnitException
+from pyunitx.temperature import celsius, celsius_to_kelvin_absolute, kelvin, fahrenheit
 
 
 def test_celsius_to_absolute():

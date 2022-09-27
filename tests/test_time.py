@@ -1,4 +1,4 @@
-from units.time import seconds, hertz
+from pyunitx.time import seconds, hertz
 
 
 def test_hertz_cancel():

@@ -1,4 +1,4 @@
-from units.pressure import psi, bars, Pressure
+from pyunitx.pressure import psi, bars, Pressure
 
 
 def test_conversion():

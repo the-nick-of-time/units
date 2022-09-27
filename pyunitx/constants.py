@@ -1,15 +1,15 @@
 from decimal import Decimal
 
-from units._api import make_compound_unit
-from units.energy import joules
-from units.length import meters
-from units.mass import kilograms
-from units.mole import mole
-from units.power import watts
-from units.pressure import pascals
-from units.temperature import kelvin
-from units.time import seconds
-from units.velocity import meters_per_second
+from pyunitx._api import make_compound_unit
+from pyunitx.energy import joules
+from pyunitx.length import meters
+from pyunitx.mass import kilograms
+from pyunitx.mole import mole
+from pyunitx.power import watts
+from pyunitx.pressure import pascals
+from pyunitx.temperature import kelvin
+from pyunitx.time import seconds
+from pyunitx.velocity import meters_per_second
 
 __all__ = [
     "c", "speed_of_light",

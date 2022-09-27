@@ -49,7 +49,7 @@ function task_docs() {
 
 function task_build {
 	: "Build wheel from the sources"
-	poetry run make "dist/units-$(poetry version --short)-py3-none-any.whl"
+	poetry run make "dist/pyunitx-$(poetry version --short)-py3-none-any.whl"
 }
 
 function task_clean {

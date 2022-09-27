@@ -1,6 +1,6 @@
-from units._api import make_compound_dimension, make_compound_unit
-from units.length import Length, kilometers, meters, miles
-from units.time import seconds, hours, Time
+from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx.length import Length, kilometers, meters, miles
+from pyunitx.time import seconds, hours, Time
 
 __all__ = [
     "Velocity",

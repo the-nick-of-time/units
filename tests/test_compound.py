@@ -1,12 +1,12 @@
 import pytest
 
-from units._api import Compound, Multiset
-from units._exceptions import ImplicitConversionError
-from units.force import newtons
-from units.length import meters, kilometers
-from units.mass import kilograms
-from units.temperature import kelvin
-from units.time import seconds
+from pyunitx._api import Compound, Multiset
+from pyunitx._exceptions import ImplicitConversionError
+from pyunitx.force import newtons
+from pyunitx.length import meters, kilometers
+from pyunitx.mass import kilograms
+from pyunitx.temperature import kelvin
+from pyunitx.time import seconds
 
 
 def test_simple_pairs():

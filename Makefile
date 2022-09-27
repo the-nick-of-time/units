@@ -5,13 +5,13 @@ documentation = $(wildcard docs/*.rst) docs/conf.py
 version := $(shell poetry version --short)
 
 .coverage: $(sources) $(tests) .coveragerc
-	coverage run -m pytest --no-header
+	coverage run -m pytest
 	coverage report
 
 htmlcov/index.html: .coverage
 	coverage html
 
-dist/units-$(version).tar.gz dist/units-$(version)-py3-none-any.whl: .coverage docs/_build/index.html
+dist/pyunitx-$(version).tar.gz dist/pyunitx-$(version)-py3-none-any.whl: .coverage docs/_build/index.html
 	poetry build
 
 docs/_build/index.html: $(documentation) $(sources)

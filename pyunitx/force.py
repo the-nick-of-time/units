@@ -1,7 +1,7 @@
-from units._api import make_compound_dimension, make_compound_unit
-from units.length import Length, meters, feet
-from units.mass import Mass, kilograms, slug
-from units.time import Time, seconds
+from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx.length import Length, meters, feet
+from pyunitx.mass import Mass, kilograms, slug
+from pyunitx.time import Time, seconds
 
 __all__ = ["Force", "newtons", "pounds", "kgf", "kilograms_force"]
 

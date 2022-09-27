@@ -1,4 +1,4 @@
-from units.derived import parsec, lightyear
+from pyunitx.derived import parsec, lightyear
 
 
 def test_long_distances():

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "units"
+name = "pyunitx"
 version = "0.1.0"
 description = ""
 authors = ["Nick Thurmes <nthurmes@gmail.com>"]

@@ -1,8 +1,8 @@
-from units._api import make_unit
-from units.angle import arcsecond
-from units.constants import c
-from units.length import Length, au
-from units.time import julian_years
+from pyunitx._api import make_unit
+from pyunitx.angle import arcsecond
+from pyunitx.constants import c
+from pyunitx.length import Length, au
+from pyunitx.time import julian_years
 
 __all__ = ["parsec", "lightyear"]
 
@@ -20,7 +20,7 @@ parsec = make_unit(
     with a little trigonometry.
     
     If a star moves across an angle of one 
-    :class:`arcsecond <units.angle.arcsecond>` as we observe it at either end of
+    :class:`arcsecond <pyunitx.angle.arcsecond>` as we observe it at either end of
     a distance of 1 AU, that means it is one parsec away. 
     """
 )

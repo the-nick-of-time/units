@@ -1,4 +1,4 @@
-"""A module for the programming-level manipulation of physical quantities.
+"""A module for the first-class manipulation of physical quantities.
 
 Most conversion factors come from
 `this document from NIST <https://physics.nist.gov/cuu/pdf/sp811.pdf>`_.

@@ -1,8 +1,8 @@
 import pytest
 
-from units._api import make_compound_dimension
-from units._exceptions import OperationError, ImplicitConversionError
-from units.length import kilometers, meters, feet, inches, yards, Length
+from pyunitx._api import make_compound_dimension
+from pyunitx._exceptions import OperationError, ImplicitConversionError
+from pyunitx.length import kilometers, meters, feet, inches, yards, Length
 
 
 def test_km_to_m():

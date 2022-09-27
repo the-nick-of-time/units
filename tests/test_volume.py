@@ -1,7 +1,7 @@
 import pytest
 
-from units.length import inches
-from units.volume import feet_cubed
+from pyunitx.length import inches
+from pyunitx.volume import feet_cubed
 
 
 def test_exponent_scale():

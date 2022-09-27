@@ -2,5 +2,5 @@ Physical Constants
 ==================
 .. include:: macros.rst
 
-.. automodule:: units.constants
+.. automodule:: pyunitx.constants
 	:members:

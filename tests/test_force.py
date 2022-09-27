@@ -1,10 +1,10 @@
 import pytest
 
-from units.constants import atm
-from units.energy import joules
-from units.force import pounds, kgf, newtons
-from units.length import meters
-from units.pressure import bars
+from pyunitx.constants import atm
+from pyunitx.energy import joules
+from pyunitx.force import pounds, kgf, newtons
+from pyunitx.length import meters
+from pyunitx.pressure import bars
 
 
 def test_equivalence():

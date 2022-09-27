@@ -1,8 +1,8 @@
-from units._api import make_compound_dimension, make_compound_unit
-from units.energy import Energy, joules
-from units.force import pounds
-from units.length import feet
-from units.time import Time, seconds
+from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx.energy import Energy, joules
+from pyunitx.force import pounds
+from pyunitx.length import feet
+from pyunitx.time import Time, seconds
 
 __all__ = [
     "Power",

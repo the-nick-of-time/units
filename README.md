@@ -12,8 +12,8 @@ given as strings rather than float literals.
 Q. How many meters does light travel in a millisecond?
 
 ```pycon
->>> from units.time import seconds
->>> from units.constants import c
+>>> from pyunitx.time import seconds
+>>> from pyunitx.constants import c
 >>> 
 >>> (c * seconds("1e-3")).sig_figs(5)
 2.9979E+5 m
@@ -23,8 +23,8 @@ Q. How many meters does light travel in a millisecond?
 Q. What is that in feet?
 
 ```pycon
->>> from units.time import seconds
->>> from units.constants import c
+>>> from pyunitx.time import seconds
+>>> from pyunitx.constants import c
 >>> 
 >>> (c * seconds("1e-3")).to_feet().sig_figs(5)
 9.8357E+5 ft
@@ -34,8 +34,8 @@ Q. What is that in feet?
 Q. How fast is someone on the equator moving around the center of the earth?
 
 ```pycon
->>> from units.time import days
->>> from units.constants import earth_radius
+>>> from pyunitx.time import days
+>>> from pyunitx.constants import earth_radius
 >>> from math import pi
 >>> 
 >>> circumference = 2 * pi * earth_radius
@@ -48,10 +48,10 @@ Q. What's the mass of air in one of your car tires, if the inner radius is 6 inc
 radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?
 
 ```pycon
->>> from units.length import inches
->>> from units.pressure import psi
->>> from units.constants import R, air_molar_mass
->>> from units.temperature import celsius, celsius_to_kelvin_absolute
+>>> from pyunitx.length import inches
+>>> from pyunitx.pressure import psi
+>>> from pyunitx.constants import R, air_molar_mass
+>>> from pyunitx.temperature import celsius, celsius_to_kelvin_absolute
 >>> from math import pi
 >>> 
 >>> volume = (pi * inches(8) * (inches("12.5") ** 2 - inches(6) ** 2)).to_meters_cubed()

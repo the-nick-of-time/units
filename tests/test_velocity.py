@@ -1,6 +1,6 @@
-from units.length import meters, kilometers, feet, Length
-from units.time import seconds, hours, minutes
-from units.velocity import meters_per_second, kilometers_per_hour, miles_per_hour
+from pyunitx.length import meters, kilometers, feet, Length
+from pyunitx.time import seconds, hours, minutes
+from pyunitx.velocity import meters_per_second, kilometers_per_hour, miles_per_hour
 
 
 def test_mph_to_kph():
