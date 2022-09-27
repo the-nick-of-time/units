@@ -125,3 +125,29 @@ def test_decompose():
     c = Compound(((newtons, 2),))
 
     assert c.to_pairs() == ((kilograms, 2), (meters, 2), (seconds, -4))
+
+
+def test_from_string_base():
+    c = Compound.from_string("meters")
+    expected = Compound(((meters, 1),))
+
+    assert c == expected
+
+
+def test_from_string_exponent():
+    c = Compound.from_string("meters_cubed")
+    expected = Compound(((meters, 3),))
+
+    assert c == expected
+
+
+def test_from_string_denom():
+    c = Compound.from_string("meters_per_second")
+    expected = Compound(((meters, 1), (seconds, -1)))
+
+    assert c == expected
+
+
+def test_from_string_nonexistent():
+    with pytest.raises(KeyError):
+        Compound.from_string("foo_squared")

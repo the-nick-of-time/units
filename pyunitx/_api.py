@@ -589,7 +589,8 @@ class Compound:
 
     @classmethod
     def from_string(cls, spec: str) -> 'Compound':
-        value_names = {
+        name_values = {
+            None: 1,
             "": 1,
             "_squared": 2,
             "_cubed": 3,
@@ -606,7 +607,7 @@ class Compound:
                 if name not in _EXTANT_UNITS:
                     raise KeyError(f"The requested unit {name} does not exist")
             unit = _EXTANT_UNITS[name]
-            power = value_names[match.group(3)]
+            power = name_values[match.group(3)]
             if match.group(1):
                 power *= -1
             pairs.append((unit, power))
