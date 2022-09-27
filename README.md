@@ -1,5 +1,8 @@
 # Units
 
+[![Coverage Status](https://coveralls.io/repos/github/the-nick-of-time/units/badge.svg?branch=main)](https://coveralls.io/github/the-nick-of-time/units?branch=main)
+[![Documentation Status](https://readthedocs.org/projects/pyunitx/badge/?version=latest)](https://pyunitx.readthedocs.io/en/latest/?badge=latest)
+
 When doing calculations using physical measurements, it's all too easy to forget to account for
 units. This can result in problems when you find you've been adding kilograms to newtons and
 your calculation is off by a factor of ten.

@@ -16,7 +16,7 @@ function fetch_fftab_script() {
 	fi
 }
 
-function already_open {
+function already_open() {
 	fetch_fftab_script
 	opened="$(poetry run python list-fftabs.py)"
 	# implicit return the exit status of grep
@@ -47,12 +47,12 @@ function task_docs() {
 	fi
 }
 
-function task_build {
+function task_build() {
 	: "Build wheel from the sources"
 	poetry run make "dist/pyunitx-$(poetry version --short)-py3-none-any.whl"
 }
 
-function task_clean {
+function task_clean() {
 	: "Delete build and doc files for a fresh start"
 	(
 		cd "$(git rev-parse --show-toplevel)"
@@ -63,6 +63,11 @@ function task_clean {
 		rm -f conftest.py
 		rm -f test_readme.py
 	)
+}
+
+function task_coveralls() {
+	: "Upload the coverage data to coveralls to update badge"
+	COVERALLS_REPO_TOKEN="$COVERALLS_PYUNITX" poetry run coveralls
 }
 
 # Print documentation for tasks
