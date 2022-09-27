@@ -20,6 +20,7 @@ author = 'Nick Thurmes'
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.imgmath',
 ]
 
 templates_path = ['_templates']
