@@ -1,8 +1,9 @@
 """A module for the programming-level manipulation of physical quantities.
 
-Most conversion factors come from this document: https://physics.nist.gov/cuu/pdf/sp811.pdf
-And most values of constants come from this one:
-https://physics.nist.gov/cuu/Constants/Table/allascii.txt
+Most conversion factors come from
+`this document from NIST <https://physics.nist.gov/cuu/pdf/sp811.pdf>`_.
+Most values of constants come from
+`this list also from NIST <https://physics.nist.gov/cuu/Constants/Table/allascii.txt>`_.
 """
 
 # Importing all defined dimensions will ensure that all conversion functions

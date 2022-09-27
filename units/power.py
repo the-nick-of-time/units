@@ -4,14 +4,19 @@ from units.force import pounds
 from units.length import feet
 from units.time import Time, seconds
 
-__all__ = ["Power", "watts", "horsepower"]
+__all__ = [
+    "Power",
+    "watts",
+    "kilowatts",
+    "horsepower",
+]
 
 Power = make_compound_dimension({Energy: 1, Time: -1})
 
 watts = make_compound_unit(
+    name="watts",
     scale=1,
     exponents={joules: 1, seconds: -1},
-    name="watts",
     abbrev="W",
     doc="""\
     A watt is a joule per second. In most cases, like calculating the energy
@@ -19,7 +24,20 @@ watts = make_compound_unit(
     useful then multiplying by time to get overall energy usage.
     """
 )
+
+kilowatts = make_compound_unit(
+    name="kilowatts",
+    scale=1000,
+    exponents={joules: 1, seconds: -1},
+    abbrev="kW",
+    doc="""\
+    A kilowatt is 1000 joules per second. Most household appliances draw power
+    on the order of kilowatts.
+    """
+)
+
 horsepower = make_compound_unit(
+    name="horsepower",
     scale="7.456999e2",
     exponents={feet: 1, pounds: 1, seconds: -1},
     abbrev="hp",

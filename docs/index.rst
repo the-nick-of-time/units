@@ -1,6 +1,8 @@
 Welcome to units's documentation!
 =================================
 
+.. automodule:: units
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
