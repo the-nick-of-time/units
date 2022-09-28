@@ -32,7 +32,7 @@ _EXTANT_UNITS = {}
 def make_dimension(name: str) -> 'DimensionBase':
     """Dimensions are the basic measurable quantities about the world, like length and time.
 
-    For complex dimensions, see make_compound_dimension.
+    For complex dimensions, see :func:`make_compound_dimension`.
 
     :param name: The name of this dimension.
     :return: An object that captures information about the dimension and the
@@ -58,7 +58,8 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
         current unit. For instance, one kilometer has a scale of 1000 when the
         base unit is meters.
     :param abbrev: The canonical abbreviation for this unit, like "lb" for
-        pounds or "g" for grams. Used for output.
+        pounds or "g" for grams. Officially called the unit's symbol. Used for
+        output.
     :param doc: Documentation for this unit, optional.
     :return: A class representing the unit. Instances of this class are
         measurements using the unit.
@@ -344,7 +345,6 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
                        doc=""):
     """A unit composed of other units.
 
-    :param abbrev:
     :param scale: How many of the base unit one of this unit is equivalent to.
         Note that the scale factors of the constituent units are not taken into
         account. For instance, even though the conversion factor from meters per
@@ -357,6 +357,10 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     :param name: A name to give this unit, like joules. If no particular
         physical name exists, leave it unfilled and a name will be automatically
         constructed using the names of its component units and their exponents.
+    :param abbrev: A canonical abbreviation for this unit, like J for joules.
+        Officially called the unit's symbol. If no particular one exists, leave
+        it unfilled and it will be automatically be constructed using the
+        symbols of its base units.
     :param doc: Documentation for this unit, to show in tools like Sphinx.
     :return: A class representing this unit. Instances of the class are
         measurements with a magnitude.

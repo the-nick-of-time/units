@@ -1,4 +1,4 @@
-sources = $(wildcard units/*.py)
+sources = $(wildcard pyunitx/*.py)
 tests = $(wildcard tests/*.py)
 documentation = $(wildcard docs/*.rst) docs/conf.py
 
