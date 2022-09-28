@@ -15,12 +15,14 @@ Most values of constants come from
 # noinspection PyUnresolvedReferences
 from . import (
     angle,
+    area,
     charge,
     constants,
     current,
     derived,
     energy,
     force,
+    frequency,
     length,
     mass,
     mole,

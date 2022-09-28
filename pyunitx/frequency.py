@@ -1,4 +1,4 @@
-from pyunitx import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit
 from pyunitx.time import Time, seconds, minutes
 
 Frequency = make_compound_dimension({Time: -1}, "Frequency")
