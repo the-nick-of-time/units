@@ -52,3 +52,12 @@ def test_zero_exponent():
     alias = DimensionBase('alias', ((a, 2),))
 
     assert complex is alias
+
+
+def test_no_overwrite_name():
+    a = DimensionBase('a', ())
+    b = DimensionBase('b', ())
+    complex = DimensionBase('c', ((a, 1), (b, -2)))
+    alias = DimensionBase('alias', ((complex, 1),))
+
+    assert complex.__name__ == 'c' == alias.__name__

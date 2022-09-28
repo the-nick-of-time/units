@@ -451,10 +451,10 @@ class DimensionBase:
             key = _decompose_all(exponents)
         if key not in cls.__INSTANCES:
             cls.__INSTANCES[key] = super(DimensionBase, cls).__new__(cls)
-        this = cls.__INSTANCES[key]
-        this.__name__ = name
-        this.composition = Compound(exponents or ((this, 1),))
-        return this
+            this = cls.__INSTANCES[key]
+            this.__name__ = name
+            this.composition = Compound(exponents or ((this, 1),))
+        return cls.__INSTANCES[key]
 
     def __hash__(self):
         return hash(self.__name__)
