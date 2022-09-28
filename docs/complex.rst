@@ -39,6 +39,29 @@ Volume
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 
+Current
+-------
+
+.. automodule:: pyunitx.current
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+Resistance
+----------
+
+.. automodule:: pyunitx.resistance
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+
+Voltage
+-------
+
+.. automodule:: pyunitx.voltage
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+
 Derived Units
 -------------
 

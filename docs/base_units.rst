@@ -54,3 +54,11 @@ Moles
 .. automodule:: pyunitx.mole
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+
+Charge
+------
+
+.. automodule:: pyunitx.charge
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex

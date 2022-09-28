@@ -15,7 +15,9 @@ Most values of constants come from
 # noinspection PyUnresolvedReferences
 from . import (
     angle,
+    charge,
     constants,
+    current,
     derived,
     energy,
     force,
@@ -24,9 +26,11 @@ from . import (
     mole,
     power,
     pressure,
+    resistance,
     temperature,
     time,
     volume,
+    voltage,
 )
 
 from ._api import (
