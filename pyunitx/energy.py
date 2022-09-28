@@ -43,3 +43,13 @@ calorie = make_compound_unit(
     kilogram in the calculation instead.
     """
 )
+btu = make_compound_unit(
+    name="btu",
+    abbrev="btu",
+    scale="1.05435e3",
+    exponents=joules.composition.to_pairs(),
+    doc="""\
+    There are many different possible definitions of the British Thermal Unit, 
+    this is the thermochemical definition.
+    """
+)

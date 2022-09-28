@@ -1,5 +1,6 @@
+from pyunitx.frequency import hertz
 from pyunitx.length import kilometers, feet, meters
-from pyunitx.time import seconds, hertz, hours, minutes
+from pyunitx.time import seconds, hours, minutes
 
 
 def test_hertz_cancel():
