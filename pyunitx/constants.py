@@ -9,7 +9,6 @@ from pyunitx.power import watts
 from pyunitx.pressure import pascals
 from pyunitx.temperature import kelvin
 from pyunitx.time import seconds
-from pyunitx.velocity import meters_per_second
 
 __all__ = [
     "c", "speed_of_light",
@@ -57,7 +56,7 @@ def _construct_air_molar_mass():
 #: The speed of light in a vacuum *c* is an absolute constant of the universe.
 #: It now forms the foundation for the definition of the meter.
 #: It is given here in :math:`\frac{m}{s}`.
-c = meters_per_second(299_792_458)
+c = meters(299_792_458) / seconds(1)
 speed_of_light = c
 
 #: Newton's gravitational constant *G* shows up in the classical equation

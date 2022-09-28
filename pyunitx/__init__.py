@@ -8,6 +8,11 @@ Most values of constants come from
 `this list also from NIST <https://physics.nist.gov/cuu/Constants/Table/allascii.txt>`_.
 """
 
+# Importing all defined dimensions will ensure that all conversion functions
+# will work. Otherwise, the first time a calculation generates a unit, it will
+# create a new dimension that doesn't know about any of the other units
+# available.
+# noinspection PyUnresolvedReferences
 from . import (
     angle,
     constants,
@@ -21,14 +26,9 @@ from . import (
     pressure,
     temperature,
     time,
-    velocity,
     volume,
 )
-# Importing all defined dimensions will ensure that all conversion functions
-# will work. Otherwise, the first time a calculation generates a unit, it will
-# create a new dimension that doesn't know about any of the other units
-# available.
-# noinspection PyUnresolvedReferences
+
 from ._api import (
     make_dimension,
     make_unit,

@@ -1,5 +1,6 @@
 import re
 import textwrap
+import warnings
 from decimal import Decimal
 from numbers import Number
 from typing import Union, Tuple, Sequence, Type, Dict, Iterator
@@ -129,8 +130,13 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
         """
         if not other.is_dimension(self.dimension):
             raise ImplicitConversionError(type(other), type(self))
-        a = sigfig.round(self.value * self.scale, sigfigs=figs)
-        b = sigfig.round(other.value * other.scale, sigfigs=figs)
+        with warnings.catch_warnings():
+            # sigfig.round raises warnings if the quantity being rounded has fewer significant
+            # figures than are given, but for the purposes of this comparison, I don't care
+            # so ignore them all
+            warnings.simplefilter("ignore")
+            a = sigfig.round(self.value * self.scale, sigfigs=figs)
+            b = sigfig.round(other.value * other.scale, sigfigs=figs)
         return a == b
 
     def multiply(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
