@@ -43,14 +43,17 @@ def make_dimension(name: str) -> 'DimensionBase':
     return dimension
 
 
-def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, doc="") -> Type[
-    'UnitInterface']:
+def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: str, doc="") \
+        -> Type['UnitInterface']:
     """A unit is a particular convention for measuring a dimension.
 
     The resulting class represents the abstract concept of the unit, say meters.
     Instances of the class associate that unit with a number, defining in this
     example a particular length like 8 meters. Instances of a unit class are
-    called "measurements" within this documentation.
+    called "measurements" within this documentation. Instances are immutable;
+    any interactions with the public API will not change the object, anything
+    that appears like it (for instance rounding with ``.sig_figs``) instead
+    constructs and returns a copy.
 
     :param name: The name of the new unit, like "meters". Should be in its
         plural form.
@@ -654,4 +657,7 @@ class UnitInterface:
         ...
 
     def sig_figs(self, figures=3):
+        ...
+
+    def to_latex(self, siunitx_major_version=SIUNITX_NEW):
         ...
