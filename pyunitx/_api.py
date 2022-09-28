@@ -573,7 +573,7 @@ class Compound:
                     f"The exponentiation has caused a non-integer exponent on {t}, "
                     f"which is not allowed."
                 )
-            pairs.append((t, new_exponent))
+            pairs.append((t, int(new_exponent)))
         return Compound(tuple(pairs))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
