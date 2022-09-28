@@ -223,6 +223,14 @@ python-versions = ">=3.6"
 plugins = ["importlib-metadata"]
 
 [[package]]
+name = "pypandoc"
+version = "1.9"
+description = "Thin wrapper for pandoc."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -454,7 +462,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "30bfefcac683fd76a47797cbdcf53c985d376a88d0514a05d7eaee17ea65ee63"
+content-hash = "938a1b49c4953f04e543d0277a044839cdaad83d472aaddafa3b99a8ed62c6b4"
 
 [metadata.files]
 alabaster = [
@@ -644,6 +652,10 @@ py = [
 Pygments = [
     { file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42" },
     { file = "Pygments-2.13.0.tar.gz", hash = "sha256:56a8508ae95f98e2b9bdf93a6be5ae3f7d8af858b43e02c5a2ff083726be40c1" },
+]
+pypandoc = [
+    { file = "pypandoc-1.9-py3-none-any.whl", hash = "sha256:99013db9317fc631ba44bacdd61aed13cdabb77bfae3ee53de4684382c55c886" },
+    { file = "pypandoc-1.9.tar.gz", hash = "sha256:dbd6208ff1ff923072f53307926e8c40c71a9c8ba84e1b665e6cd011bebd4c07" },
 ]
 pyparsing = [
     { file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc" },

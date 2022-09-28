@@ -16,14 +16,6 @@ function fetch_fftab_script() {
 	fi
 }
 
-function fetch_pandoc() {
-	tgz=".pandoc/pandoc-2.19.2-linux-amd64.tar.gz"
-	if [ ! -f "$tgz" ] ; then
-		curl -o "$tgz" "https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-linux-amd64.tar.gz"
-		tar x -zf "$tgz" -C .pandoc
-	fi
-}
-
 function already_open() {
 	fetch_fftab_script
 	opened="$(poetry run python list-fftabs.py)"
@@ -71,7 +63,6 @@ function task_coverage() {
 
 function task_docs() {
 	: "Build and open docs"
-	fetch_pandoc
 	target="docs/_build/index.html"
 	poetry run make "$target"
 	if ! already_open "$target"; then

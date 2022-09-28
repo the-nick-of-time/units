@@ -5,8 +5,18 @@
 
 import os
 import sys
+from pathlib import Path
+
+from pypandoc import convert_file
+from pypandoc.pandoc_download import download_pandoc
 
 sys.path.insert(0, os.path.abspath(".."))
+download_pandoc()
+
+rst_text = convert_file("../README.md", format="gfm", to="rst")
+without_title = rst_text.split('\n')[3:]
+rst_readme = Path("README.rst")
+rst_readme.write_text('\n'.join(without_title))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
