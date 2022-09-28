@@ -13,7 +13,7 @@ def test_pound_mass():
     assert (g.to_feet_per_second_squared() * av_pound(1)).equivalent_to(pounds(1), 5)
 
 
-def gas_constant_to_usc():
-    us = R.to_feet_pounds_per_rankine_per_slug()
+def test_gas_constant_to_usc():
+    us = R.to_feet_pounds_per_mole_per_rankine()
 
-    assert us.sig_figs(4) == type(us)("49.72")
+    assert us.sig_figs(4) == type(us)("3.407")

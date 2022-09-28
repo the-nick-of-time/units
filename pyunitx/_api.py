@@ -229,6 +229,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
                 for u, e in composition.to_pairs():
                     base_scale *= u.scale ** e
                 make_compound_unit(
+                    name=key[3:],
                     scale=base_scale,
                     exponents=composition.to_pairs(),
                 )

@@ -45,7 +45,7 @@ def _construct_standard_gravity():
 
 def _construct_gas_constant():
     unit = make_compound_unit(scale=1, exponents={joules: 1, mole: -1, kelvin: -1})
-    return unit("8.314462618")
+    return unit("8.31446261815324")
 
 
 def _construct_air_molar_mass():
