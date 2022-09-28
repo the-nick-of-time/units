@@ -14,7 +14,7 @@ pascals = make_compound_unit(
     doc="""The pascal is the base unit of pressure, but it is very small."""
 )
 bars = make_compound_unit(
-    scale=1e5,
+    scale="1e5",
     exponents={newtons: 1, meters: -2},
     name="bars",
     abbrev="bar",

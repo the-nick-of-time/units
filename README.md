@@ -97,3 +97,19 @@ Some examples of the most complicated possible situations will be illustrative.
 You will notice that the output will have all units broken down to their bases. It is guaranteed
 to be equivalent.
 
+Now what happens if a calculation results in a predefined unit, like how newtons times seconds
+equals joules?
+
+```pycon
+>>> from pyunitx.voltage import volts
+>>> from pyunitx.resistance import ohms
+>>> print(volts(2) / ohms(100))
+0.02 A
+
+```
+
+Calculations check their result against all the units that have been specially defined to find a
+match. However, if you end up with a result that could be broken into some product of complex
+units (like newton-seconds) this library will *not* do that for you and instead display it in
+its basest components. This is because the number of possible options is large and it's not
+possible to figure out what you want.

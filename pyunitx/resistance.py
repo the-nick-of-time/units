@@ -4,8 +4,8 @@ from pyunitx.voltage import Potential, volts
 
 Resistance = make_compound_dimension(name="Resistance", exponents={Potential: 1, Current: -1})
 
-ohm = make_compound_unit(
-    name="ohm",
+ohms = make_compound_unit(
+    name="ohms",
     abbrev="Ω",
     exponents={volts: 1, amperes: -1},
     scale=1,

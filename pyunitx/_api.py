@@ -3,7 +3,7 @@ import textwrap
 import warnings
 from decimal import Decimal
 from numbers import Number
-from typing import Union, Tuple, Sequence, Type, Dict, Iterator
+from typing import Union, Tuple, Sequence, Type, Dict, Iterator, Optional
 
 import sigfig
 
@@ -376,9 +376,12 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     """
     if isinstance(exponents, dict):
         exponents = tuple(exponents.items())
+    composition = Compound(exponents)
+    existing = _access_unit_cache(composition, scale)
+    if existing:
+        return existing
     if name is None:
         name = str(Multiset(exponents))
-    composition = Compound(exponents)
     dims_extracted = tuple((unit.dimension, exp) for unit, exp in composition.to_pairs())
     dims = _sort(_dedupe(dims_extracted))
     dimension = make_compound_dimension(dims)
@@ -442,6 +445,15 @@ def _sort(d: Union[Exponents, Iterator[Pair]]) -> Pairs:
     else:
         pairs = d
     return tuple(sorted(pairs, key=lambda p: (-p[1], p[0].__name__)))
+
+
+def _access_unit_cache(c: 'Compound', scale) -> Optional['UnitInterface']:
+    remap = {(_sort(_dedupe(unit.composition.to_pairs())), unit.scale): unit
+             for name, unit in _EXTANT_UNITS.items()}
+    key = (_sort(_dedupe(c.to_pairs())), scale)
+    if key in remap:
+        return remap[key]
+    return None
 
 
 class DimensionBase:

@@ -9,7 +9,7 @@ from pyunitx.pressure import bars
 
 
 def test_equivalence():
-    assert kgf(1).equivalent_to(pounds(2.205), 3)
+    assert kgf(1).equivalent_to(pounds("2.205"), 3)
 
 
 def test_complex_addition():
@@ -60,7 +60,8 @@ def test_complex_tostring():
     assert str(displacement) == "2 m"
     assert str(force) == "10 N"
     assert str(expected) == "20 J"
-    assert str(displacement * force) == "20 m^2 kg s^-2"
+    assert str(displacement * force) == "20 J"
+    assert str(force / displacement) == "5 kg s^-2"
 
 
 def test_complex_to_latex():
@@ -71,7 +72,8 @@ def test_complex_to_latex():
     assert displacement.to_latex() == r"\qty{2}{m}"
     assert force.to_latex() == r"\qty{10}{N}"
     assert expected.to_latex() == r"\qty{20}{J}"
-    assert (displacement * force).to_latex() == r"\qty{20}{m^{2}.kg.s^{-2}}"
+    assert (displacement * force).to_latex() == r"\qty{20}{J}"
+    assert (force / displacement).to_latex() == r"\qty{5}{kg.s^{-2}}"
 
 
 def test_complex_to_latex_old():
@@ -82,4 +84,5 @@ def test_complex_to_latex_old():
     assert displacement.to_latex(SIUNITX_OLD) == r"\SI{2}{m}"
     assert force.to_latex(SIUNITX_OLD) == r"\SI{10}{N}"
     assert expected.to_latex(SIUNITX_OLD) == r"\SI{20}{J}"
-    assert (displacement * force).to_latex(SIUNITX_OLD) == r"\SI{20}{m^{2}.kg.s^{-2}}"
+    assert (displacement * force).to_latex(SIUNITX_OLD) == r"\SI{20}{J}"
+    assert (force / displacement).to_latex(SIUNITX_OLD) == r"\SI{5}{kg.s^{-2}}"
