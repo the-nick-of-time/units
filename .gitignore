@@ -7,3 +7,5 @@ list-fftabs.py
 /dist
 /conftest.py
 /test_readme.py
+/docs/README.rst
+/.pandoc/

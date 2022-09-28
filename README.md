@@ -1,4 +1,4 @@
-# Units
+# pyunitx
 
 [![Coverage Status](https://coveralls.io/repos/github/the-nick-of-time/units/badge.svg?branch=main)](https://coveralls.io/github/the-nick-of-time/units?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/pyunitx/badge/?version=latest)](https://pyunitx.readthedocs.io/en/latest/?badge=latest)
@@ -50,7 +50,7 @@ Q. How fast is someone on the equator moving around the center of the earth?
 Q. What's the mass of air in one of your car tires, if the inner radius is 6 inches, the outer
 radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?[^1]
 
-[^1]: No, I don't write homework problems.
+[^1]: No, I don't write homework problems. Why do you ask?
 
 ```pycon
 >>> from pyunitx.length import inches

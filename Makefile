@@ -14,5 +14,8 @@ htmlcov/index.html: .coverage
 dist/pyunitx-$(version).tar.gz dist/pyunitx-$(version)-py3-none-any.whl: .coverage docs/_build/index.html
 	poetry build
 
-docs/_build/index.html: $(documentation) $(sources)
+docs/_build/index.html: $(documentation) $(sources) docs/README.rst
 	VERSION=$(version) COMMIT=$(shell git rev-parse --short HEAD) sphinx-build -b html "docs" "docs/_build"
+
+docs/README.rst: README.md
+	./.pandoc/pandoc-2.19.2/bin/pandoc --from=gfm --to=rst "$<" | tail -n +4 >"$@"

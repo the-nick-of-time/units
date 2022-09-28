@@ -3,6 +3,8 @@ pyunitx
 
 .. automodule:: pyunitx
 
+.. include:: README.rst
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
