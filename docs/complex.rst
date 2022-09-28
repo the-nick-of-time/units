@@ -2,19 +2,21 @@ Compound Dimensions and Units
 =============================
 .. include:: macros.rst
 
-Force
------
 
-.. automodule:: pyunitx.force
+Area
+----
+
+.. automodule:: pyunitx.area
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
-Pressure
---------
+Current
+-------
 
-.. automodule:: pyunitx.pressure
+.. automodule:: pyunitx.current
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
 
 Energy
 ------
@@ -22,6 +24,23 @@ Energy
 .. automodule:: pyunitx.energy
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+
+Force
+-----
+
+.. automodule:: pyunitx.force
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to
+
+
+Frequency
+---------
+
+.. automodule:: pyunitx.frequency
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
 
 Power
 -----
@@ -31,20 +50,13 @@ Power
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 
-Volume
-------
+Pressure
+--------
 
-.. automodule:: pyunitx.volume
+.. automodule:: pyunitx.pressure
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to
 
-
-Current
--------
-
-.. automodule:: pyunitx.current
-	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
 Resistance
 ----------
@@ -58,6 +70,14 @@ Voltage
 -------
 
 .. automodule:: pyunitx.voltage
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+
+
+Volume
+------
+
+.. automodule:: pyunitx.volume
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
