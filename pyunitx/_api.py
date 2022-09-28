@@ -115,22 +115,22 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev, do
             return False
         return self.value * self.scale == other.value * other.scale
 
-    def equivalent(self, other: UnitInterface, within=0) -> bool:
+    def equivalent(self, other: UnitInterface, figs=5) -> bool:
         """Check if this measurement represents the same quantity as another,
         within a certain precision.
 
-        You can think of it as converting both measurements to their shared base
-        unit, then checking whether they are within the specified difference of
-        each other.
+        This effectively converts both units to the base unit to get them on
+        equal footing before rounding and checking equality.
 
         :param other: The other measurement.
-        :param within: An absolute tolerance on the approximation, expressed in
-            the base unit.
+        :param figs: How many significant figures to round to before comparison.
         :return: Whether the two measurements are approximately equal.
         """
         if not other.is_dimension(self.dimension):
             raise ImplicitConversionError(type(other), type(self))
-        return abs(self.value * self.scale - other.value * other.scale) <= within
+        a = sigfig.round(self.value * self.scale, sigfigs=figs)
+        b = sigfig.round(other.value * other.scale, sigfigs=figs)
+        return a == b
 
     def multiply(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
         """Multiply two measurements. Produces a new compound unit for the result.

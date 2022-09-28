@@ -59,7 +59,7 @@ def test_subtract_different_unit():
 def test_area_conversion():
     a = meters(2)
     b = feet("6.56168")
-    assert (a * a).equivalent_to(b * b, 1e-4)
+    assert (a * a).equivalent_to(b * b, 5)
 
 
 def test_equivalent_different_dimension():

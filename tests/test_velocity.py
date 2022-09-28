@@ -35,4 +35,4 @@ def test_scaled_divisions():
     t = minutes(2)
     v = meters_per_second(1)
 
-    assert (d / t).equivalent_to(v, within=0.0001)
+    assert (d / t).equivalent_to(v, 5)

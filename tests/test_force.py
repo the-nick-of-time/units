@@ -9,7 +9,7 @@ from pyunitx.pressure import bars
 
 
 def test_equivalence():
-    assert kgf(1).equivalent_to(pounds(2.2), .05)
+    assert kgf(1).equivalent_to(pounds(2.205), 3)
 
 
 def test_complex_addition():
