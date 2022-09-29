@@ -1,16 +1,23 @@
 from pyunitx._api import make_compound_dimension, make_compound_unit
 from pyunitx.length import Length, meters
 
+__all__ = [
+    "Area",
+    "meters_squared",
+    "acres",
+    "hectares",
+]
+
 Area = make_compound_dimension(name="Area", exponents={Length: 2})
 
 # no need to explain square meters
-make_compound_unit(
+meters_squared = make_compound_unit(
     exponents={meters: 2},
     scale=1
 )
 
-make_compound_unit(
-    name="acre",
+acres = make_compound_unit(
+    name="acres",
     abbrev="acre",
     scale="4.046873e3",
     exponents={meters: 2},
@@ -18,8 +25,8 @@ make_compound_unit(
     An acre is a common measure of land area.
     """
 )
-make_compound_unit(
-    name="hectare",
+hectares = make_compound_unit(
+    name="hectares",
     abbrev="ha",
     scale="1e4",
     exponents={meters: 2},

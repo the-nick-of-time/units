@@ -1,6 +1,10 @@
 from pyunitx._api import make_compound_unit, make_compound_dimension
 from pyunitx.current import Current, amperes
 from pyunitx.voltage import Potential, volts
+__all__ = [
+    "Resistance",
+    "ohms"
+]
 
 Resistance = make_compound_dimension(name="Resistance", exponents={Potential: 1, Current: -1})
 

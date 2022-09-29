@@ -1,6 +1,12 @@
 from pyunitx._api import make_compound_dimension, make_compound_unit
 from pyunitx.time import Time, seconds, minutes
 
+__all__ = [
+    "Frequency",
+    "hertz",
+    "rpm",
+]
+
 Frequency = make_compound_dimension({Time: -1}, "Frequency")
 hertz = make_compound_unit(
     name="hertz",

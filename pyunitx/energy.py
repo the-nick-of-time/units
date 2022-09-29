@@ -1,5 +1,6 @@
 from pyunitx._api import make_compound_dimension, make_compound_unit
-from pyunitx.length import Length, meters
+from pyunitx.force import pounds
+from pyunitx.length import Length, meters, feet
 from pyunitx.mass import Mass, kilograms
 from pyunitx.time import seconds, Time
 
@@ -8,6 +9,7 @@ __all__ = [
     "joules",
     "kilojoule",
     "calorie",
+    "btu",
 ]
 
 Energy = make_compound_dimension({Mass: 1, Length: 2, Time: -2}, "Energy")
@@ -47,7 +49,7 @@ btu = make_compound_unit(
     name="btu",
     abbrev="btu",
     scale="1.05435e3",
-    exponents=joules.composition.to_pairs(),
+    exponents={feet: 1, pounds: 1},
     doc="""\
     There are many different possible definitions of the British Thermal Unit, 
     this is the thermochemical definition.

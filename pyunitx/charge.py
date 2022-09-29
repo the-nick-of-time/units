@@ -1,5 +1,11 @@
 from pyunitx._api import make_dimension, make_unit
 
+__all__ = [
+    "Charge",
+    "coulombs",
+    "fundamental_charge",
+]
+
 Charge = make_dimension("Charge")
 
 coulombs = make_unit(

@@ -10,6 +10,7 @@ Area
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
 
+
 Current
 -------
 

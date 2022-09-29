@@ -1,6 +1,10 @@
 from pyunitx._api import make_compound_unit, make_compound_dimension
 from pyunitx.charge import Charge, coulombs
 from pyunitx.energy import Energy, joules
+__all__ = [
+    "Potential",
+    "volts",
+]
 
 Potential = make_compound_dimension(name="Potential", exponents={Energy: 1, Charge: -1})
 

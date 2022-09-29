@@ -2,6 +2,11 @@ from pyunitx._api import make_compound_unit, make_compound_dimension
 from pyunitx.charge import Charge, coulombs
 from pyunitx.time import Time, seconds
 
+__all__ = [
+    "Current",
+    "amperes",
+]
+
 Current = make_compound_dimension(name="Current", exponents={Charge: 1, Time: -1})
 
 amperes = make_compound_unit(

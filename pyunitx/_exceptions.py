@@ -2,7 +2,7 @@ class UnitException(Exception):
     pass
 
 
-class OperationError(UnitException):
+class OperationError(UnitException, ArithmeticError):
     def __init__(self, operation, left, right):
         self.operation = operation
         self.left = left
@@ -12,7 +12,7 @@ class OperationError(UnitException):
         return f"Cannot {self.operation} {self.left} and {self.right}"
 
 
-class ImplicitConversionError(UnitException):
+class ImplicitConversionError(UnitException, TypeError):
     def __init__(self, source, dest):
         self.source = source
         self.dest = dest

@@ -6,7 +6,7 @@ Base Dimensions and Units
 Length
 ------
 
-The full suite of functions on a unit is shown for :class:`units.length.meters` here as an example.
+The full suite of functions on a unit is shown for :class:`pyunitx.length.meters` here as an example.
 All units have exactly the same interface so the copies are omitted for brevity.
 
 .. _unit-example:

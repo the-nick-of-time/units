@@ -72,8 +72,8 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     def new(cls, value: Scale):
         """Create a new measurement using this unit.
 
-        Instances are flyweights; two invocations of meters(1) will return the
-        same object.
+        Instances are flyweights; two invocations of ``meters(1)`` will return
+        the same object.
         """
         if value not in cls.instances:
             cls.instances[value] = super(type, cls).__new__(cls)
@@ -86,7 +86,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
 
         Checks compatibility rather than type for determining "same unit". For
         example, a calculation that outputs the dynamically created unit
-        kg*m*s^-2 is equivalent to a defined expression using newtons.
+        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
 
         :param other: Another measurement, with the same units
         """
@@ -99,7 +99,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
 
         Checks compatibility rather than type for determining "same unit". For
         example, a calculation that outputs the dynamically created unit
-        kg*m*s^-2 is equivalent to a defined expression using newtons.
+        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
 
         :param other: Another measurement, with the same units
         """
@@ -112,7 +112,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
 
         Checks compatibility rather than type for determining "same unit". For
         example, a calculation that outputs the dynamically created unit
-        kg*m*s^-2 is equivalent to a defined expression using newtons.
+        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
         """
         if self is other:
             return True
@@ -143,12 +143,21 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         return a == b
 
     def multiply(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
-        """Multiply two measurements. Produces a new compound unit for the result.
+        """Multiply two measurements.
 
         If the two quantities completely cancel (like a frequency times a
         duration), the result will be returned as a plain number.
 
-        :param other: Another measurement, with any units.
+        Otherwise, produce the correct unit by combining the units of the two
+        multiplicands. If the result has two base units that measure the same
+        dimension but are not the same (say you're trying to multiply ``ft/s`` by
+        ``m^2``, ``ft*m^2`` would be in the result) a TypeError will be thrown.
+        Instead you should convert one of the measurements to be compatible with
+        the other before multiplying. In the example, that could be converting the
+        ``ft/s`` to ``m/s``.
+
+        :param other: Another measurement, with any units including none.
+        :raises TypeError: If base units are incompatible.
         :return: The result of the calculation, with the compound units.
         """
         if isinstance(other, (int, float, Decimal)):
@@ -164,9 +173,23 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         return result_unit(result_value)
 
     def divide(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
-        """Multiply two measurements. Produces a new compound unit for the result.
+        """Divide two measurements.
 
-        :param other: Another measurement, with any units.
+        If the two quantities completely cancel (like the derivation of radians
+        dividing length by length), the result will be returned as a plain
+        number.
+
+        Otherwise, produce the correct unit by combining the units of the two
+        divisors. If the result has two base units that measure the same
+        dimension but are not the same (say you're trying to divide ``ft/s`` by
+        ``m^2``, ``ft/m^2`` would be in the result) a TypeError will be thrown.
+        Instead you should convert one of the measurements to be compatible with
+        the other before multiplying. In the example, that could be converting the
+        ``ft/s`` to ``m/s``.
+
+        :param other: Another measurement, with any units including none.
+        :raises TypeError: If base units are incompatible.
+        :return: The result of the division, with correct units.
         """
         if isinstance(other, (int, float, Decimal)):
             return type(self)(self.value / Decimal(other))
@@ -209,7 +232,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         Most useful for checking whether two measurements can be reasonably
         compared with ``.equivalent_to`` or converted into the other.
 
-        :param dim: The dimension to
+        :param dim: The dimension to check against.
         :return: Whether this unit is of the given dimension.
         """
         try:

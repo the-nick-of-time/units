@@ -8,10 +8,10 @@ Most values of constants come from
 `this list also from NIST <https://physics.nist.gov/cuu/Constants/Table/allascii.txt>`_.
 """
 
-# Importing all defined dimensions will ensure that all conversion functions
-# will work. Otherwise, the first time a calculation generates a unit, it will
-# create a new dimension that doesn't know about any of the other units
-# available.
+# After the update for automatic conversion functions, this is somewhat less
+# important, at least in terms of "not knowing about the conversion functions".
+# However, it is still nice to have all the pre-constructed units and dimensions
+# with special names available.
 # noinspection PyUnresolvedReferences
 from . import (
     angle,
