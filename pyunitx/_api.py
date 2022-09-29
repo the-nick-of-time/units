@@ -374,7 +374,7 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
 
 
 def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, abbrev=None,
-                       doc=""):
+                       doc="") -> Type['UnitInterface']:
     """A unit composed of other units.
 
     :param scale: How many of the base unit one of this unit is equivalent to.
@@ -417,6 +417,56 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     )
     unit.composition = composition
     return unit
+
+
+def si_unit(*, base_unit: Type['UnitInterface'], short_doc="") \
+        -> Dict[str, Type['UnitInterface']]:
+    """Create the full range of SI prefixes on a unit"""
+    prefixes = [
+        ["yotta", "Y", "1e24"],
+        ["zetta", "Z", "1e21"],
+        ["exa", "E", "1e18"],
+        ["peta", "P", "1e15"],
+        ["tera", "T", "1e12"],
+        ["giga", "G", "1e9"],
+        ["mega", "M", "1e6"],
+        ["kilo", "k", "1e3"],
+        ["hecto", "h", "1e2"],
+        ["deka", "da", "1e1"],
+        ["deci", "d", "1e-1"],
+        ["centi", "c", "1e-2"],
+        ["milli", "m", "1e-3"],
+        ["micro", "μ", "1e-6"],
+        ["nano", "n", "1e-9"],
+        ["pico", "p", "1e-12"],
+        ["femto", "f", "1e-15"],
+        ["atto", "a", "1e-18"],
+        ["zepto", "z", "1e-21"],
+        ["yocto", "y", "1e-24"],
+    ]
+    generated = {}
+    for prefix, short, scale in prefixes:
+        new_scale = Decimal(scale) * base_unit.scale
+        new_name = prefix + base_unit.__name__
+        new_abbrev = short + base_unit.abbreviation
+        if base_unit.composition == Compound(Multiset({base_unit: 1})):
+            new_unit = make_unit(
+                name=new_name,
+                abbrev=new_abbrev,
+                scale=new_scale,
+                dimension=base_unit.dimension,
+                doc=short_doc,
+            )
+        else:
+            new_unit = make_compound_unit(
+                name=new_name,
+                abbrev=new_abbrev,
+                scale=new_scale,
+                exponents=base_unit.composition.to_pairs(),
+                doc=short_doc,
+            )
+        generated[new_name] = new_unit
+    return generated
 
 
 def _exponent_name(unit: type, exponent: int) -> str:
@@ -470,7 +520,7 @@ def _sort(d: Union[Exponents, Iterator[Pair]]) -> Pairs:
     return tuple(sorted(pairs, key=lambda p: (-p[1], p[0].__name__)))
 
 
-def _access_unit_cache(c: 'Compound', scale) -> Optional['UnitInterface']:
+def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitInterface']]:
     remap = {(_sort(_dedupe(unit.composition.to_pairs())), unit.scale): unit
              for name, unit in _EXTANT_UNITS.items()}
     key = (_sort(_dedupe(c.to_pairs())), scale)

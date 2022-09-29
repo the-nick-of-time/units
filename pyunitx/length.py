@@ -1,16 +1,4 @@
-from pyunitx._api import make_dimension, make_unit
-
-__all__ = [
-    "Length",
-    "meters",
-    "kilometers",
-    "feet",
-    "miles",
-    "yards",
-    "inches",
-    "astronomical_unit",
-    "au",
-]
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 Length = make_dimension("Length")
 
@@ -25,13 +13,12 @@ meters = make_unit(
     """
 )
 
-kilometers = make_unit(
-    name="kilometers",
-    dimension=Length,
-    scale=1000,
-    abbrev="km",
-    doc="""One kilometer is 1000 meters."""
+generated = si_unit(
+    base_unit=meters,
+    short_doc="""The base unit is :class:`pyunitx.length.meters`."""
 )
+globals().update(generated)
+
 feet = make_unit(
     name="feet",
     dimension=Length,
@@ -71,3 +58,14 @@ astronomical_unit = au = make_unit(
     of the :class:`parsec <pyunitx.derived.parsec>`.
     """
 )
+
+__all__ = [
+              "Length",
+              "meters",
+              "feet",
+              "miles",
+              "yards",
+              "inches",
+              "astronomical_unit",
+              "au",
+          ] + [name for name in generated]

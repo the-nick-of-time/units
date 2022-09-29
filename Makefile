@@ -14,6 +14,6 @@ htmlcov/index.html: .coverage
 dist/pyunitx-$(version).tar.gz dist/pyunitx-$(version)-py3-none-any.whl: .coverage docs/_build/index.html
 	poetry build
 
-docs/_build/index.html: $(documentation) $(sources)
+docs/_build/index.html: $(documentation) $(sources) README.md
 	VERSION=$(version) COMMIT=$(shell git rev-parse --short HEAD) sphinx-build -b html "docs" "docs/_build"
 
