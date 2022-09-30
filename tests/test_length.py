@@ -125,3 +125,47 @@ def test_divide_to_dimensionless():
 
 def test_is_nondimension():
     assert not meters(1).is_dimension(object)
+
+
+@pytest.mark.parametrize(
+    "a,b,expect", [
+        (3, 5, True),
+        (3, 3, False),
+        (3, -4, False),
+    ]
+)
+def test_less(a, b, expect):
+    assert (meters(a) < meters(b)) == expect
+
+
+@pytest.mark.parametrize(
+    "a,b,expect", [
+        (3, 5, True),
+        (3, 3, True),
+        (3, -4, False),
+    ]
+)
+def test_lesseq(a, b, expect):
+    assert (meters(a) <= meters(b)) == expect
+
+
+@pytest.mark.parametrize(
+    "a,b,expect", [
+        (3, 5, False),
+        (3, 3, False),
+        (3, -4, True),
+    ]
+)
+def test_greater(a, b, expect):
+    assert (meters(a) > meters(b)) == expect
+
+
+@pytest.mark.parametrize(
+    "a,b,expect", [
+        (3, 5, False),
+        (3, 3, True),
+        (3, -4, True),
+    ]
+)
+def test_greaterequal(a, b, expect):
+    assert (meters(a) >= meters(b)) == expect

@@ -227,6 +227,49 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         )
         return result_unit(result_value)
 
+    def less(self, other: UnitInterface):
+        """Check if this measurement is less than another.
+
+        :param other: The measurement to compare to.
+        :raises TypeError: If the two arguments are different units and can
+            therefore not be compared.
+        :return: Whether the other measurement is less than this one.
+        """
+        if type(other).composition != type(self).composition:
+            raise TypeError(f"{self.abbreviation} and {other.abbreviation} cannot be compared")
+        return self.value * self.scale < other.value * other.scale
+
+    def lesseq(self, other: UnitInterface):
+        """Check if this measurement is less than or equal to another.
+
+        :param other: The measurement to compare to.
+        :raises TypeError: If the two arguments are different units and can
+            therefore not be compared.
+        :return: Whether the other measurement is less than this one.
+        """
+        return self < other or self == other
+
+    def absolute(self):
+        """Get the absolute value of this measurement.
+
+        :return: A copy of this measurement as an absolute value.
+        """
+        return type(self)(abs(self.value))
+
+    def neg(self):
+        """Get the negative of this measurement.
+
+        :return: A copy of this measurement with sign flipped.
+        """
+        return type(self)(-self.value)
+
+    def pos(self):
+        """No-op, return self.
+
+        This is unlike any other math operation since it doesn't make a copy.
+        """
+        return self
+
     def is_dimension(self, dim: DimensionBase):
         """Check if this unit is of the given dimension.
 
@@ -321,15 +364,21 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "__add__": add,
         "__radd__": add,
         "__sub__": subtract,
-        "__eq__": equal,
+        "__rsub__": subtract,
+        "__abs__": absolute,
+        "__pos__": pos,
+        "__neg__": neg,
         "__mul__": multiply,
         "__rmul__": multiply,
         "__truediv__": divide,
         "__rtruediv__": divide,
+        "__pow__": exponent,
         "__getattr__": getattribute,
+        "__eq__": equal,
+        "__lt__": less,
+        "__le__": lesseq,
         "__str__": tostring,
         "__repr__": tostring,
-        "__pow__": exponent,
         "__name__": name,
         "__doc__": textwrap.dedent(doc),
         "is_dimension": is_dimension,

@@ -17,7 +17,6 @@ Q. How many meters does light travel in a millisecond?
 ```pycon
 >>> from pyunitx.time import seconds
 >>> from pyunitx.constants import c
->>> 
 >>> (c * seconds("1e-3")).sig_figs(5)
 2.9979E+5 m
 
@@ -28,7 +27,6 @@ Q. What is that in feet?
 ```pycon
 >>> from pyunitx.time import seconds
 >>> from pyunitx.constants import c
->>> 
 >>> (c * seconds("1e-3")).to_feet().sig_figs(5)
 9.8357E+5 ft
 
@@ -40,10 +38,21 @@ Q. How fast is someone on the equator moving around the center of the earth?
 >>> from pyunitx.time import days
 >>> from pyunitx.constants import earth_radius
 >>> from math import pi
->>> 
 >>> circumference = 2 * pi * earth_radius
 >>> (circumference / days(1)).to_meters_per_second().sig_figs(3)
 464 m s^-1
+
+```
+
+Q. How fast is the earth orbiting the sun?
+
+```pycon
+>>> from pyunitx.time import julian_years
+>>> from pyunitx.length import au
+>>> from math import pi
+>>> circumference = 2 * pi * au(1)
+>>> (circumference / julian_years(1)).to_kilometers_per_hour().sig_figs(3)
+1.07E+5 km hr^-1
 
 ```
 
@@ -58,7 +67,6 @@ radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?[^1]
 >>> from pyunitx.constants import R, air_molar_mass
 >>> from pyunitx.temperature import celsius, celsius_to_kelvin_absolute
 >>> from math import pi
->>> 
 >>> volume = (pi * inches(8) * (inches("12.5") ** 2 - inches(6) ** 2)).to_meters_cubed()
 >>> pressure = psi(42).to_pascals()
 >>> temperature = celsius_to_kelvin_absolute(celsius(25))
