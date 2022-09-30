@@ -1,10 +1,7 @@
-from pyunitx._api import make_compound_unit, make_compound_dimension
+from pyunitx._api import make_compound_unit, make_compound_dimension, si_unit
 from pyunitx.current import Current, amperes
 from pyunitx.voltage import Potential, volts
-__all__ = [
-    "Resistance",
-    "ohms"
-]
+
 
 Resistance = make_compound_dimension(name="Resistance", exponents={Potential: 1, Current: -1})
 
@@ -18,3 +15,10 @@ ohms = make_compound_unit(
     potential by one volt.
     """
 )
+
+generated = si_unit(base_unit=ohms, short_doc=":class:`ohms` are the base unit of resistance")
+
+__all__ = [
+              "Resistance",
+              "ohms"
+          ] + list(generated.keys())

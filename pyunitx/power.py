@@ -1,15 +1,10 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.energy import Energy, joules
 from pyunitx.force import pounds
 from pyunitx.length import feet
 from pyunitx.time import Time, seconds
 
-__all__ = [
-    "Power",
-    "watts",
-    "kilowatts",
-    "horsepower",
-]
+
 
 Power = make_compound_dimension({Energy: 1, Time: -1})
 
@@ -24,6 +19,9 @@ watts = make_compound_unit(
     useful then multiplying by time to get overall energy usage.
     """
 )
+
+generated = si_unit(base_unit=watts, short_doc=":class:`watts` are the SI base unit of power.")
+globals().update(generated)
 
 kilowatts = make_compound_unit(
     name="kilowatts",
@@ -46,3 +44,9 @@ horsepower = make_compound_unit(
     standards-compliant equine.
     """
 )
+__all__ = [
+              "Power",
+              "watts",
+              "kilowatts",
+              "horsepower",
+          ] + list(generated.keys())

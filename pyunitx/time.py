@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from pyunitx._api import make_dimension, make_unit
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 __all__ = [
     "Time",
@@ -14,7 +14,16 @@ seconds = make_unit(
     dimension=Time,
     scale=1,
     abbrev="s",
-    doc="""The second is the SI base unit of time."""
+    doc="""\
+    The second is the SI base unit of time. As there are convenient larger 
+    units for time already, the positive SI prefixes (k, M, G) aren't used very 
+    much but the negative ones (m, μ, n) do see common use.
+    """
+)
+
+si_unit(
+    base_unit=seconds,
+    short_doc=""":class:`seconds` are the base unit."""
 )
 
 minutes = make_unit(
@@ -66,4 +75,3 @@ julian_years = make_unit(
     leap years, and the Julian year is that.
     """
 )
-

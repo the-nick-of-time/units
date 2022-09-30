@@ -1,10 +1,4 @@
-from pyunitx._api import make_dimension, make_unit
-
-__all__ = [
-    "Charge",
-    "coulombs",
-    "fundamental_charge",
-]
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 Charge = make_dimension("Charge")
 
@@ -20,6 +14,10 @@ coulombs = make_unit(
     measure directly, but charge cannot be decomposed.
     """
 )
+
+generated = si_unit(base_unit=coulombs, short_doc="""The base unit is :class:`coulombs`""")
+globals().update(generated)
+
 fundamental_charge = make_unit(
     name="fundamental_charge",
     abbrev="e",
@@ -29,3 +27,9 @@ fundamental_charge = make_unit(
     This is the charge of a single proton or electron.
     """
 )
+
+__all__ = [
+              "Charge",
+              "coulombs",
+              "fundamental_charge",
+          ] + list(generated.keys())

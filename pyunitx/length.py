@@ -68,4 +68,4 @@ __all__ = [
               "inches",
               "astronomical_unit",
               "au",
-          ] + [name for name in generated]
+          ] + list(generated.keys())

@@ -14,6 +14,7 @@ __all__ = [
     "make_unit",
     "make_compound_dimension",
     "make_compound_unit",
+    "si_unit",
     "SIUNITX_NEW",
     "SIUNITX_OLD",
 ]

@@ -1,9 +1,7 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.length import Length, meters, feet
 from pyunitx.mass import Mass, kilograms, slug
 from pyunitx.time import Time, seconds
-
-__all__ = ["Force", "newtons", "pounds", "kgf", "kilograms_force"]
 
 Force = make_compound_dimension(((Mass, 1), (Length, 1), (Time, -2)))
 
@@ -14,6 +12,12 @@ newtons = make_compound_unit(
     abbrev="N",
     doc="""The newton is the base SI unit of force."""
 )
+
+generated = si_unit(
+    base_unit=newtons,
+    short_doc=":class:`newtons` are the SI base unit of force."
+)
+
 kgf = kilograms_force = make_compound_unit(
     name="kilograms_force",
     scale="9.80665",
@@ -30,3 +34,4 @@ pounds = make_compound_unit(
     Pounds are a more elementary unit in |ucs| than an actual mass.
     """
 )
+__all__ = ["Force", "newtons", "pounds", "kgf", "kilograms_force"] + list(generated.keys())

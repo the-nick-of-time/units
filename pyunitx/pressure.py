@@ -1,18 +1,20 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.force import Force, pounds, newtons
 from pyunitx.length import Length, meters, inches
-
-__all__ = ["Pressure", "pascals", "bars", "psi"]
 
 Pressure = make_compound_dimension({Force: 1, Length: -2})
 
 pascals = make_compound_unit(
-    scale=1,
-    exponents={newtons: 1, meters: -2},
     name="pascals",
     abbrev="Pa",
+    scale=1,
+    exponents={newtons: 1, meters: -2},
     doc="""The pascal is the base unit of pressure, but it is very small."""
 )
+
+generated = si_unit(base_unit=pascals, short_doc=":class:`pascals` are the base unit.")
+globals().update(generated)
+
 bars = make_compound_unit(
     scale="1e5",
     exponents={newtons: 1, meters: -2},
@@ -32,3 +34,5 @@ psi = make_compound_unit(
     not using the base unit of length.
     """
 )
+
+__all__ = ["Pressure", "pascals", "bars", "psi"] + list(generated.keys())

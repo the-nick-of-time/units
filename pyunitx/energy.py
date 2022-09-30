@@ -1,16 +1,10 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.force import pounds
 from pyunitx.length import Length, meters, feet
 from pyunitx.mass import Mass, kilograms
 from pyunitx.time import seconds, Time
 
-__all__ = [
-    "Energy",
-    "joules",
-    "kilojoule",
-    "calorie",
-    "btu",
-]
+
 
 Energy = make_compound_dimension({Mass: 1, Length: 2, Time: -2}, "Energy")
 
@@ -24,16 +18,10 @@ joules = make_compound_unit(
     work done on an object by pushing it with a 1 N force for 1 m. 
     """
 )
-kilojoule = make_compound_unit(
-    name="kilojoule",
-    scale=1000,
-    exponents=joules.composition.to_pairs(),
-    abbrev="kJ",
-    doc="""\
-    Since the joule is a pretty small amount of energy, kilojoules see common 
-    use.
-    """
-)
+
+generated = si_unit(base_unit=joules, short_doc="The :class:`joule` is the SI base unit.")
+globals().update(generated)
+
 calorie = make_compound_unit(
     name="calorie",
     scale="4.184",
@@ -55,3 +43,10 @@ btu = make_compound_unit(
     this is the thermochemical definition.
     """
 )
+
+__all__ = [
+              "Energy",
+              "joules",
+              "calorie",
+              "btu",
+          ] + list(generated.keys())
