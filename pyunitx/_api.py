@@ -76,10 +76,11 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         Instances are flyweights; two invocations of ``meters(1)`` will return
         the same object.
         """
-        if value not in cls.instances:
-            cls.instances[value] = super(type, cls).__new__(cls)
-        instance = cls.instances[value]
-        instance.value = Decimal(value)
+        v = Decimal(value)
+        if v not in cls.instances:
+            cls.instances[v] = super(type, cls).__new__(cls)
+        instance = cls.instances[v]
+        instance.value = v
         return instance
 
     def add(self, other: UnitInterface) -> UnitInterface:

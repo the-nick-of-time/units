@@ -99,6 +99,12 @@ def test_flyweight():
     assert c is d
 
 
+def test_flyweight_types():
+    a = meters(1000)
+    b = meters("1e3")
+    assert a is b
+
+
 def test_conversion():
     assert kilometers(1).to_meters() == meters(1000)
 
