@@ -232,10 +232,11 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         :raises ValueError: If the resulting unit has fractional exponents.
         :return: A measurement with the value and units raised to the power.
         """
-        result_composition = self.composition ** other
-        result_value = self.value ** Decimal(other)
+        v = Decimal(other)
+        result_composition = self.composition ** v
+        result_value = self.value ** v
         result_unit = make_compound_unit(
-            scale=self.scale ** Decimal(other),
+            scale=self.scale ** v,
             exponents=result_composition.to_pairs()
         )
         return result_unit(result_value)

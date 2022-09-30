@@ -84,7 +84,7 @@ def test_tostring():
 
 def test_sqrt():
     vec = [meters(4), meters(3)]
-    mag = (vec[0] ** 2 + vec[1] ** 2) ** (1 / 2)
+    mag = (vec[0] ** 2 + vec[1] ** 2) ** ".5"
 
     assert mag == meters(5)
 
