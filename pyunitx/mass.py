@@ -1,6 +1,4 @@
-from pyunitx._api import make_dimension, make_unit
-
-__all__ = ["Mass", "kilograms", "av_pound", "troy_pound", "slug", "grams"]
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 Mass = make_dimension("Mass")
 
@@ -20,6 +18,14 @@ grams = make_unit(
     abbrev="g",
     doc="""A gram is roughly defined as the mass of a milliliter of water."""
 )
+
+generated = si_unit(
+    base_unit=grams,
+    short_doc=":class:`kilograms` are the base unit.",
+    skip=["kilo"]
+)
+globals().update(generated)
+
 av_pound = make_unit(
     name="avoirdupois_pounds_mass",
     dimension=Mass,
@@ -45,3 +51,12 @@ slug = make_unit(
     consistent set of measurements whereas the pound-mass cannot.
     """
 )
+
+__all__ = [
+              "Mass",
+              "kilograms",
+              "av_pound",
+              "troy_pound",
+              "slug",
+              "grams"
+          ] + list(generated.keys())

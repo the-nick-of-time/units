@@ -420,7 +420,7 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     return unit
 
 
-def si_unit(*, base_unit: Type['UnitInterface'], short_doc="") \
+def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
         -> Dict[str, Type['UnitInterface']]:
     """Create the full range of SI prefixes on a unit"""
     prefixes = [
@@ -447,6 +447,8 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="") \
     ]
     generated = {}
     for prefix, short, scale in prefixes:
+        if prefix in skip:
+            continue
         new_scale = Decimal(scale) * base_unit.scale
         new_name = prefix + base_unit.__name__
         new_abbrev = short + base_unit.abbreviation
