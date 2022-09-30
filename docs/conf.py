@@ -10,8 +10,11 @@ from pathlib import Path
 from pypandoc import convert_file
 from pypandoc.pandoc_download import download_pandoc
 
+# Allow imports from main package by autodoc
 sys.path.insert(0, os.path.abspath(".."))
-download_pandoc()
+
+if not (Path.home() / "bin" / "pandoc").exists():
+    download_pandoc()
 
 rst_text = convert_file("../README.md", format="gfm", to="rst")
 without_title = rst_text.split('\n')[3:]
@@ -31,6 +34,7 @@ author = 'Nick Thurmes'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.imgmath',
+    'sphinx.ext.intersphinx',
 ]
 
 templates_path = ['_templates']
@@ -49,3 +53,7 @@ html_theme = 'nature'
 autodoc_member_order = 'groupwise'
 # Don't automatically include class members
 autoclass_content = 'class'
+
+# -- Intersphinx configuration -----------------------------------------------
+# Allow links to python standard library documentation
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
