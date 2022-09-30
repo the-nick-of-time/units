@@ -374,7 +374,9 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     # @formatter:off
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
+        # Initializers
         "__new__": new,
+        # Math
         "__add__": add,
         "__radd__": add,
         "__sub__": subtract,
@@ -387,21 +389,27 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "__truediv__": divide,
         "__rtruediv__": rdivide,
         "__pow__": exponent,
+        # Get special conversion functions
         "__getattr__": getattribute,
+        # Comparisons; python can figure out the rest from this minimal set
         "__eq__": equal,
         "__lt__": less,
         "__le__": lesseq,
+        # Stringifiers
         "__str__": tostring,
         "__repr__": tostring,
+        # Special class variables
         "__name__": name,
         "__doc__": textwrap.dedent(doc),
+        # Class variables
         "is_dimension": is_dimension,
+        "abbreviation": abbrev,
         "scale": Decimal(scale),
         "instances": {},
         "dimension": dimension,
+        # Methods
         "equivalent_to": equivalent,
         "sig_figs": sig_figs,
-        "abbreviation": abbrev,
         "to_latex": to_latex,
     })
     # @formatter:on
