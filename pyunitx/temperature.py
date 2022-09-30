@@ -29,7 +29,8 @@ kelvin = make_unit(
     
     Kelvin is the absolute measure of temperature in the SI system.
     Its units are equal in size to the Celsius degree, but its zero point 
-    is at absolute zero."""
+    is at absolute zero.
+    """
 )
 celsius = make_unit(
     name="celsius",

@@ -1,11 +1,13 @@
-from pyunitx._api import make_dimension, make_unit, si_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
+from pyunitx.current import Current, amperes
+from pyunitx.time import Time, seconds
 
-Charge = make_dimension("Charge")
+Charge = make_compound_dimension(name="Charge", exponents={Current: 1, Time: 1})
 
-coulombs = make_unit(
+coulombs = make_compound_unit(
     name="coulombs",
     abbrev="C",
-    dimension=Charge,
+    exponents={amperes: 1, seconds: 1},
     scale=1,
     doc="""\
     A coulomb is formally defined as the amount of charge that travels past a
@@ -15,13 +17,13 @@ coulombs = make_unit(
     """
 )
 
-generated = si_unit(base_unit=coulombs, short_doc="""The base unit is :class:`coulombs`""")
+generated = si_unit(base_unit=coulombs, short_doc="""The base unit is :class:`coulombs`.""")
 globals().update(generated)
 
-fundamental_charge = make_unit(
+fundamental_charge = make_compound_unit(
     name="fundamental_charge",
     abbrev="e",
-    dimension=Charge,
+    exponents={amperes: 1, seconds: 1},
     scale="1.602176634e-19",
     doc="""\
     This is the charge of a single proton or electron.

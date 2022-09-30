@@ -1,18 +1,15 @@
-from pyunitx._api import make_compound_unit, make_compound_dimension, si_unit
-from pyunitx.charge import Charge, coulombs
-from pyunitx.time import Time, seconds
+from pyunitx._api import si_unit, make_unit, make_dimension
 
+Current = make_dimension("Current")
 
-
-Current = make_compound_dimension(name="Current", exponents={Charge: 1, Time: -1})
-
-amperes = make_compound_unit(
+amperes = make_unit(
     name="amperes",
     abbrev="A",
     scale=1,
-    exponents={coulombs: 1, seconds: -1},
+    dimension=Current,
     doc="""\
-    An ampere is a rate of charge movement equal to one coulomb per second.
+    An ampere is a rate of charge movement equal to one coulomb per second. It
+    is one of the fundamental units in the SI system.
     """
 )
 
