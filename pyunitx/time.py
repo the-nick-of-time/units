@@ -2,12 +2,6 @@ from decimal import Decimal
 
 from pyunitx._api import make_dimension, make_unit, si_unit
 
-__all__ = [
-    "Time",
-    "seconds", "minutes", "hours",
-    "days", "sidereal_days",
-    "julian_years",
-]
 Time = make_dimension("Time")
 seconds = make_unit(
     name="seconds",
@@ -21,10 +15,11 @@ seconds = make_unit(
     """
 )
 
-si_unit(
+generated = si_unit(
     base_unit=seconds,
     short_doc=""":class:`seconds` are the base unit."""
 )
+globals().update(generated)
 
 minutes = make_unit(
     name="minutes",
@@ -75,3 +70,10 @@ julian_years = make_unit(
     leap years, and the Julian year is that.
     """
 )
+
+__all__ = [
+              "Time",
+              "seconds", "minutes", "hours",
+              "days", "sidereal_days",
+              "julian_years",
+          ] + list(generated.keys())

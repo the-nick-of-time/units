@@ -1,6 +1,6 @@
-from pyunitx.frequency import hertz
+from pyunitx.frequency import hertz, kilohertz
 from pyunitx.length import kilometers, feet, meters
-from pyunitx.time import seconds, hours, minutes
+from pyunitx.time import seconds, hours, minutes, milliseconds
 
 
 def test_hertz_cancel():
@@ -19,3 +19,9 @@ def test_scaled_divisions():
     t = minutes(2)
 
     assert (d / t).equivalent_to(meters(1) / seconds(1), 2)
+
+
+def test_rdiv():
+    t = milliseconds(2)
+
+    assert (4 / t).to_kilohertz() == kilohertz(2)

@@ -53,8 +53,9 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     example a particular length like 8 meters. Instances of a unit class are
     called "measurements" within this documentation. Instances are immutable;
     any interactions with the public API will not change the object, anything
-    that appears like it (for instance rounding with ``.sig_figs``) instead
-    constructs and returns a copy.
+    that appears like it (for instance rounding with
+    :meth:`sig_figs <pyunitx.length.meters.sig_figs>`) instead constructs and
+    returns a copy.
 
     :param name: The name of the new unit, like "meters". Should be in its
         plural form.
@@ -75,6 +76,10 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
 
         Instances are flyweights; two invocations of ``meters(1)`` will return
         the same object.
+
+        :param value: The numerical value of the measurement, in any form that
+            :external:py:class:`decimal.Decimal` can accept.
+        :return: The newly created measurement, or the cached version.
         """
         v = Decimal(value)
         if v not in cls.instances:
@@ -91,6 +96,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
 
         :param other: Another measurement, with the same units
+        :return: A measurement with the values of the two added
         """
         if type(other).composition != type(self).composition:
             raise OperationError("add", type(self), type(other))
@@ -104,6 +110,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
 
         :param other: Another measurement, with the same units
+        :return: A measurement with the values of the two subtracted
         """
         if type(other).composition != type(self).composition:
             raise OperationError("subtract", type(self), type(other))
@@ -204,6 +211,11 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
             exponents=result_units.to_pairs()
         )
         return result_unit(result_value)
+
+    # rdivide can be much simpler because dividing two units will be handled by main divide
+    def rdivide(self, other: Union[int, float, Decimal]) -> UnitInterface:
+        result_unit = type(self ** -1)
+        return result_unit(Decimal(other) / self.value)
 
     def exponent(self, other: Scale) -> UnitInterface:
         """Raise this measurement to a power such that the result has no
@@ -372,7 +384,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "__mul__": multiply,
         "__rmul__": multiply,
         "__truediv__": divide,
-        "__rtruediv__": divide,
+        "__rtruediv__": rdivide,
         "__pow__": exponent,
         "__getattr__": getattribute,
         "__eq__": equal,
