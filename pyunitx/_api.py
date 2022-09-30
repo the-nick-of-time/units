@@ -422,7 +422,16 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
 
 def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
         -> Dict[str, Type['UnitInterface']]:
-    """Create the full range of SI prefixes on a unit"""
+    """Create the full range of SI prefixes on a unit.
+
+    :param base_unit: The unit to which prefixes can be applied.
+    :param short_doc: A short documentation snippet to apply to every created
+        unit, just so that they show up in sphinx documentation.
+    :param skip: If you've already created one of the units (I did this with
+        kilograms since prefixes apply to grams), list the prefix here so it
+        doesn't get overwritten.
+    :return: A dictionary between the name of the unit and the unit class.
+    """
     prefixes = [
         ["yotta", "Y", "1e24"],
         ["zetta", "Z", "1e21"],

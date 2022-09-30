@@ -1,11 +1,5 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.time import Time, seconds, minutes
-
-__all__ = [
-    "Frequency",
-    "hertz",
-    "rpm",
-]
 
 Frequency = make_compound_dimension({Time: -1}, "Frequency")
 hertz = make_compound_unit(
@@ -19,6 +13,10 @@ hertz = make_compound_unit(
     passing. 
     """
 )
+
+generated = si_unit(base_unit=hertz, short_doc=":class:`hertz` is the base unit.")
+globals().update(generated)
+
 rpm = make_compound_unit(
     name="rpm",
     scale=1 / 60,
@@ -28,3 +26,9 @@ rpm = make_compound_unit(
     Revolutions per minute measure the action of a piston crank or of a wheel.
     """
 )
+
+__all__ = [
+              "Frequency",
+              "hertz",
+              "rpm",
+          ] + list(generated.keys())
