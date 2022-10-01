@@ -1,17 +1,7 @@
 """Conversions between these units are deltas, as the systems have different zeros."""
 from decimal import Decimal
 
-from pyunitx._api import make_dimension, make_unit
-
-__all__ = [
-    "Temperature",
-    "kelvin",
-    "celsius",
-    "fahrenheit",
-    "rankine",
-    "absolute_zero_celsius",
-    "celsius_to_kelvin_absolute",
-]
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 Temperature = make_dimension("Temperature")
 
@@ -32,6 +22,13 @@ kelvin = make_unit(
     is at absolute zero.
     """
 )
+
+generated = si_unit(
+    base_unit=kelvin,
+    short_doc=":class:`kelvin` is the base unit of temperature."
+)
+globals().update(generated)
+
 celsius = make_unit(
     name="celsius",
     dimension=Temperature,
@@ -95,3 +92,14 @@ absolute_zero_fahrenheit = fahrenheit("-459.67")
 
 def celsius_to_kelvin_absolute(degc: celsius) -> kelvin:
     return (degc - absolute_zero_celsius).to_kelvin()
+
+
+__all__ = [
+              "Temperature",
+              "kelvin",
+              "celsius",
+              "fahrenheit",
+              "rankine",
+              "absolute_zero_celsius",
+              "celsius_to_kelvin_absolute",
+          ] + list(generated.keys())

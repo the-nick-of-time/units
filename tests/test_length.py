@@ -2,7 +2,14 @@ import pytest
 
 from pyunitx._api import make_compound_dimension
 from pyunitx._exceptions import OperationError, ImplicitConversionError
-from pyunitx.length import kilometers, meters, feet, inches, yards, Length
+from pyunitx.area import hectares
+from pyunitx.length import (kilometers,
+                            meters,
+                            feet,
+                            inches,
+                            yards,
+                            Length,
+                            micrometers, )
 
 
 def test_km_to_m():
@@ -133,6 +140,21 @@ def test_is_nondimension():
     assert not meters(1).is_dimension(object)
 
 
+def test_abs():
+    assert abs(meters(-4)) == meters(4)
+    assert abs(meters(1)) == meters(1)
+
+
+def test_negative():
+    assert -meters(4) == meters(-4)
+    assert -meters(-2) == meters(2)
+
+
+def test_positive():
+    assert +meters(2) == meters(2)
+    assert +meters(-4) == meters(-4)
+
+
 @pytest.mark.parametrize(
     "a,b,expect", [
         (3, 5, True),
@@ -142,6 +164,14 @@ def test_is_nondimension():
 )
 def test_less(a, b, expect):
     assert (meters(a) < meters(b)) == expect
+
+
+def test_less_different():
+    si = meters(1)
+    imperial = feet(1)
+
+    with pytest.raises(TypeError):
+        print(si < imperial)
 
 
 @pytest.mark.parametrize(
@@ -175,3 +205,36 @@ def test_greater(a, b, expect):
 )
 def test_greaterequal(a, b, expect):
     assert (meters(a) >= meters(b)) == expect
+
+
+def test_si():
+    large = meters(102364)
+    small = meters("0.00004266")
+
+    assert large.closest_si_prefix() == kilometers("102.364")
+    assert small.closest_si_prefix() == micrometers("42.66")
+
+
+def test_not_si():
+    imperial = feet(10034)
+
+    with pytest.raises(TypeError):
+        imperial.closest_si_prefix()
+
+
+def test_si_range():
+    huge = meters("2.4e27")
+    tiny = meters("8.1e-25")
+
+    with pytest.raises(ValueError):
+        huge.closest_si_prefix()
+
+    with pytest.raises(ValueError):
+        tiny.closest_si_prefix()
+
+
+def test_si_unofficial():
+    area = hectares(12345)
+
+    with pytest.raises(TypeError):
+        area.closest_si_prefix()

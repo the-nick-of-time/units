@@ -401,16 +401,19 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         pattern = re.compile(
             f"[{''.join(p for _, p, __ in _SI_PREFIXES)}]?" +
             "(m|g|s|A|K|cd|mol|J|Hz|C|Pa|V|Ω)"
-            )
+        )
         if not pattern.match(self.abbreviation):
             raise TypeError("This isn't an SI unit so prefixes can't be applied")
         order = (self.value * self.scale).adjusted()
         if order > 26 or order < -24:
             raise ValueError("SI prefixes only cover 48 orders of magnitude")
-        mag, trail = divmod(order, 3)
+        mag = (order // 3) * 3
         family = [u for u in _EXTANT_UNITS.values()
-                  if u.dimension == self.dimension and u.scale == Decimal(f"1e{mag * 3}")]
-        assert len(family) == 1
+                  if u.dimension == self.dimension and u.scale == Decimal(f"1e{mag}")]
+        if len(family) != 1:
+            # kelvin/celsius are a special case, being equal in scale
+            k = [u for u in family if u.__name__ == "kelvin"]
+            family = [k[0]]
         converter_name = f"to_{family[0].__name__}"
         return getattr(self, converter_name)()
 
@@ -850,4 +853,7 @@ class UnitInterface:
         ...
 
     def to_latex(self, siunitx_major_version=SIUNITX_NEW):
+        ...
+
+    def closest_si_prefix(self):
         ...
