@@ -7,10 +7,11 @@ When doing calculations using physical measurements, it's all too easy to forget
 units. This can result in problems when you find you've been adding kilograms to newtons and
 your calculation is off by a factor of ten.
 
-This library uses the standard library `decimal.Decimal` for all calculations to avoid most
-floating-point calculation pitfalls. Values given are automatically converted so you can enter
-any value that constructor can take. Functionally, this means that float notation should be
-given as strings rather than float literals.
+This library uses the standard
+library [decimal.Decimal](https://docs.python.org/3/library/decimal.html) for all calculations
+to avoid most floating-point calculation pitfalls. Values given for units are automatically
+converted so you can enter any value that constructor can take. Functionally, this means that
+float notation should be given as strings rather than float literals.
 
 Q. How many meters does light travel in a millisecond?
 
@@ -105,7 +106,7 @@ Some examples of the most complicated possible situations will be illustrative.
 You will notice that the output will have all units broken down to their bases. It is guaranteed
 to be equivalent.
 
-Now what happens if a calculation results in a predefined unit, like how newtons times seconds
+Now what happens if a calculation results in a predefined unit, like how newtons times meters
 equals joules?
 
 ```pycon
@@ -121,3 +122,22 @@ match. However, if you end up with a result that could be broken into some produ
 units (like newton-seconds) this library will *not* do that for you and instead display it in
 its basest components. This is because the number of possible options is large and it's not
 possible to figure out what you want.
+
+This library predefines all the SI units and dimensions, but what if that's not enough? You
+might want to model some other quantity, like cash flow in your budget.
+
+```pycon
+>>> from pyunitx import make_dimension, make_unit
+>>> from pyunitx.time import days
+>>> Money = make_dimension('Money')
+>>> dollars = make_unit(name="dollars", abbrev="$", dimension=Money, scale=1)
+>>> euros = make_unit(name="euros", abbrev="€", dimension=Money, scale="0.98019")
+>>> (dollars(150) / days(7)).to_euros_per_julian_year().sig_figs(6)
+7984.97 € jyr^-1
+
+```
+
+For more examples, including derived units, see the definitions in the package, like
+[energy](https://github.com/the-nick-of-time/units/blob/main/pyunitx/energy.py) or
+[time](https://github.com/the-nick-of-time/units/blob/main/pyunitx/time.py).
+

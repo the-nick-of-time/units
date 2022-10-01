@@ -1,3 +1,4 @@
+import itertools
 import math
 import re
 import textwrap
@@ -821,7 +822,15 @@ class Compound:
             "_to_the_fifth": 5,
             # that's the highest I've ever seen
         }
-        pattern = re.compile(r"(per_)?([a-z]+)(_squared|_cubed|_to_the_fourth|_to_the_fifth)?")
+        names = "|".join(
+            itertools.chain(
+                _EXTANT_UNITS,
+                [n.rstrip("s") for n in _EXTANT_UNITS]
+            )
+        )
+        pattern = re.compile(
+            r"(per_)?(" + names + "|[a-z]+)(_squared|_cubed|_to_the_fourth|_to_the_fifth)?"
+        )
         pairs = []
         for match in re.finditer(pattern, spec):
             name = match.group(2)

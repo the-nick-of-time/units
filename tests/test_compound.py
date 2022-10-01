@@ -2,10 +2,10 @@ import pytest
 
 from pyunitx._api import Compound, Multiset
 from pyunitx.force import newtons
-from pyunitx.length import meters, kilometers
+from pyunitx.length import meters, kilometers, au
 from pyunitx.mass import kilograms
 from pyunitx.temperature import kelvin
-from pyunitx.time import seconds
+from pyunitx.time import seconds, julian_years
 
 
 def test_simple_pairs():
@@ -150,3 +150,12 @@ def test_from_string_denom():
 def test_from_string_nonexistent():
     with pytest.raises(KeyError):
         Compound.from_string("foo_squared")
+    with pytest.raises(KeyError):
+        Compound.from_string("meters_per_foo")
+
+
+def test_from_string_multiword():
+    c = Compound.from_string("au_per_julian_year")
+    expected = Compound(((au, 1), (julian_years, -1)))
+
+    assert c == expected

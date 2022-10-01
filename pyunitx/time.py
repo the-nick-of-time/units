@@ -64,7 +64,7 @@ julian_years = make_unit(
     name="julian_years",
     dimension=Time,
     scale=days.scale * Decimal("365.25"),
-    abbrev="year_jul",
+    abbrev="jyr",
     doc="""\
     It's nice to have a definition of a year that doesn't vary with things like
     leap years, and the Julian year is that.
