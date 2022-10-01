@@ -211,15 +211,15 @@ def test_si():
     large = meters(102364)
     small = meters("0.00004266")
 
-    assert large.closest_si_prefix() == kilometers("102.364")
-    assert small.closest_si_prefix() == micrometers("42.66")
+    assert large.to_natural_si() == kilometers("102.364")
+    assert small.to_natural_si() == micrometers("42.66")
 
 
 def test_not_si():
     imperial = feet(10034)
 
     with pytest.raises(TypeError):
-        imperial.closest_si_prefix()
+        imperial.to_natural_si()
 
 
 def test_si_range():
@@ -227,14 +227,14 @@ def test_si_range():
     tiny = meters("8.1e-25")
 
     with pytest.raises(ValueError):
-        huge.closest_si_prefix()
+        huge.to_natural_si()
 
     with pytest.raises(ValueError):
-        tiny.closest_si_prefix()
+        tiny.to_natural_si()
 
 
 def test_si_unofficial():
     area = hectares(12345)
 
     with pytest.raises(TypeError):
-        area.closest_si_prefix()
+        area.to_natural_si()

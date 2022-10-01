@@ -395,6 +395,27 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         return fmt.format(value=self.value, unit=".".join(units))
 
     def closest_si_prefix(self):
+        """Convert this value to the most natural SI prefix.
+
+        For instance, a value of 12100 meters would be changed into 12.1
+        kilometers.
+        This only works on units that have a specific name. Elementary units
+        like meters of course work, as do composite units like joules. However,
+        if a unit can only be expressed by some combination of named units
+        (say N*s) then a TypeError will be raised.
+
+        Currently ignores 10^-2 through 10^2; that is, centi through hecto.
+        These are not used nearly as often, with the exception of the
+        centimeter.
+
+        :raises TypeError: If this unit is not an SI unit.
+        :raises ValueError: If the value of this unit is too big or too small
+            to be directly expressed with an SI prefix. Instead you should
+            probably express your value as scientific notation using the base
+            unit of the dimension.
+        :return: This value expressed in the unit that requires no extra
+            scientific notation.
+        """
         magnitude = math.log10(self.scale)
         if magnitude != int(magnitude):
             raise TypeError("This isn't an SI unit so prefixes can't be applied")
@@ -403,7 +424,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
             "(m|g|s|A|K|cd|mol|J|Hz|C|Pa|V|Ω)"
         )
         if not pattern.match(self.abbreviation):
-            raise TypeError("This isn't an SI unit so prefixes can't be applied")
+            raise TypeError("This isn't a base SI unit so prefixes can't be applied")
         order = (self.value * self.scale).adjusted()
         if order > 26 or order < -24:
             raise ValueError("SI prefixes only cover 48 orders of magnitude")
@@ -448,16 +469,16 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "__name__": name,
         "__doc__": textwrap.dedent(doc),
         # Class variables
-        "is_dimension": is_dimension,
         "abbreviation": abbrev,
         "scale": Decimal(scale),
         "instances": {},
         "dimension": dimension,
         # Methods
+        "is_dimension": is_dimension,
         "equivalent_to": equivalent,
         "sig_figs": sig_figs,
         "to_latex": to_latex,
-        "closest_si_prefix": closest_si_prefix,
+        "to_natural_si": closest_si_prefix,
     })
     # @formatter:on
     unit.composition = Compound(((unit, 1),))
@@ -855,5 +876,5 @@ class UnitInterface:
     def to_latex(self, siunitx_major_version=SIUNITX_NEW):
         ...
 
-    def closest_si_prefix(self):
+    def to_natural_si(self):
         ...

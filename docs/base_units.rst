@@ -16,28 +16,28 @@ All units have exactly the same interface so the copies are omitted for brevity.
 
 .. automodule:: pyunitx.length
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, meters
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si, meters
 
 Time
 ----
 
 .. automodule:: pyunitx.time
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 Mass
 ----
 
 .. automodule:: pyunitx.mass
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 Temperature
 -----------
 
 .. automodule:: pyunitx.temperature
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Angle
@@ -45,7 +45,7 @@ Angle
 
 .. automodule:: pyunitx.angle
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Moles
@@ -53,7 +53,7 @@ Moles
 
 .. automodule:: pyunitx.mole
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Charge
@@ -61,4 +61,4 @@ Charge
 
 .. automodule:: pyunitx.charge
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si

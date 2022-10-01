@@ -26,5 +26,5 @@ def test_si_prefix():
     hot = kelvin(30122)
     cold = kelvin(266)
 
-    assert hot.closest_si_prefix() == kilokelvin("30.122")
-    assert cold.closest_si_prefix() == kelvin(266)
+    assert hot.to_natural_si() == kilokelvin("30.122")
+    assert cold.to_natural_si() == kelvin(266)

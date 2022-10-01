@@ -8,7 +8,7 @@ Area
 
 .. automodule:: pyunitx.area
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Current
@@ -16,7 +16,7 @@ Current
 
 .. automodule:: pyunitx.current
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Energy
@@ -24,7 +24,7 @@ Energy
 
 .. automodule:: pyunitx.energy
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Force
@@ -32,7 +32,7 @@ Force
 
 .. automodule:: pyunitx.force
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Frequency
@@ -40,7 +40,7 @@ Frequency
 
 .. automodule:: pyunitx.frequency
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Power
@@ -48,7 +48,7 @@ Power
 
 .. automodule:: pyunitx.power
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Pressure
@@ -56,7 +56,7 @@ Pressure
 
 .. automodule:: pyunitx.pressure
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Resistance
@@ -64,7 +64,7 @@ Resistance
 
 .. automodule:: pyunitx.resistance
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Voltage
@@ -72,7 +72,7 @@ Voltage
 
 .. automodule:: pyunitx.voltage
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Volume
@@ -80,7 +80,7 @@ Volume
 
 .. automodule:: pyunitx.volume
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
 Derived Units
@@ -88,4 +88,4 @@ Derived Units
 
 .. automodule:: pyunitx.derived
 	:members:
-	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
