@@ -1,3 +1,11 @@
+"""Defines common units of time.
+
+For better handling of dates and times, use :mod:`datetime` from the standard
+library. This module is suitable for manipulation of time intervals and rates
+that show up in other calculations but knows absolutely nothing about leap
+seconds or even dates.
+"""
+
 from decimal import Decimal
 
 from pyunitx._api import make_dimension, make_unit, si_unit
@@ -68,6 +76,18 @@ julian_years = make_unit(
     doc="""\
     It's nice to have a definition of a year that doesn't vary with things like
     leap years, and the Julian year is that.
+    """
+)
+years = make_unit(
+    name="years",
+    abbrev="yr",
+    dimension=Time,
+    scale="3.155693e7",
+    doc="""\
+    This is the most common, solar definition of the year—the time it takes 
+    for the earth to complete one orbit around the sun. Somewhat more precisely
+    it is the interval between subsequent vernal equinoxes (or summer solstices,
+    they're all identical).
     """
 )
 

@@ -132,8 +132,8 @@ might want to model some other quantity, like cash flow in your budget.
 >>> Money = make_dimension('Money')
 >>> dollars = make_unit(name="dollars", abbrev="$", dimension=Money, scale=1)
 >>> euros = make_unit(name="euros", abbrev="€", dimension=Money, scale="0.98019")
->>> (dollars(150) / days(7)).to_euros_per_julian_year().sig_figs(6)
-7984.97 € jyr^-1
+>>> (dollars(150) / days(7)).to_euros_per_year().sig_figs(6)
+7984.80 € yr^-1
 
 ```
 
@@ -141,3 +141,4 @@ For more examples, including derived units, see the definitions in the package, 
 [energy](https://github.com/the-nick-of-time/units/blob/main/pyunitx/energy.py) or
 [time](https://github.com/the-nick-of-time/units/blob/main/pyunitx/time.py).
 
+The full documentation can be found at [ReadTheDocs](https://pyunitx.readthedocs.io/en/latest/).
