@@ -4,12 +4,12 @@ from pyunitx.length import Length, meters, feet
 __all__ = [
     "meters_cubed",
     "liters",
-    "milliliters",
     "feet_cubed",
-    "fluid_ounce",
+    "fluid_ounces",
     "cups",
-    "teaspoon",
-    "tablespoon"
+    "teaspoons",
+    "tablespoons",
+    "gallons",
 ]
 Volume = make_compound_dimension({Length: 3}, "Volume")
 
@@ -38,11 +38,14 @@ feet_cubed = make_compound_unit(
     scale=".02831685",
     exponents={feet: 3}
 )
-fluid_ounce = make_compound_unit(
-    name="fluid ounce",
+fluid_ounces = make_compound_unit(
+    name="fluid_ounces",
     exponents={meters: 3},  # As fl oz aren't defined in terms of some particular length cube
     scale="2.957353e-5",
     abbrev="fl oz",
+    doc="""\
+    Fluid ounces are the closest the |ucs| has to a base unit of volume.
+    """
 )
 fluid_ounce_imperial = make_compound_unit(
     name="imperial fluid ounce",
@@ -54,27 +57,44 @@ cups = make_compound_unit(
     exponents={meters: 3},
     scale="2.365882e-4",
     abbrev="c",
+    doc="""\
+    Cups are a common unit of measure when cooking. One cup is 8 
+    :class:`fluid ounces <fluid_ounces>` or 16 :class:`tablespoons`.
+    """
 )
-teaspoon = make_compound_unit(
-    name="teaspoon",
+teaspoons = make_compound_unit(
+    name="teaspoons",
     exponents={meters: 3},
     scale="4.928922e-6",
     abbrev="tsp",
+    doc="""\
+    Teaspoons are a common unit of measure when cooking. It's about equal to
+    5 :class:`milliliters`, if you need to do quick conversion.
+    """
 )
-tablespoon = make_compound_unit(
-    name="tablespoon",
+tablespoons = make_compound_unit(
+    name="tablespoons",
     exponents={meters: 3},
     scale="1.478676e-5",
-    abbrev="tbsp"
+    abbrev="tbsp",
+    doc="""\
+    Tablespoons are a common unit of measure when cooking.
+    One tablespoon is 3 :class:`teaspoons`.
+    """
 )
-gallon = make_compound_unit(
-    name="gallon",
+gallons = make_compound_unit(
+    name="gallons",
     exponents={meters: 3},
     scale="3.785412e-3",
-    abbrev="gal"
+    abbrev="gal",
+    doc="""\
+    Gallons are the bulk unit of volume in the |ucs|. It is equal to 128
+    :class:`fluid ounces <fluid_ounces>`, or 4 quarts, or 8 pints, or 16 
+    :class:`cups`. At least this range of measurements is all powers of 2.
+    """
 )
-imperial_gallon = make_compound_unit(
-    name="imperial gallon",
+imperial_gallons = make_compound_unit(
+    name="imperial_gallons",
     exponents={meters: 3},
     scale="4.54609e-3"
 )
