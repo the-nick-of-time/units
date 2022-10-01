@@ -1,7 +1,6 @@
 import pytest
 
 from pyunitx._api import Compound, Multiset
-from pyunitx._exceptions import ImplicitConversionError
 from pyunitx.force import newtons
 from pyunitx.length import meters, kilometers
 from pyunitx.mass import kilograms
@@ -60,7 +59,7 @@ def test_multiply_single():
 def test_multiply_mismatch():
     c = Compound(((meters, 1), (seconds, -1)))
 
-    with pytest.raises(ImplicitConversionError):
+    with pytest.raises(TypeError):
         print(c * kilometers)
 
 
@@ -89,7 +88,7 @@ def test_divide_single():
 def test_divide_mismatch():
     c = Compound(((meters, 1), (seconds, -1)))
 
-    with pytest.raises(ImplicitConversionError):
+    with pytest.raises(TypeError):
         print(c / kilometers)
 
 

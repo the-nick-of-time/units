@@ -115,6 +115,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         """Add two measurements of the same unit together.
 
         :param other: Another measurement, with the same units.
+        :raises TypeError: If measurements are not the same unit.
         :return: A measurement with the values of the two added.
         """
         if type(other) != type(self):
@@ -125,6 +126,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         """Subtract a measurement of the same unit from this.
 
         :param other: Another measurement, with the same units.
+        :raises TypeError: If measurements are not the same unit.
         :return: A measurement with the values of the two subtracted.
         """
         if type(other) != type(self):
@@ -152,6 +154,8 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
 
         :param other: The other measurement.
         :param figs: How many significant figures to round to before comparison.
+        :raises TypeError: If the two units do not represent the same dimension
+            and therefore cannot be compared.
         :return: Whether the two measurements are approximately equal.
         """
         if not other.is_dimension(self.dimension):
@@ -263,7 +267,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
             therefore not be compared.
         :return: Whether the other measurement is less than this one.
         """
-        if type(other).composition != type(self).composition:
+        if type(other) != type(self):
             raise TypeError(f"{self.abbreviation} and {other.abbreviation} cannot be compared")
         return self.value * self.scale < other.value * other.scale
 

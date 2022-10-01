@@ -14,7 +14,7 @@ volts = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=volts, short_doc="")
+generated = si_unit(base_unit=volts, short_doc=":class:`volts` are the base unit.")
 globals().update(generated)
 
 __all__ = [

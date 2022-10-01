@@ -1,6 +1,6 @@
 import pytest
 
-from pyunitx import SIUNITX_OLD, OperationError
+from pyunitx import SIUNITX_OLD
 from pyunitx.constants import atm
 from pyunitx.energy import joules
 from pyunitx.force import pounds, kgf, newtons
@@ -117,7 +117,7 @@ def test_add_base_identical():
 def test_add_base_incompatible():
     a = meters(1)
     b = kilometers(1)
-    with pytest.raises(OperationError):
+    with pytest.raises(TypeError):
         print(a + b)
 
 
@@ -131,5 +131,5 @@ def test_subtract_base_identical():
 def test_subtract_base_incompatible():
     a = meters(1)
     b = kilometers(1)
-    with pytest.raises(OperationError):
+    with pytest.raises(TypeError):
         print(a - b)

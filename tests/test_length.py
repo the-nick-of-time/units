@@ -1,7 +1,6 @@
 import pytest
 
 from pyunitx._api import make_compound_dimension
-from pyunitx._exceptions import ImplicitConversionError
 from pyunitx.area import hectares
 from pyunitx.length import (kilometers,
                             meters,
@@ -31,7 +30,7 @@ def test_area_conversion():
 
 
 def test_equivalent_different_dimension():
-    with pytest.raises(ImplicitConversionError):
+    with pytest.raises(TypeError):
         print(meters(4).equivalent_to(meters(2) ** 2))
 
 

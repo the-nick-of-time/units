@@ -2,7 +2,7 @@ class UnitException(Exception):
     pass
 
 
-class OperationError(UnitException, ArithmeticError):
+class OperationError(UnitException, TypeError):
     def __init__(self, operation, left, right):
         self.operation = operation
         self.left = left

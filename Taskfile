@@ -20,7 +20,7 @@ function already_open() {
 	fetch_fftab_script
 	opened="$(poetry run python list-fftabs.py)"
 	# implicit return the exit status of grep
-	grep -q "$1$" <<<"$opened"
+	grep -q "$1" <<<"$opened"
 }
 
 function tag() {
@@ -56,7 +56,7 @@ function task_coverage() {
 	: "Compile and open unit test coverage statistics"
 	target="htmlcov/index.html"
 	poetry run make "$target"
-	if ! already_open "$target"; then
+	if ! already_open "$(dirname "$target")" ; then
 		firefox "$target"
 	fi
 }
@@ -65,7 +65,7 @@ function task_docs() {
 	: "Build and open docs"
 	target="docs/_build/index.html"
 	poetry run make "$target"
-	if ! already_open "$target"; then
+	if ! already_open "$(dirname "$target")" ; then
 		firefox "$target"
 	fi
 }
