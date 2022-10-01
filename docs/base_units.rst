@@ -56,9 +56,17 @@ Moles
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
-Charge
-------
+Current
+-------
 
-.. automodule:: pyunitx.charge
+.. automodule:: pyunitx.current
+	:members:
+	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
+
+
+Data
+----
+
+.. automodule:: pyunitx.data
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si

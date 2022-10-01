@@ -1,5 +1,5 @@
-Compound Dimensions and Units
-=============================
+Derived Dimensions and Units
+============================
 .. include:: macros.rst
 
 
@@ -11,10 +11,10 @@ Area
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
 
-Current
--------
+Charge
+------
 
-.. automodule:: pyunitx.current
+.. automodule:: pyunitx.charge
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si
 
