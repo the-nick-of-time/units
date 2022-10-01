@@ -1,7 +1,7 @@
 import pytest
 
 from pyunitx._api import make_compound_dimension
-from pyunitx._exceptions import OperationError, ImplicitConversionError
+from pyunitx._exceptions import ImplicitConversionError
 from pyunitx.area import hectares
 from pyunitx.length import (kilometers,
                             meters,
@@ -22,45 +22,6 @@ def test_ft_to_m():
     ft = feet(1)
     m = ft.to_meters()
     assert m == meters("0.3048")
-
-
-def test_equal():
-    km_in_m = meters(1000)
-    km = kilometers(1)
-    assert km == km_in_m.to_kilometers()
-
-
-def test_equal_different_unit():
-    km = kilometers(1)
-    m = meters(1000)
-    assert km != m
-
-
-def test_add_same_unit():
-    a = meters(1)
-    b = meters(2)
-    assert a + b == meters(3)
-
-
-def test_add_different_unit():
-    a = meters(1)
-    b = kilometers(1)
-    with pytest.raises(OperationError):
-        print(a + b)
-
-
-def test_subtract_same_unit():
-    a = meters(5)
-    b = meters(2)
-    expected = meters(3)
-    assert a - b == expected
-
-
-def test_subtract_different_unit():
-    a = meters(1)
-    b = kilometers(1)
-    with pytest.raises(OperationError):
-        print(a - b)
 
 
 def test_area_conversion():

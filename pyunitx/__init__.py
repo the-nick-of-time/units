@@ -43,3 +43,5 @@ from ._api import (
     SIUNITX_OLD,
     SIUNITX_NEW,
 )
+
+from ._exceptions import UnitException, ImplicitConversionError, OperationError

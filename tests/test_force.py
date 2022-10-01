@@ -1,10 +1,10 @@
 import pytest
 
-from pyunitx import SIUNITX_OLD
+from pyunitx import SIUNITX_OLD, OperationError
 from pyunitx.constants import atm
 from pyunitx.energy import joules
-from pyunitx.force import pounds, kgf, newtons
-from pyunitx.length import meters
+from pyunitx.force import pounds, kgf, newtons, kilonewtons
+from pyunitx.length import meters, kilometers
 from pyunitx.pressure import bars
 
 
@@ -86,3 +86,67 @@ def test_complex_to_latex_old():
     assert expected.to_latex(SIUNITX_OLD) == r"\SI{20}{J}"
     assert (displacement * force).to_latex(SIUNITX_OLD) == r"\SI{20}{J}"
     assert (force / displacement).to_latex(SIUNITX_OLD) == r"\SI{5}{kg.s^{-2}}"
+
+
+def test_equal_identical():
+    assert newtons(4) == newtons(2) * 2
+
+
+def test_equal_compatible():
+    assert kilonewtons(4) == newtons(4000)
+
+
+def test_equal_incompatible():
+    assert pounds(1).sig_figs(4) != newtons(4.44822).sig_figs(4)
+
+
+def test_equal_base_identical():
+    km_in_m = meters(1000)
+    km = kilometers(1)
+    assert km == km_in_m.to_kilometers()
+
+
+def test_equal_base_incompatible():
+    km = kilometers(1)
+    m = meters(1000)
+    assert km != m
+
+
+def test_add_base_identical():
+    a = meters(1)
+    b = meters(2)
+    assert a + b == meters(3)
+
+
+def test_add_compatible():
+    a = newtons(100)
+    b = kilonewtons(1)
+    assert a + b == newtons(1100)
+
+
+def test_add_base_incompatible():
+    a = meters(1)
+    b = kilometers(1)
+    with pytest.raises(OperationError):
+        print(a + b)
+
+
+def test_subtract_base_identical():
+    a = meters(5)
+    b = meters(2)
+    expected = meters(3)
+    assert a - b == expected
+
+
+def test_subtract_compatible():
+    a = kilonewtons(1)
+    b = newtons(1)
+
+    assert a - b == kilonewtons(".999")
+
+
+def test_subtract_base_incompatible():
+    a = meters(1)
+    b = kilometers(1)
+    with pytest.raises(OperationError):
+        print(a - b)

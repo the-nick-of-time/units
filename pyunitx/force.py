@@ -17,6 +17,7 @@ generated = si_unit(
     base_unit=newtons,
     short_doc=":class:`newtons` are the SI base unit of force."
 )
+globals().update(generated)
 
 kgf = kilograms_force = make_compound_unit(
     name="kilograms_force",
