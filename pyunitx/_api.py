@@ -1,3 +1,4 @@
+import math
 import re
 import textwrap
 import warnings
@@ -27,6 +28,28 @@ Exponents = Union[Pairs, Dict[Unitlike, int]]
 
 SIUNITX_NEW = 3
 SIUNITX_OLD = 2
+_SI_PREFIXES = [
+    ["yotta", "Y", "1e24"],
+    ["zetta", "Z", "1e21"],
+    ["exa", "E", "1e18"],
+    ["peta", "P", "1e15"],
+    ["tera", "T", "1e12"],
+    ["giga", "G", "1e9"],
+    ["mega", "M", "1e6"],
+    ["kilo", "k", "1e3"],
+    ["hecto", "h", "1e2"],
+    ["deka", "da", "1e1"],
+    ["deci", "d", "1e-1"],
+    ["centi", "c", "1e-2"],
+    ["milli", "m", "1e-3"],
+    ["micro", "μ", "1e-6"],
+    ["nano", "n", "1e-9"],
+    ["pico", "p", "1e-12"],
+    ["femto", "f", "1e-15"],
+    ["atto", "a", "1e-18"],
+    ["zepto", "z", "1e-21"],
+    ["yocto", "y", "1e-24"],
+]
 
 _EXTANT_UNITS = {}
 
@@ -371,6 +394,26 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
                 units.append(f"{u.abbreviation}^{{{e}}}")
         return fmt.format(value=self.value, unit=".".join(units))
 
+    def closest_si_prefix(self):
+        magnitude = math.log10(self.scale)
+        if magnitude != int(magnitude):
+            raise TypeError("This isn't an SI unit so prefixes can't be applied")
+        pattern = re.compile(
+            f"[{''.join(p for _, p, __ in _SI_PREFIXES)}]?" +
+            "(m|g|s|A|K|cd|mol|J|Hz|C|Pa|V|Ω)"
+            )
+        if not pattern.match(self.abbreviation):
+            raise TypeError("This isn't an SI unit so prefixes can't be applied")
+        order = (self.value * self.scale).adjusted()
+        if order > 26 or order < -24:
+            raise ValueError("SI prefixes only cover 48 orders of magnitude")
+        mag, trail = divmod(order, 3)
+        family = [u for u in _EXTANT_UNITS.values()
+                  if u.dimension == self.dimension and u.scale == Decimal(f"1e{mag * 3}")]
+        assert len(family) == 1
+        converter_name = f"to_{family[0].__name__}"
+        return getattr(self, converter_name)()
+
     # @formatter:off
     # noinspection PyTypeChecker
     unit: Type[UnitInterface] = type(name, (object,), {
@@ -411,6 +454,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "equivalent_to": equivalent,
         "sig_figs": sig_figs,
         "to_latex": to_latex,
+        "closest_si_prefix": closest_si_prefix,
     })
     # @formatter:on
     unit.composition = Compound(((unit, 1),))
@@ -503,30 +547,8 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
         doesn't get overwritten.
     :return: A dictionary between the name of the unit and the unit class.
     """
-    prefixes = [
-        ["yotta", "Y", "1e24"],
-        ["zetta", "Z", "1e21"],
-        ["exa", "E", "1e18"],
-        ["peta", "P", "1e15"],
-        ["tera", "T", "1e12"],
-        ["giga", "G", "1e9"],
-        ["mega", "M", "1e6"],
-        ["kilo", "k", "1e3"],
-        ["hecto", "h", "1e2"],
-        ["deka", "da", "1e1"],
-        ["deci", "d", "1e-1"],
-        ["centi", "c", "1e-2"],
-        ["milli", "m", "1e-3"],
-        ["micro", "μ", "1e-6"],
-        ["nano", "n", "1e-9"],
-        ["pico", "p", "1e-12"],
-        ["femto", "f", "1e-15"],
-        ["atto", "a", "1e-18"],
-        ["zepto", "z", "1e-21"],
-        ["yocto", "y", "1e-24"],
-    ]
     generated = {}
-    for prefix, short, scale in prefixes:
+    for prefix, short, scale in _SI_PREFIXES:
         if prefix in skip:
             continue
         new_scale = Decimal(scale) * base_unit.scale
