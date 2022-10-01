@@ -3,7 +3,7 @@ import pytest
 from pyunitx import SIUNITX_OLD, OperationError
 from pyunitx.constants import atm
 from pyunitx.energy import joules
-from pyunitx.force import pounds, kgf, newtons, kilonewtons
+from pyunitx.force import pounds, kgf, newtons
 from pyunitx.length import meters, kilometers
 from pyunitx.pressure import bars
 
@@ -18,7 +18,7 @@ def test_complex_addition():
     extra_force = newtons(100)
 
     expected = newtons(1200100)
-    assert area * pressure + extra_force == expected
+    assert (area * pressure).to_newtons() + extra_force == expected
 
 
 def test_complex_subtraction():
@@ -27,7 +27,7 @@ def test_complex_subtraction():
     extra_force = newtons(100000)
 
     expected = newtons(1100000)
-    assert area * pressure - extra_force == expected
+    assert (area * pressure).to_newtons() - extra_force == expected
 
 
 def test_work():
@@ -92,12 +92,8 @@ def test_equal_identical():
     assert newtons(4) == newtons(2) * 2
 
 
-def test_equal_compatible():
-    assert kilonewtons(4) == newtons(4000)
-
-
 def test_equal_incompatible():
-    assert pounds(1).sig_figs(4) != newtons(4.44822).sig_figs(4)
+    assert pounds(1) != newtons("4.4482216152605")
 
 
 def test_equal_base_identical():
@@ -118,12 +114,6 @@ def test_add_base_identical():
     assert a + b == meters(3)
 
 
-def test_add_compatible():
-    a = newtons(100)
-    b = kilonewtons(1)
-    assert a + b == newtons(1100)
-
-
 def test_add_base_incompatible():
     a = meters(1)
     b = kilometers(1)
@@ -136,13 +126,6 @@ def test_subtract_base_identical():
     b = meters(2)
     expected = meters(3)
     assert a - b == expected
-
-
-def test_subtract_compatible():
-    a = kilonewtons(1)
-    b = newtons(1)
-
-    assert a - b == kilonewtons(".999")
 
 
 def test_subtract_base_incompatible():

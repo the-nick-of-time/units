@@ -114,43 +114,34 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     def add(self, other: UnitInterface) -> UnitInterface:
         """Add two measurements of the same unit together.
 
-        Checks compatibility rather than type for determining "same unit". For
-        example, a calculation that outputs the dynamically created unit
-        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
-
-        :param other: Another measurement, with the same units
-        :return: A measurement with the values of the two added
+        :param other: Another measurement, with the same units.
+        :return: A measurement with the values of the two added.
         """
-        if type(other).composition != type(self).composition:
+        if type(other) != type(self):
             raise OperationError("add", type(self), type(other))
-        return type(self)(self.value + other.value * other.scale / self.scale)
+        return type(self)(self.value + other.value)
 
     def subtract(self, other: UnitInterface) -> UnitInterface:
         """Subtract a measurement of the same unit from this.
 
-        Checks compatibility rather than type for determining "same unit". For
-        example, a calculation that outputs the dynamically created unit
-        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
-
-        :param other: Another measurement, with the same units
-        :return: A measurement with the values of the two subtracted
+        :param other: Another measurement, with the same units.
+        :return: A measurement with the values of the two subtracted.
         """
-        if type(other).composition != type(self).composition:
+        if type(other) != type(self):
             raise OperationError("subtract", type(self), type(other))
-        return type(self)(self.value - other.value * other.scale / self.scale)
+        return type(self)(self.value - other.value)
 
     def equal(self, other: UnitInterface) -> bool:
         """Check if this measurement is the same value and unit of another.
 
-        Checks compatibility rather than type for determining "same unit". For
-        example, a calculation that outputs the dynamically created unit
-        ``kg*m*s^-2`` is equivalent to a defined expression using newtons.
+        :param other: Another measurement, with the same units.
+        :return: Whether these two measurements are identical.
         """
         if self is other:
             return True
-        if type(other).composition != type(self).composition:
+        if type(other) != type(self):
             return False
-        return self.value * self.scale == other.value * other.scale
+        return self.value == other.value
 
     def equivalent(self, other: UnitInterface, figs=5) -> bool:
         """Check if this measurement represents the same quantity as another,

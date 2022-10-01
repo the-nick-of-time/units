@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyunitx"
-version = "0.5.2"
+version = "0.6.0"
 description = "First-class manipulation of physical quantities"
 authors = ["Nick Thurmes <nthurmes@gmail.com>"]
 license = "GPL-3.0-or-later"
