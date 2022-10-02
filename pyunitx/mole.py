@@ -2,8 +2,8 @@ from pyunitx._api import make_dimension, make_unit, si_unit
 
 Quantity = make_dimension("Quantity")
 
-mole = make_unit(
-    name="mole",
+moles = make_unit(
+    name="moles",
     dimension=Quantity,
     scale=1,
     abbrev="mol",
@@ -15,12 +15,12 @@ mole = make_unit(
     """
 )
 generated = si_unit(
-    base_unit=mole,
+    base_unit=moles,
     short_doc="SI prefixes are useful for very large or small quantities.",
 )
 globals().update(generated)
 
 __all__ = [
               "Quantity",
-              "mole",
+              "moles",
           ] + list(generated.keys())

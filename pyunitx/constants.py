@@ -4,7 +4,7 @@ from pyunitx._api import make_compound_unit
 from pyunitx.energy import joules
 from pyunitx.length import meters
 from pyunitx.mass import kilograms
-from pyunitx.mole import mole
+from pyunitx.mole import moles
 from pyunitx.power import watts
 from pyunitx.pressure import pascals
 from pyunitx.temperature import kelvin
@@ -43,12 +43,12 @@ def _construct_standard_gravity():
 
 
 def _construct_gas_constant():
-    unit = make_compound_unit(scale=1, exponents={joules: 1, mole: -1, kelvin: -1})
+    unit = make_compound_unit(scale=1, exponents={joules: 1, moles: -1, kelvin: -1})
     return unit("8.31446261815324")
 
 
 def _construct_air_molar_mass():
-    unit = make_compound_unit(scale=1, exponents={kilograms: 1, mole: -1})
+    unit = make_compound_unit(scale=1, exponents={kilograms: 1, moles: -1})
     # https://www.engineeringtoolbox.com/molecular-mass-air-d_679.html
     return unit(".0289647")
 

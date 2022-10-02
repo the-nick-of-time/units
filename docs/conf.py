@@ -5,6 +5,7 @@
 
 import os
 import sys
+from decimal import Decimal
 from pathlib import Path
 
 from pypandoc import convert_file
@@ -13,6 +14,7 @@ from pypandoc.pandoc_download import download_pandoc
 # Allow imports from main package by autodoc
 sys.path.insert(0, os.path.abspath(".."))
 
+# -- Convert readme to RST ---------------------------------------------------
 if not (Path.home() / "bin" / "pandoc").exists():
     download_pandoc()
 
@@ -20,6 +22,15 @@ rst_text = convert_file("../README.md", format="gfm", to="rst")
 without_title = rst_text.split('\n')[3:]
 rst_readme = Path("README.rst")
 rst_readme.write_text('\n'.join(without_title))
+
+# -- Table of SI prefixes ----------------------------------------------------
+from pyunitx._api import _SI_PREFIXES
+
+headers = ','.join(["SI Prefix", "Short Prefix", "Order of Magnitude"])
+body = [f"{p},{s},10\\ :sup:`{Decimal(m).adjusted()}`" for p, s, m in _SI_PREFIXES]
+# lines = [','.join(line) for line in [headers] + body]
+csv_si = Path("prefixes.csv")
+csv_si.write_text('\n'.join([headers] + body))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

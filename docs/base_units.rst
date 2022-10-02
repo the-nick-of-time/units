@@ -2,6 +2,19 @@ Base Dimensions and Units
 =========================
 .. include:: macros.rst
 
+.. csv-table:: SI prefixes
+	:file: prefixes.csv
+	:widths: 40, 20, 40
+	:header-rows: 1
+
+Each of the SI base units also have versions with these prefixes applied.
+Here, those are
+:class:`meters <pyunitx.length.meters>` for length,
+:class:`seconds <pyunitx.time.seconds>` for time,
+:class:`grams <pyunitx.mass.grams>` for mass (:class:`kilograms <pyunitx.mass.kilograms>` are the consistent base unit but the prefixes are applied to grams),
+:class:`kelvin <pyunitx.temperature.kelvin>` for temperature,
+:class:`moles <pyunitx.mole.moles>` for quantity, and
+:class:`amperes <pyunitx.current.amperes>` for current.
 
 Length
 ------

@@ -583,7 +583,7 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
                 abbrev=new_abbrev,
                 scale=new_scale,
                 dimension=base_unit.dimension,
-                doc=new_doc,
+                # doc=new_doc,
             )
         else:
             new_unit = make_compound_unit(
@@ -591,7 +591,7 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
                 abbrev=new_abbrev,
                 scale=new_scale,
                 exponents=base_unit.composition.to_pairs(),
-                doc=new_doc,
+                # doc=new_doc,
             )
         generated[new_name] = new_unit
     return generated

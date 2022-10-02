@@ -7,3 +7,4 @@ list-fftabs.py
 /dist
 /docs/README.rst
 *.deb
+/docs/prefixes.csv

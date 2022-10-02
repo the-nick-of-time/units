@@ -1,16 +1,6 @@
-from pyunitx._api import make_compound_dimension, make_compound_unit
+from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.length import Length, meters, feet
 
-__all__ = [
-    "meters_cubed",
-    "liters",
-    "feet_cubed",
-    "fluid_ounces",
-    "cups",
-    "teaspoons",
-    "tablespoons",
-    "gallons",
-]
 Volume = make_compound_dimension({Length: 3}, "Volume")
 
 meters_cubed = make_compound_unit(
@@ -34,6 +24,10 @@ milliliters = make_compound_unit(
     abbrev="mL",
     doc="""A milliliter is around 20 drops of water, or the size of a 1-cm cube."""
 )
+
+generated = si_unit(base_unit=liters, skip=["milli"])
+globals().update(generated)
+
 feet_cubed = make_compound_unit(
     scale=".02831685",
     exponents={feet: 3}
@@ -98,3 +92,15 @@ imperial_gallons = make_compound_unit(
     exponents={meters: 3},
     scale="4.54609e-3"
 )
+
+__all__ = [
+              "meters_cubed",
+              "liters",
+              "milliliters",
+              "feet_cubed",
+              "fluid_ounces",
+              "cups",
+              "teaspoons",
+              "tablespoons",
+              "gallons",
+          ] + list(generated.keys())
