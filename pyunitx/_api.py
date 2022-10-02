@@ -574,13 +574,16 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
         new_scale = Decimal(scale) * base_unit.scale
         new_name = prefix + base_unit.__name__
         new_abbrev = short + base_unit.abbreviation
+        new_doc = (short_doc +
+                   f"\n\nOne {new_name.rstrip('s')} is equal to "
+                   f"10\\ :sup:`{Decimal(scale).adjusted()}` {base_unit.__name__}.")
         if base_unit.composition == Compound(Multiset({base_unit: 1})):
             new_unit = make_unit(
                 name=new_name,
                 abbrev=new_abbrev,
                 scale=new_scale,
                 dimension=base_unit.dimension,
-                doc=short_doc,
+                doc=new_doc,
             )
         else:
             new_unit = make_compound_unit(
@@ -588,7 +591,7 @@ def si_unit(*, base_unit: Type['UnitInterface'], short_doc="", skip=()) \
                 abbrev=new_abbrev,
                 scale=new_scale,
                 exponents=base_unit.composition.to_pairs(),
-                doc=short_doc,
+                doc=new_doc,
             )
         generated[new_name] = new_unit
     return generated

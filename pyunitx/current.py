@@ -13,7 +13,7 @@ amperes = make_unit(
     """
 )
 
-generated = si_unit(base_unit=amperes, short_doc="The :class:`ampere` is the SI base unit.")
+generated = si_unit(base_unit=amperes, short_doc=":class:`amperes` are the SI base unit.")
 globals().update(generated)
 
 __all__ = [

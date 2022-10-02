@@ -15,7 +15,7 @@ meters = make_unit(
 
 generated = si_unit(
     base_unit=meters,
-    short_doc="""The base unit is :class:`pyunitx.length.meters`."""
+    short_doc="""The base unit is :class:`meters`."""
 )
 globals().update(generated)
 

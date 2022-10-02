@@ -1,9 +1,4 @@
-from pyunitx._api import make_dimension, make_unit
-
-__all__ = [
-    "Quantity",
-    "mole",
-]
+from pyunitx._api import make_dimension, make_unit, si_unit
 
 Quantity = make_dimension("Quantity")
 
@@ -19,3 +14,13 @@ mole = make_unit(
     for its pragmatic usefulness in chemistry and fluid physics.
     """
 )
+generated = si_unit(
+    base_unit=mole,
+    short_doc="SI prefixes are useful for very large or small quantities.",
+)
+globals().update(generated)
+
+__all__ = [
+              "Quantity",
+              "mole",
+          ] + list(generated.keys())
