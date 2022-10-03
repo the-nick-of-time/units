@@ -335,9 +335,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         if key.startswith("to_"):
             if not hasattr(self.dimension, key):
                 composition = Compound.from_string(key[3:])
-                base_scale = 1
-                for u, e in composition.to_pairs():
-                    base_scale *= u.scale ** e
+                base_scale = _base_scale(composition)
                 make_compound_unit(
                     name=key[3:],
                     scale=base_scale,
@@ -648,6 +646,13 @@ def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitInterface']]:
     if key in remap:
         return remap[key]
     return None
+
+
+def _base_scale(composition: 'Compound') -> Decimal:
+    base_scale = Decimal(1)
+    for u, e in composition.to_pairs():
+        base_scale *= u.scale ** e
+    return base_scale
 
 
 class DimensionBase:
