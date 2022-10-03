@@ -14,10 +14,7 @@ moles = make_unit(
     for its pragmatic usefulness in chemistry and fluid physics.
     """
 )
-generated = si_unit(
-    base_unit=moles,
-    short_doc="SI prefixes are useful for very large or small quantities.",
-)
+generated = si_unit(base_unit=moles)
 globals().update(generated)
 
 __all__ = [

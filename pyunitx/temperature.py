@@ -23,10 +23,7 @@ kelvin = make_unit(
     """
 )
 
-generated = si_unit(
-    base_unit=kelvin,
-    short_doc=":class:`kelvin` is the base unit of temperature."
-)
+generated = si_unit(base_unit=kelvin)
 globals().update(generated)
 
 celsius = make_unit(

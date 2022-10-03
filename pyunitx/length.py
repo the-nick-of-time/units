@@ -13,10 +13,7 @@ meters = make_unit(
     """
 )
 
-generated = si_unit(
-    base_unit=meters,
-    short_doc="""The base unit is :class:`meters`."""
-)
+generated = si_unit(base_unit=meters)
 globals().update(generated)
 
 feet = make_unit(

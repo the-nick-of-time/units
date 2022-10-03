@@ -23,10 +23,7 @@ seconds = make_unit(
     """
 )
 
-generated = si_unit(
-    base_unit=seconds,
-    short_doc=""":class:`seconds` are the base unit."""
-)
+generated = si_unit(base_unit=seconds)
 globals().update(generated)
 
 minutes = make_unit(

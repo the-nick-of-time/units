@@ -19,7 +19,7 @@ joules = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=joules, short_doc="The :class:`joule` is the SI base unit.")
+generated = si_unit(base_unit=joules)
 globals().update(generated)
 
 calorie = make_compound_unit(

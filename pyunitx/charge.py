@@ -17,7 +17,7 @@ coulombs = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=coulombs, short_doc="""The base unit is :class:`coulombs`.""")
+generated = si_unit(base_unit=coulombs)
 globals().update(generated)
 
 fundamental_charge = make_compound_unit(

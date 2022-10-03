@@ -19,11 +19,7 @@ grams = make_unit(
     doc="""A gram is roughly defined as the mass of a milliliter of water."""
 )
 
-generated = si_unit(
-    base_unit=grams,
-    short_doc=":class:`kilograms` are the base unit.",
-    skip=["kilo"]
-)
+generated = si_unit(base_unit=grams, skip=["kilo"])
 globals().update(generated)
 
 av_pound = make_unit(

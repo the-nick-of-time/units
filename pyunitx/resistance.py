@@ -16,7 +16,7 @@ ohms = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=ohms, short_doc=":class:`ohms` are the base unit of resistance")
+generated = si_unit(base_unit=ohms)
 
 __all__ = [
               "Resistance",

@@ -20,7 +20,7 @@ watts = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=watts, short_doc=":class:`watts` are the SI base unit of power.")
+generated = si_unit(base_unit=watts)
 globals().update(generated)
 
 kilowatts = make_compound_unit(

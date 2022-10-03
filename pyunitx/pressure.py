@@ -12,7 +12,7 @@ pascals = make_compound_unit(
     doc="""The pascal is the base unit of pressure, but it is very small."""
 )
 
-generated = si_unit(base_unit=pascals, short_doc=":class:`pascals` are the base unit.")
+generated = si_unit(base_unit=pascals)
 globals().update(generated)
 
 bars = make_compound_unit(

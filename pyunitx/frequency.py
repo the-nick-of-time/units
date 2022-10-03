@@ -14,7 +14,7 @@ hertz = make_compound_unit(
     """
 )
 
-generated = si_unit(base_unit=hertz, short_doc=":class:`hertz` is the base unit.")
+generated = si_unit(base_unit=hertz)
 globals().update(generated)
 
 rpm = make_compound_unit(
