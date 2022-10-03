@@ -39,3 +39,16 @@ def test_main(monkeypatch, capsys, args, expected):
         patch.setattr(sys, 'argv', [""] + args)
         main()
         assert capsys.readouterr().out.strip() == expected
+
+
+@pytest.mark.parametrize(
+    "args", [
+        ["10", "kg", "mi"],
+        ["10", "kg.mol^-1", "mol.kg^-1"],
+    ]
+)
+def test_main_fail(monkeypatch, capsys, args):
+    with monkeypatch.context() as patch:
+        patch.setattr(sys, 'argv', [""] + args)
+        with pytest.raises(TypeError):
+            main()
