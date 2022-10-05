@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyunitx"
-version = "0.6.2"
+version = "0.6.3"
 description = "First-class manipulation of physical quantities"
 authors = ["Nick Thurmes <nthurmes@gmail.com>"]
 license = "GPL-3.0-or-later"
@@ -26,7 +26,7 @@ docs = ["Sphinx", "pypandoc"]
 uconvert = "pyunitx.uconvert:main"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.2"]
 build-backend = "poetry.masonry.api"
 
 [tool.pytest.ini_options]

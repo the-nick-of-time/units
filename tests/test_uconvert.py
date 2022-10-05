@@ -31,6 +31,7 @@ def test_parse_unit_fail():
 @pytest.mark.parametrize(
     "args,expected", [
         (["10", "kg", "lbm_A"], "22.0462 lbm_A"),
+        (["-f", "3", "10", "kg", "lbm_A"], "22.0 lbm_A"),
         (["10", "m.s^-1", "mi.hr^-1"], "22.3694 mi hr^-1"),
     ]
 )

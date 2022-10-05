@@ -9,6 +9,8 @@ _EXTANT_ABBREVS = {unit.abbreviation: unit for name, unit in _EXTANT_UNITS.items
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--figures", default=6, type=int, help="The number of significant"
+                                                                     " figures to output")
     parser.add_argument("quantity", help="The number of the source unit.")
     parser.add_argument("src", help="""\
     The unit to convert from. Must be expressed as a series of unit symbols with exponents, 
@@ -48,7 +50,7 @@ def main():
     )
     if not source(num).is_dimension(dest.dimension):
         raise TypeError("Not the same dimension, cannot be converted")
-    print(dest(num * source.scale / dest.scale).sig_figs(6))
+    print(dest(num * source.scale / dest.scale).sig_figs(args.figures))
 
 
 if __name__ == '__main__':
