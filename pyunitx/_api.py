@@ -336,11 +336,12 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
             if not hasattr(self.dimension, key):
                 composition = Compound.from_string(key[3:])
                 base_scale = _base_scale(composition)
-                make_compound_unit(
+                unit = make_compound_unit(
                     name=key[3:],
                     scale=base_scale,
                     exponents=composition.to_pairs(),
                 )
+                key = "to_" + unit.__name__
                 # It is automatically registered on the dimension on creation,
                 # no need to explicitly use it
             return lambda: getattr(self.dimension, key)(self)
