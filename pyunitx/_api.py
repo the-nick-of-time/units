@@ -510,7 +510,12 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
 
 def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, abbrev=None,
                        doc="") -> Type['UnitInterface']:
-    """A unit composed of other units.
+    """Create or retrieve a unit composed of other units.
+
+    If an identical unit has already been created (defined by same exponents
+    and scale) then return that pre-constructed unit. This makes sure that 
+    calculations that result in a named unit (such as ohms) will be correctly
+    reported as such rather than breaking down into their base components.
 
     :param scale: How many of the base unit one of this unit is equivalent to.
         Note that the scale factors of the constituent units are not taken into

@@ -9,9 +9,12 @@ _EXTANT_ABBREVS = {unit.abbreviation: unit for name, unit in _EXTANT_UNITS.items
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("quantity")
-    parser.add_argument("src")
-    parser.add_argument("dest")
+    parser.add_argument("quantity", help="The number of the source unit.")
+    parser.add_argument("src", help="""\
+    The unit to convert from. Must be expressed as a series of unit symbols with exponents, 
+    multiplied together using '.'. '/' for division is not allowed, instead use a negative 
+    exponent on the unit. As an example, you would give meters per second as 'm.s^-1'.""")
+    parser.add_argument("dest", help="The unit to convert to, in the same format.")
     return parser.parse_args()
 
 
