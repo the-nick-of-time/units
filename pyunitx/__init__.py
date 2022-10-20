@@ -25,6 +25,7 @@ from . import (
     force,
     frequency,
     length,
+    luminosity,
     mass,
     mole,
     power,
