@@ -2,8 +2,8 @@ from pyunitx._api import make_dimension, make_unit, si_unit
 
 LuminousIntensity = make_dimension("Luminous Intensity")
 
-candela = make_unit(
-    name="candela",
+candelas = make_unit(
+    name="candelas",
     abbrev="cd",
     scale=1,
     dimension=LuminousIntensity,
@@ -14,9 +14,11 @@ candela = make_unit(
     """
 )
 
-generated = si_unit(base_unit=candela)
+generated = si_unit(base_unit=candelas)
 globals().update(generated)
 
 __all__ = [
-              "LuminousIntensity",
-          ] + list(generated.keys())
+    "LuminousIntensity",
+    "candelas",
+    *generated.keys()
+]

@@ -22,6 +22,18 @@ grams = make_unit(
 generated = si_unit(base_unit=grams, skip=["kilo"])
 globals().update(generated)
 
+atomic_mass_unit = make_unit(
+    name="atomic_mass_unit",
+    abbrev="u",
+    dimension=Mass,
+    scale="1.660538782e-27",
+    doc="""
+    The unified atomic mass unit is defined as 1/12 of the mass of one atom of
+    carbon-12, approximately the mass of one proton or neutron. As such, it is 
+    equal to :math:`\\frac{1 g}{N_A}`.
+    """
+)
+
 av_pound = make_unit(
     name="avoirdupois_pounds_mass",
     dimension=Mass,

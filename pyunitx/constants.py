@@ -1,7 +1,11 @@
+import math
 from decimal import Decimal
 
 from pyunitx._api import make_compound_unit
+from pyunitx.capacitance import farads
+from pyunitx.current import amperes
 from pyunitx.energy import joules
+from pyunitx.force import newtons
 from pyunitx.length import meters
 from pyunitx.mass import kilograms
 from pyunitx.mole import moles
@@ -53,6 +57,21 @@ def _construct_air_molar_mass():
     return unit(".0289647")
 
 
+def _construct_planck():
+    unit = make_compound_unit(scale=1, exponents={joules: 1, seconds: 1})
+    return unit("6.62607015e-34")
+
+
+def _construct_epsilon():
+    unit = make_compound_unit(scale=1, exponents={farads: 1, meters: -1})
+    return unit("8.8541878128e-12")
+
+
+def _construct_mu():
+    unit = make_compound_unit(scale=1, exponents={newtons: 1, amperes: -2})
+    return unit("1.25663706212e-6")
+
+
 #: The speed of light in a vacuum *c* is an absolute constant of the universe.
 #: It now forms the foundation for the definition of the meter.
 #: It is given here in :math:`\frac{m}{s}`.
@@ -80,6 +99,7 @@ sigma = σ
 
 #: One standard atmosphere is approximately the average sea-level atmospheric
 #: pressure.
+#: It is given in :math:`Pa`.
 atm = pascals(101325)
 standard_atmosphere = atm
 
@@ -117,3 +137,22 @@ earth_radius = R_E
 #: It is given in :math:`kg`.
 M_E = kilograms("5.9722e24")
 earth_mass = M_E
+
+#: The Planck constant :math:`h` is an important value in atomic physics.
+#: It is given in :math:`\frac{J}{Hz}`
+h = _construct_planck()
+planck = h
+
+#: The electric permittivity of vacuum
+#: It is given in :math:`\frac{F}{m}`
+ε = _construct_epsilon()
+vacuum_electric_permittivity = ε
+
+#: The magnetic permittivity of vacuum
+μ = _construct_mu()
+vacuum_magnetic_permittivity = μ
+
+#: The Coulomb constant is the scale factor in the law predicting the
+#: attractive or repulsive force between two charged objects.
+#: It is given in units of :math:`\frac{N\cdot m^s}{C^2}`
+k = 1 / (4 * math.pi * vacuum_electric_permittivity)

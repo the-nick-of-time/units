@@ -872,7 +872,13 @@ class UnitInterface:
     def __mul__(self, other: UnitOperand) -> 'UnitInterface':
         ...
 
+    def __rmul__(self, other: UnitOperand) -> 'UnitInterface':
+        ...
+
     def __truediv__(self, other: UnitOperand) -> 'UnitInterface':
+        ...
+
+    def __rtruediv__(self, other: UnitOperand) -> 'UnitInterface':
         ...
 
     def is_dimension(self, dim: DimensionBase) -> bool:

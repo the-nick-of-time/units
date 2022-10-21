@@ -4,8 +4,6 @@ from pyunitx.length import Length, meters, feet
 from pyunitx.mass import Mass, kilograms
 from pyunitx.time import seconds, Time
 
-
-
 Energy = make_compound_dimension({Mass: 1, Length: 2, Time: -2}, "Energy")
 
 joules = make_compound_unit(
@@ -25,7 +23,7 @@ globals().update(generated)
 calorie = make_compound_unit(
     name="calorie",
     scale="4.184",
-    exponents=joules.composition.to_pairs(),
+    exponents={joules: 1},
     abbrev="cal",
     doc="""\
     This is the gram calorie, the amount of heat energy necessary to heat 1 gram
@@ -44,9 +42,28 @@ btu = make_compound_unit(
     """
 )
 
+electronvolts = make_compound_unit(
+    name="electronvolts",
+    abbrev="eV",
+    scale="1.602176634e-19",
+    exponents={joules: 1},
+    doc="""\
+    An electronvolt is the amount of energy a single electron gains by 
+    traveling through an electric potential of one volt. As volts are equivalent
+    to joules per coulomb, that means the numerical value of this unit is 
+    identical to that of the fundamental charge expressed in coulombs.
+    
+    In particle physics, masses are often stated in units of electronvolts
+    making use of mass-energy equivalence through the famous :math:`E=mc^2`.
+    The mass of a proton, therefore, may be expressed as 938 MeV, leaving the
+    "divided by :math:`c^2`" implied.
+    """
+)
+
 __all__ = [
               "Energy",
               "joules",
               "calorie",
               "btu",
+              "electronvolts",
           ] + list(generated.keys())
