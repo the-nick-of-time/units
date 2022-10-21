@@ -73,8 +73,8 @@ radius is 12.5 inches, the width is 8 inches, and it's filled to 42 psi?[^1]
 >>> temperature = celsius_to_kelvin_absolute(celsius(25))
 >>> mols = pressure * volume / (R * temperature)
 >>> mass = mols * air_molar_mass
->>> mass.to_avoirdupois_pounds_mass().sig_figs(3)
-0.369 lbm_A
+>>> mass.to_pounds_mass().sig_figs(3)
+0.369 lbm
 
 ```
 

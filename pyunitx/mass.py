@@ -35,10 +35,10 @@ atomic_mass_unit = make_unit(
 )
 
 av_pound = make_unit(
-    name="avoirdupois_pounds_mass",
+    name="pounds_mass",
     dimension=Mass,
     scale="0.45359237",
-    abbrev="lbm_A",
+    abbrev="lbm",
     doc="""Avoirdupois pounds are one of the definitions of mass in the |ucs|."""
 )
 troy_pound = make_unit(
