@@ -12,25 +12,31 @@ def parse_args():
     parser.add_argument("-f", "--figures", default=6, type=int, help="The number of significant"
                                                                      " figures to output")
     parser.add_argument("quantity", help="The number of the source unit.")
-    parser.add_argument("src", help="""\
+    parser.add_argument(
+        "src", help="""\
     The unit to convert from. Must be expressed as a series of unit symbols with exponents, 
-    multiplied together using '.'. '/' for division is not allowed, instead use a negative 
-    exponent on the unit. As an example, you would give meters per second as 'm.s^-1'.""")
+    multiplied together using '.'. '/' for division can be used before each denominator unit,
+    like J/kg/K for specific heat capacity. J/kg.K would instead be equivalent to J.K/kg. 
+    If you don't like this ambiguity, the better way is to use a negative exponent on the unit. 
+    As an example, you would give meters per second as 'm.s^-1'."""
+        )
     parser.add_argument("dest", help="The unit to convert to, in the same format.")
     return parser.parse_args()
 
 
 def parse_unit(spec):
-    pattern = re.compile(r"\.?([\w ]+)(\^-?\d+)?")
+    pattern = re.compile(r"([./])?([\w ]+)(\^-?\d+)?")
     pairs = []
     for match in re.finditer(pattern, spec):
-        name = match.group(1)
+        name = match.group(2)
         if name not in _EXTANT_ABBREVS:
             raise KeyError(f"{name} is not a recognized unit")
-        if match.group(2):
-            power = int(match.group(2)[1:])
+        if match.group(3):
+            power = int(match.group(3)[1:])
         else:
             power = 1
+        if match.group(1) == '/':
+            power *= -1
         pairs.append((_EXTANT_ABBREVS[name], power))
     defined_scale = _base_scale(tuple(pairs))
     return Compound(tuple(pairs)), defined_scale

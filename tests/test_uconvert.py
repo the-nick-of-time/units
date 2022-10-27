@@ -3,6 +3,7 @@ import sys
 import pytest
 
 from pyunitx._api import Compound
+from pyunitx.length import meters
 from pyunitx.mass import kilograms
 from pyunitx.time import seconds
 from pyunitx.uconvert import parse_unit, main
@@ -15,6 +16,8 @@ from pyunitx.volume import fluid_ounces
         ("s^-2", ((seconds, -2),)),
         ("fl oz^2", ((fluid_ounces, 2),)),
         ("kg.s^-1", ((kilograms, 1), (seconds, -1))),
+        ("kg/s", ((kilograms, 1), (seconds, -1))),
+        ("kg/s.m", ((kilograms, 1), (seconds, -1), (meters, 1))),
     ]
 )
 def test_parse_unit_success(spec, expected):
