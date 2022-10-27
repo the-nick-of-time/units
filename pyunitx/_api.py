@@ -654,9 +654,9 @@ def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitInterface']]:
     return None
 
 
-def _base_scale(composition: 'Compound') -> Decimal:
+def _base_scale(composition: Union['Compound', Pairs]) -> Decimal:
     base_scale = Decimal(1)
-    for u, e in composition.to_pairs():
+    for u, e in composition:
         base_scale *= u.scale ** e
     return base_scale
 
@@ -767,6 +767,9 @@ class Compound:
 
     def __len__(self):
         return len(self.units)
+
+    def __iter__(self):
+        yield from self.to_pairs()
 
     def __mul__(self, other: Union[type, Multiset, 'Compound']) -> 'Compound':
         if isinstance(other, type):

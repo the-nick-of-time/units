@@ -18,7 +18,7 @@ from pyunitx.volume import fluid_ounces
     ]
 )
 def test_parse_unit_success(spec, expected):
-    c = parse_unit(spec)
+    c, s = parse_unit(spec)
 
     assert c == Compound(expected)
 
@@ -32,6 +32,7 @@ def test_parse_unit_fail():
     "args,expected", [
         (["10", "kg", "lbm"], "22.0462 lbm"),
         (["-f", "3", "10", "kg", "lbm"], "22.0 lbm"),
+        (["10", "cal", "J"], "41.8400 J"),
         (["10", "m.s^-1", "mi.hr^-1"], "22.3694 mi hr^-1"),
     ]
 )

@@ -32,21 +32,22 @@ def parse_unit(spec):
         else:
             power = 1
         pairs.append((_EXTANT_ABBREVS[name], power))
-    return Compound(tuple(pairs))
+    defined_scale = _base_scale(tuple(pairs))
+    return Compound(tuple(pairs)), defined_scale
 
 
 def main():
     args = parse_args()
     num = decimal.Decimal(args.quantity)
-    sourcecomp = parse_unit(args.src)
-    destcomp = parse_unit(args.dest)
+    sourcecomp, sscale = parse_unit(args.src)
+    destcomp, dscale = parse_unit(args.dest)
     source = make_compound_unit(
         exponents=sourcecomp.to_pairs(),
-        scale=_base_scale(sourcecomp)
+        scale=sscale
     )
     dest = make_compound_unit(
         exponents=destcomp.to_pairs(),
-        scale=_base_scale(destcomp)
+        scale=dscale
     )
     if not source(num).is_dimension(dest.dimension):
         raise TypeError("Not the same dimension, cannot be converted")
