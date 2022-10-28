@@ -113,6 +113,11 @@ function task_deploy() {
 	rsync -rv docs/_build/ server@nthurmes.duckdns.org:/var/www/docs/pyunitx/
 }
 
+function task_local_install() {
+	: "Install the project outside the virtualenv"
+	(deactivate ; pip install .)
+}
+
 # Print documentation for tasks
 function task_help {
 	: "Auto-generate list of tasks, including documentation in the form of these noop statements"
