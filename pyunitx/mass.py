@@ -22,6 +22,18 @@ grams = make_unit(
 generated = si_unit(base_unit=grams, skip=["kilo"])
 globals().update(generated)
 
+tonnes = make_unit(
+    name="tonnes",
+    abbrev="t",
+    scale=1000,
+    dimension=Mass,
+    doc="""\
+    A metric tonne is equal to 1000 kilograms. This is equivalent to a megagram
+    (Mg) and is easily confusable with the :class:`short ton <ton>`, so the
+    megagram should be preferred.
+    """
+)
+
 atomic_mass_unit = make_unit(
     name="atomic_mass_unit",
     abbrev="u",
@@ -59,12 +71,25 @@ slug = make_unit(
     consistent set of measurements whereas the pound-mass cannot.
     """
 )
+tons = make_unit(
+    name="tons",
+    abbrev="tn",
+    scale="907.18474",
+    dimension=Mass,
+    doc="""\
+    One short ton is 2000 pounds. It should not be confused with the metric 
+    tonne, which is 1000 kilograms.
+    """
+)
 
 __all__ = [
-              "Mass",
-              "kilograms",
-              "av_pound",
-              "troy_pound",
-              "slug",
-              "grams"
-          ] + list(generated.keys())
+    "Mass",
+    "kilograms",
+    "av_pound",
+    "troy_pound",
+    "slug",
+    "grams",
+    "tonnes",
+    "tons",
+    *generated.keys()
+]
