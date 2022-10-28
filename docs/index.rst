@@ -13,6 +13,7 @@ pyunitx
    base_units
    complex
    constants
+   uconvert
 
 
 

@@ -13,6 +13,8 @@ to avoid most floating-point calculation pitfalls. Values given for units are au
 converted so you can enter any value that constructor can take. Functionally, this means that
 float notation should be given as strings rather than float literals.
 
+## Illustrative Examples
+
 Q. How many meters does light travel in a millisecond?
 
 ```pycon
@@ -140,5 +142,24 @@ might want to model some other quantity, like cash flow in your budget.
 For more examples, including derived units, see the definitions in the package, like
 [energy](https://github.com/the-nick-of-time/units/blob/main/pyunitx/energy.py) or
 [time](https://github.com/the-nick-of-time/units/blob/main/pyunitx/time.py).
+
+## `uconvert`
+
+This package also comes with a command-line tool to perform unit conversions between any
+predefined units.
+
+Q. What's the conversion factor between kilowatts and foot-pounds per second?
+
+```shell
+$ uconvert 1 kW ft.lb/s
+737.562 ft^2 slug s^-3
+```
+
+Q. What's my cat's weight in pounds, rounded to 3 significant figures?
+
+```shell
+$ uconvert -f 3 4.9 kg lbm
+10.8 lbm
+```
 
 The full documentation can be found at [ReadTheDocs](https://pyunitx.readthedocs.io/en/latest/).
