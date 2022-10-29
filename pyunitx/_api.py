@@ -4,7 +4,6 @@ import re
 import textwrap
 import warnings
 from decimal import Decimal
-from numbers import Number
 from typing import Union, Tuple, Sequence, Type, Dict, Iterator, Optional
 
 import sigfig
@@ -20,12 +19,12 @@ __all__ = [
     "SIUNITX_NEW",
     "SIUNITX_OLD",
 ]
-UnitOperand = Union['UnitInterface', Number]
+UnitOperand = Union['UnitInterface', int, float, Decimal]
 Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
 Pair = Tuple[Unitlike, int]
 Pairs = Tuple[Pair, ...]
-Exponents = Union[Pairs, Dict[Unitlike, int]]
+Exponents = Union[Pairs, Dict[Unitlike, int], 'Multiset']
 
 SIUNITX_NEW = 3
 SIUNITX_OLD = 2
@@ -69,7 +68,7 @@ def make_dimension(name: str) -> 'DimensionBase':
 
 
 def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: str, doc="") \
-        -> Type['UnitInterface']:
+        -> Type['UnitBase']:
     """A unit is a particular convention for measuring a dimension.
 
     The resulting class represents the abstract concept of the unit, say meters.
@@ -94,372 +93,9 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     :return: A class representing the unit. Instances of this class are
         measurements using the unit.
     """
-
-    def new(cls, value: Scale):
-        """Create a new measurement using this unit.
-
-        Instances are flyweights; two invocations of ``meters(1)`` will return
-        the same object.
-
-        :param value: The numerical value of the measurement, in any form that
-            :external:py:class:`decimal.Decimal` can accept.
-        :return: The newly created measurement, or the cached version.
-        """
-        v = Decimal(value)
-        if v not in cls.instances:
-            cls.instances[v] = super(type, cls).__new__(cls)
-        instance = cls.instances[v]
-        instance.value = v
-        return instance
-
-    def add(self, other: UnitInterface) -> UnitInterface:
-        """Add two measurements of the same unit together.
-
-        :param other: Another measurement, with the same units.
-        :raises TypeError: If measurements are not the same unit.
-        :return: A measurement with the values of the two added.
-        """
-        if type(other) != type(self):
-            raise OperationError("add", type(self), type(other))
-        return type(self)(self.value + other.value)
-
-    def subtract(self, other: UnitInterface) -> UnitInterface:
-        """Subtract a measurement of the same unit from this.
-
-        :param other: Another measurement, with the same units.
-        :raises TypeError: If measurements are not the same unit.
-        :return: A measurement with the values of the two subtracted.
-        """
-        if type(other) != type(self):
-            raise OperationError("subtract", type(self), type(other))
-        return type(self)(self.value - other.value)
-
-    def equal(self, other: UnitInterface) -> bool:
-        """Check if this measurement is the same value and unit of another.
-
-        :param other: Another measurement, with the same units.
-        :return: Whether these two measurements are identical.
-        """
-        if self is other:
-            return True
-        if type(other) != type(self):
-            return False
-        return self.value == other.value
-
-    def equivalent(self, other: UnitInterface, figs=5) -> bool:
-        """Check if this measurement represents the same quantity as another,
-        within a certain precision.
-
-        This effectively converts both units to the base unit to get them on
-        equal footing before rounding and checking equality.
-
-        :param other: The other measurement.
-        :param figs: How many significant figures to round to before comparison.
-        :raises TypeError: If the two units do not represent the same dimension
-            and therefore cannot be compared.
-        :return: Whether the two measurements are approximately equal.
-        """
-        if not other.is_dimension(self.dimension):
-            raise ImplicitConversionError(type(other), type(self))
-        with warnings.catch_warnings():
-            # sigfig.round raises warnings if the quantity being rounded has fewer significant
-            # figures than are given, but for the purposes of this comparison, I don't care
-            # so ignore them all
-            warnings.simplefilter("ignore")
-            a = sigfig.round(self.value * self.scale, sigfigs=figs)
-            b = sigfig.round(other.value * other.scale, sigfigs=figs)
-        return a == b
-
-    def multiply(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
-        """Multiply two measurements.
-
-        If the two quantities completely cancel (like a frequency times a
-        duration), the result will be returned as a plain number.
-
-        Otherwise, produce the correct unit by combining the units of the two
-        multiplicands. If the result has two base units that measure the same
-        dimension but are not the same (say you're trying to multiply ``ft/s`` by
-        ``m^2``, ``ft*m^2`` would be in the result) a TypeError will be thrown.
-        Instead you should convert one of the measurements to be compatible with
-        the other before multiplying. In the example, that could be converting the
-        ``ft/s`` to ``m/s``.
-
-        :param other: Another measurement, with any units including none.
-        :raises TypeError: If base units are incompatible.
-        :return: The result of the calculation, with the compound units.
-        """
-        if isinstance(other, (int, float, Decimal)):
-            return type(self)(self.value * Decimal(other))
-        result_value = self.value * other.value
-        unit_composition = (self.composition * other.composition).units
-        if len(unit_composition) == 0:
-            return result_value
-        result_unit = make_compound_unit(
-            scale=self.scale * other.scale,
-            exponents=unit_composition
-        )
-        return result_unit(result_value)
-
-    def divide(self, other: Union[UnitInterface, int, float, Decimal]) -> UnitInterface:
-        """Divide two measurements.
-
-        If the two quantities completely cancel (like the derivation of radians
-        dividing length by length), the result will be returned as a plain
-        number.
-
-        Otherwise, produce the correct unit by combining the units of the two
-        divisors. If the result has two base units that measure the same
-        dimension but are not the same (say you're trying to divide ``ft/s`` by
-        ``m^2``, ``ft/m^2`` would be in the result) a TypeError will be thrown.
-        Instead you should convert one of the measurements to be compatible with
-        the other before multiplying. In the example, that could be converting the
-        ``ft/s`` to ``m/s``.
-
-        :param other: Another measurement, with any units including none.
-        :raises TypeError: If base units are incompatible.
-        :return: The result of the division, with correct units.
-        """
-        if isinstance(other, (int, float, Decimal)):
-            return type(self)(self.value / Decimal(other))
-        result_units = self.composition / other.composition
-        result_value = self.value / other.value
-        if len(result_units) == 0:
-            return result_value
-        result_unit = make_compound_unit(
-            scale=self.scale / other.scale,
-            exponents=result_units.to_pairs()
-        )
-        return result_unit(result_value)
-
-    # rdivide can be much simpler because dividing two units will be handled by main divide
-    def rdivide(self, other: Union[int, float, Decimal]) -> UnitInterface:
-        result_unit = type(self ** -1)
-        return result_unit(Decimal(other) / self.value)
-
-    def exponent(self, other: Scale) -> UnitInterface:
-        """Raise this measurement to a power such that the result has no
-        non-integer exponents.
-
-        For instance, ``meters(4) ** 2 == meters_squared(16)``. You can also
-        compute the magnitude of a vector with
-        ``vec = [meters(4), meters(3)]; mag = (vec[0] ** 2 + vec[1] ** 2) ** (1/2)``.
-
-        If the resulting calculation has any units with non-integer powers,
-        ``ValueError`` is raised.
-
-        :param other: Any integer, the power to raise this measurement to.
-        :raises ValueError: If the resulting unit has fractional exponents.
-        :return: A measurement with the value and units raised to the power.
-        """
-        v = Decimal(other)
-        result_composition = self.composition ** v
-        result_value = self.value ** v
-        result_unit = make_compound_unit(
-            scale=self.scale ** v,
-            exponents=result_composition.to_pairs()
-        )
-        return result_unit(result_value)
-
-    def less(self, other: UnitInterface):
-        """Check if this measurement is less than another.
-
-        :param other: The measurement to compare to.
-        :raises TypeError: If the two arguments are different units and can
-            therefore not be compared.
-        :return: Whether the other measurement is less than this one.
-        """
-        if type(other) != type(self):
-            raise TypeError(f"{self.abbreviation} and {other.abbreviation} cannot be compared")
-        return self.value * self.scale < other.value * other.scale
-
-    def lesseq(self, other: UnitInterface):
-        """Check if this measurement is less than or equal to another.
-
-        :param other: The measurement to compare to.
-        :raises TypeError: If the two arguments are different units and can
-            therefore not be compared.
-        :return: Whether the other measurement is less than this one.
-        """
-        return self < other or self == other
-
-    def absolute(self):
-        """Get the absolute value of this measurement.
-
-        :return: A copy of this measurement as an absolute value.
-        """
-        return type(self)(abs(self.value))
-
-    def neg(self):
-        """Get the negative of this measurement.
-
-        :return: A copy of this measurement with sign flipped.
-        """
-        return type(self)(-self.value)
-
-    def pos(self):
-        """No-op, return self.
-
-        This is unlike any other math operation since it doesn't make a copy.
-        """
-        return self
-
-    def is_dimension(self, dim: DimensionBase):
-        """Check if this unit is of the given dimension.
-
-        Most useful for checking whether two measurements can be reasonably
-        compared with ``.equivalent_to`` or converted into the other.
-
-        :param dim: The dimension to check against.
-        :return: Whether this unit is of the given dimension.
-        """
-        try:
-            return dim.composition == self.dimension.composition
-        except AttributeError:
-            return False
-
-    def getattribute(self, key: str):
-        """Forward conversion requests to the dimension.
-
-        The dimension, being the one thing all compatible units have in common,
-        is the logical place to store all conversion functions between different
-        units.
-
-        Any ``x.to_*`` method calls are therefore passed to the dimension.
-
-        :param key: The method name.
-        :return: A pseudo-bound method of the conversion function.
-        :raise AttributeError: If the requested method doesn't look like a
-            conversion function, or if there isn't a conversion function by that
-            name.
-        """
-        if key.startswith("to_"):
-            if not hasattr(self.dimension, key):
-                composition = Compound.from_string(key[3:])
-                base_scale = _base_scale(composition)
-                unit = make_compound_unit(
-                    name=key[3:],
-                    scale=base_scale,
-                    exponents=composition.to_pairs(),
-                )
-                key = "to_" + unit.__name__
-                # It is automatically registered on the dimension on creation,
-                # no need to explicitly use it
-            return lambda: getattr(self.dimension, key)(self)
-        raise AttributeError()
-
-    def tostring(self):
-        return f"{self.value} {self.abbreviation}"
-
-    def sig_figs(self, figs=3) -> UnitInterface:
-        """Produce a version of this measurement rounded to significant figures.
-
-        :param figs: How many significant figures to round to.
-        :return: A new measurement with a rounded value.
-        """
-        rounded = sigfig.round(self.value, sigfigs=figs)
-        return type(self)(rounded)
-
-    def to_latex(self, siunitx_major_version=SIUNITX_NEW):
-        r"""Output this unit value as it would be used in LaTeX with siunitx.
-
-        Maybe script your calculations, then write the output to a .tex file
-        and include it in your main document.
-
-        :param siunitx_major_version: siunitx changed the name of its macro
-            that outputs a number with a unit in version 3.0. Prior, it was
-            ``\SI{number}{units}``, and after it was ``\qty{number}{units}``.
-            Defaults to the most recent version. If you're using an older one,
-            for instance if your TeXLive distribution is a few years old, pass
-            in :data:`pyunitx.SIUNITX_OLD`, an alias for 2. I doubt anyone is
-            using version 1.
-        :return: A string formatted for direct inclusion in LaTeX.
-        """
-        if siunitx_major_version >= 3:
-            fmt = r"\qty{{{value}}}{{{unit}}}"
-        else:
-            fmt = r"\SI{{{value}}}{{{unit}}}"
-        if re.match(r"^\w+$", self.abbreviation):
-            # This unit has an elementary name, like J for joules
-            return fmt.format(value=self.value, unit=self.abbreviation)
-        units = []
-        for u, e in self.composition.to_pairs():
-            if e == 1:
-                units.append(u.abbreviation)
-            else:
-                units.append(f"{u.abbreviation}^{{{e}}}")
-        return fmt.format(value=self.value, unit=".".join(units))
-
-    def closest_si_prefix(self):
-        """Convert this value to the most natural SI prefix.
-
-        For instance, a value of 12100 meters would be changed into 12.1
-        kilometers.
-        This only works on units that have a specific name. Elementary units
-        like meters of course work, as do composite units like joules. However,
-        if a unit can only be expressed by some combination of named units
-        (say N*s) then a TypeError will be raised.
-
-        Currently ignores 10^-2 through 10^2; that is, centi through hecto.
-        These are not used nearly as often, with the exception of the
-        centimeter.
-
-        :raises TypeError: If this unit is not an SI unit.
-        :raises ValueError: If the value of this unit is too big or too small
-            to be directly expressed with an SI prefix. Instead you should
-            probably express your value as scientific notation using the base
-            unit of the dimension.
-        :return: This value expressed in the unit that requires no extra
-            scientific notation.
-        """
-        magnitude = math.log10(self.scale)
-        if magnitude != int(magnitude):
-            raise TypeError("This isn't an SI unit so prefixes can't be applied")
-        pattern = re.compile(
-            f"[{''.join(p for _, p, __ in _SI_PREFIXES)}]?" +
-            "(m|g|s|A|K|cd|mol|J|Hz|C|Pa|V|Ω)"
-        )
-        if not pattern.match(self.abbreviation):
-            raise TypeError("This isn't a base SI unit so prefixes can't be applied")
-        order = (self.value * self.scale).adjusted()
-        if order > 26 or order < -24:
-            raise ValueError("SI prefixes only cover 48 orders of magnitude")
-        mag = (order // 3) * 3
-        family = [u for u in _EXTANT_UNITS.values()
-                  if u.dimension == self.dimension and u.scale == Decimal(f"1e{mag}")]
-        if len(family) != 1:
-            # kelvin/celsius are a special case, being equal in scale
-            k = [u for u in family if u.__name__ == "kelvin"]
-            family = [k[0]]
-        converter_name = f"to_{family[0].__name__}"
-        return getattr(self, converter_name)()
-
     # @formatter:off
     # noinspection PyTypeChecker
-    unit: Type[UnitInterface] = type(name, (object,), {
-        # Initializers
-        "__new__": new,
-        # Math
-        "__add__": add,
-        "__radd__": add,
-        "__sub__": subtract,
-        "__rsub__": subtract,
-        "__abs__": absolute,
-        "__pos__": pos,
-        "__neg__": neg,
-        "__mul__": multiply,
-        "__rmul__": multiply,
-        "__truediv__": divide,
-        "__rtruediv__": rdivide,
-        "__pow__": exponent,
-        # Get special conversion functions
-        "__getattr__": getattribute,
-        # Comparisons; python can figure out the rest from this minimal set
-        "__eq__": equal,
-        "__lt__": less,
-        "__le__": lesseq,
-        # Stringifiers
-        "__str__": tostring,
-        "__repr__": tostring,
+    unit: Type[UnitBase] = type(name, (UnitBase,), {
         # Special class variables
         "__name__": name,
         "__doc__": textwrap.dedent(doc),
@@ -468,12 +104,6 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
         "scale": Decimal(scale),
         "instances": {},
         "dimension": dimension,
-        # Methods
-        "is_dimension": is_dimension,
-        "equivalent_to": equivalent,
-        "sig_figs": sig_figs,
-        "to_latex": to_latex,
-        "to_natural_si": closest_si_prefix,
     })
     # @formatter:on
     unit.composition = Compound(((unit, 1),))
@@ -509,7 +139,7 @@ def make_compound_dimension(exponents: Exponents, name: str = None) -> 'Dimensio
 
 
 def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, abbrev=None,
-                       doc="") -> Type['UnitInterface']:
+                       doc="") -> Type['UnitBase']:
     """Create or retrieve a unit composed of other units.
 
     If an identical unit has already been created (defined by same exponents
@@ -559,8 +189,8 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     return unit
 
 
-def si_unit(*, base_unit: Type['UnitInterface'], skip=()) \
-        -> Dict[str, Type['UnitInterface']]:
+def si_unit(*, base_unit: Type['UnitBase'], skip=()) \
+        -> Dict[str, Type['UnitBase']]:
     """Create the full range of SI prefixes on a unit.
 
     :param base_unit: The unit to which prefixes can be applied.
@@ -645,7 +275,7 @@ def _sort(d: Union[Exponents, Iterator[Pair]]) -> Pairs:
     return tuple(sorted(pairs, key=lambda p: (-p[1], p[0].__name__)))
 
 
-def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitInterface']]:
+def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitBase']]:
     remap = {(_sort(_dedupe(unit.composition.to_pairs())), unit.scale): unit
              for name, unit in _EXTANT_UNITS.items()}
     key = (_sort(_dedupe(c.to_pairs())), scale)
@@ -856,45 +486,362 @@ class Compound:
         return cls(tuple(pairs))
 
 
-class UnitInterface:
-    """A dummy class for type checking purposes, defining the interface of a unit class."""
+class UnitBase:
+    """The base class for unit classes, defining their interface."""
     composition: 'Compound'
     scale: 'Decimal'
     abbreviation: str
     __slots__ = ["value"]
 
-    def __init__(self, value: Scale):
-        ...
+    def __new__(cls, value: Scale):
+        """Create a new measurement using this unit.
 
-    def __add__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+        Instances are flyweights; two invocations of ``meters(1)`` will return
+        the same object.
 
-    def __sub__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+        :param value: The numerical value of the measurement, in any form that
+            :external:py:class:`decimal.Decimal` can accept.
+        :return: The newly created measurement, or the cached version.
+        """
+        v = Decimal(value)
+        if v not in cls.instances:
+            # noinspection PySuperArguments
+            cls.instances[v] = super(type, cls).__new__(cls)
+        instance = cls.instances[v]
+        instance.value = v
+        return instance
 
-    def __mul__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+    def __add__(self, other: UnitOperand) -> 'UnitBase':
+        """Add two measurements of the same unit together.
 
-    def __rmul__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+        :param other: Another measurement, with the same units.
+        :raises TypeError: If measurements are not the same unit.
+        :return: A measurement with the values of the two added.
+        """
+        if type(other) != type(self):
+            raise OperationError("add", type(self), type(other))
+        return type(self)(self.value + other.value)
 
-    def __truediv__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+    def __radd__(self, other):
+        return self.__add__(other)
 
-    def __rtruediv__(self, other: UnitOperand) -> 'UnitInterface':
-        ...
+    def __sub__(self, other: UnitOperand) -> 'UnitBase':
+        """Subtract a measurement of the same unit from this.
+
+        :param other: Another measurement, with the same units.
+        :raises TypeError: If measurements are not the same unit.
+        :return: A measurement with the values of the two subtracted.
+        """
+        if type(other) != type(self):
+            raise OperationError("subtract", type(self), type(other))
+        return type(self)(self.value - other.value)
+
+    def __rsub__(self, other):
+        # Order doesn't matter as any cases where you're actually adding two
+        # units will be handled by __sub__, so this will only have error cases
+        # where you're subtracting incompatible types
+        return self.__sub__(other)
+
+    def __eq__(self, other):
+        """Check if this measurement is the same value and unit of another.
+
+        :param other: Another measurement, with the same units.
+        :return: Whether these two measurements are identical.
+        """
+        if self is other:
+            return True
+        if type(other) != type(self):
+            return False
+        return self.value == other.value
+
+    def __mul__(self, other: UnitOperand) -> Union['UnitBase', Decimal]:
+        """Multiply two measurements.
+
+        If the two quantities completely cancel (like a frequency times a
+        duration), the result will be returned as a plain number.
+
+        Otherwise, produce the correct unit by combining the units of the two
+        multiplicands. If the result has two base units that measure the same
+        dimension but are not the same (say you're trying to multiply ``ft/s`` by
+        ``m^2``, ``ft*m^2`` would be in the result) a TypeError will be thrown.
+        Instead you should convert one of the measurements to be compatible with
+        the other before multiplying. In the example, that could be converting the
+        ``ft/s`` to ``m/s``.
+
+        :param other: Another measurement, with any units including none.
+        :raises TypeError: If base units are incompatible.
+        :return: The result of the calculation, with the compound units.
+        """
+        if isinstance(other, (int, float, Decimal)):
+            return type(self)(self.value * Decimal(other))
+        result_value = self.value * other.value
+        unit_composition = (self.composition * other.composition).units
+        if len(unit_composition) == 0:
+            return result_value
+        result_unit = make_compound_unit(
+            scale=self.scale * other.scale,
+            exponents=unit_composition
+        )
+        return result_unit(result_value)
+
+    def __rmul__(self, other: UnitOperand) -> 'UnitBase':
+        return self.__mul__(other)
+
+    def __truediv__(self, other: UnitOperand) -> Union['UnitBase', Decimal]:
+        """Divide two measurements.
+
+        If the two quantities completely cancel (like the derivation of radians
+        dividing length by length), the result will be returned as a plain
+        number.
+
+        Otherwise, produce the correct unit by combining the units of the two
+        divisors. If the result has two base units that measure the same
+        dimension but are not the same (say you're trying to divide ``ft/s`` by
+        ``m^2``, ``ft/m^2`` would be in the result) a TypeError will be thrown.
+        Instead you should convert one of the measurements to be compatible with
+        the other before multiplying. In the example, that could be converting the
+        ``ft/s`` to ``m/s``.
+
+        :param other: Another measurement, with any units including none.
+        :raises TypeError: If base units are incompatible.
+        :return: The result of the division, with correct units.
+        """
+        if isinstance(other, (int, float, Decimal)):
+            return type(self)(self.value / Decimal(other))
+        result_units = self.composition / other.composition
+        result_value = self.value / other.value
+        if len(result_units) == 0:
+            return result_value
+        result_unit = make_compound_unit(
+            scale=self.scale / other.scale,
+            exponents=result_units.to_pairs()
+        )
+        return result_unit(result_value)
+
+    def __rtruediv__(self, other: Union[int, float, Decimal]) -> 'UnitBase':
+        result_unit = type(self ** -1)
+        return result_unit(Decimal(other) / self.value)
+
+    def __pow__(self, other):
+        """Raise this measurement to a power such that the result has no
+        non-integer exponents.
+
+        For instance, ``meters(4) ** 2 == meters_squared(16)``. You can also
+        compute the magnitude of a vector with
+        ``vec = [meters(4), meters(3)]; mag = (vec[0] ** 2 + vec[1] ** 2) ** (1/2)``.
+
+        If the resulting calculation has any units with non-integer powers,
+        ``ValueError`` is raised.
+
+        :param other: Any integer, the power to raise this measurement to.
+        :raises ValueError: If the resulting unit has fractional exponents.
+        :return: A measurement with the value and units raised to the power.
+        """
+        v = Decimal(other)
+        result_composition = self.composition ** v
+        result_value = self.value ** v
+        result_unit = make_compound_unit(
+            scale=self.scale ** v,
+            exponents=result_composition.to_pairs()
+        )
+        return result_unit(result_value)
+
+    def __lt__(self, other):
+        """Check if this measurement is less than another.
+
+        :param other: The measurement to compare to.
+        :raises TypeError: If the two arguments are different units and can
+            therefore not be compared.
+        :return: Whether the other measurement is less than this one.
+        """
+        if type(other) != type(self):
+            raise TypeError(f"{self.abbreviation} and {other.abbreviation} cannot be compared")
+        return self.value * self.scale < other.value * other.scale
+
+    def __le__(self, other):
+        """Check if this measurement is less than or equal to another.
+
+        :param other: The measurement to compare to.
+        :raises TypeError: If the two arguments are different units and can
+            therefore not be compared.
+        :return: Whether the other measurement is less than this one.
+        """
+        return self < other or self == other
+
+    def __abs__(self):
+        """Get the absolute value of this measurement.
+
+        :return: A copy of this measurement as an absolute value.
+        """
+        return type(self)(abs(self.value))
+
+    def __neg__(self):
+        """Get the negative of this measurement.
+
+        :return: A copy of this measurement with sign flipped.
+        """
+        return type(self)(-self.value)
+
+    def __pos__(self):
+        """No-op, return self.
+
+        This is unlike any other math operation since it doesn't make a copy.
+        """
+        return self
+
+    def __getattr__(self, key: str):
+        """Forward conversion requests to the dimension.
+
+        The dimension, being the one thing all compatible units have in common,
+        is the logical place to store all conversion functions between different
+        units.
+
+        Any ``x.to_*`` method calls are therefore passed to the dimension.
+
+        :param key: The method name.
+        :return: A pseudo-bound method of the conversion function.
+        :raise AttributeError: If the requested method doesn't look like a
+            conversion function, or if there isn't a conversion function by that
+            name.
+        """
+        if key.startswith("to_"):
+            if not hasattr(self.dimension, key):
+                composition = Compound.from_string(key[3:])
+                base_scale = _base_scale(composition)
+                unit = make_compound_unit(
+                    name=key[3:],
+                    scale=base_scale,
+                    exponents=composition.to_pairs(),
+                )
+                key = "to_" + unit.__name__
+                # It is automatically registered on the dimension on creation,
+                # no need to explicitly use it
+            return lambda: getattr(self.dimension, key)(self)
+        raise AttributeError()
+
+    def __str__(self):
+        return f"{self.value} {self.abbreviation}"
+
+    def __repr__(self):
+        return str(self)
 
     def is_dimension(self, dim: DimensionBase) -> bool:
-        ...
+        """Check if this unit is of the given dimension.
 
-    def equivalent_to(self, quantity: 'UnitInterface', within=0) -> bool:
-        ...
+        Most useful for checking whether two measurements can be reasonably
+        compared with ``.equivalent_to`` or converted into the other.
 
-    def sig_figs(self, figures=3):
-        ...
+        :param dim: The dimension to check against.
+        :return: Whether this unit is of the given dimension.
+        """
+        try:
+            return dim.composition == self.dimension.composition
+        except AttributeError:
+            return False
+
+    def equivalent_to(self, other: 'UnitBase', figs=5) -> bool:
+        """Check if this measurement represents the same quantity as another,
+        within a certain precision.
+
+        This effectively converts both units to the base unit to get them on
+        equal footing before rounding and checking equality.
+
+        :param other: The other measurement.
+        :param figs: How many significant figures to round to before comparison.
+        :raises TypeError: If the two units do not represent the same dimension
+            and therefore cannot be compared.
+        :return: Whether the two measurements are approximately equal.
+        """
+        if not other.is_dimension(self.dimension):
+            raise ImplicitConversionError(type(other), type(self))
+        with warnings.catch_warnings():
+            # sigfig.round raises warnings if the quantity being rounded has fewer significant
+            # figures than are given, but for the purposes of this comparison, I don't care
+            # so ignore them all
+            warnings.simplefilter("ignore")
+            a = sigfig.round(self.value * self.scale, sigfigs=figs)
+            b = sigfig.round(other.value * other.scale, sigfigs=figs)
+        return a == b
+
+    def sig_figs(self, figs=3):
+        """Produce a version of this measurement rounded to significant figures.
+
+        :param figs: How many significant figures to round to.
+        :return: A new measurement with a rounded value.
+        """
+        rounded = sigfig.round(self.value, sigfigs=figs)
+        return type(self)(rounded)
 
     def to_latex(self, siunitx_major_version=SIUNITX_NEW):
-        ...
+        r"""Output this unit value as it would be used in LaTeX with siunitx.
+
+        Maybe script your calculations, then write the output to a .tex file
+        and include it in your main document.
+
+        :param siunitx_major_version: siunitx changed the name of its macro
+            that outputs a number with a unit in version 3.0. Prior, it was
+            ``\SI{number}{units}``, and after it was ``\qty{number}{units}``.
+            Defaults to the most recent version. If you're using an older one,
+            for instance if your TeXLive distribution is a few years old, pass
+            in :data:`pyunitx.SIUNITX_OLD`, an alias for 2. I doubt anyone is
+            using version 1.
+        :return: A string formatted for direct inclusion in LaTeX.
+        """
+        if siunitx_major_version >= 3:
+            fmt = r"\qty{{{value}}}{{{unit}}}"
+        else:
+            fmt = r"\SI{{{value}}}{{{unit}}}"
+        if re.match(r"^\w+$", self.abbreviation):
+            # This unit has an elementary name, like J for joules
+            return fmt.format(value=self.value, unit=self.abbreviation)
+        units = []
+        for u, e in self.composition.to_pairs():
+            if e == 1:
+                units.append(u.abbreviation)
+            else:
+                units.append(f"{u.abbreviation}^{{{e}}}")
+        return fmt.format(value=self.value, unit=".".join(units))
 
     def to_natural_si(self):
-        ...
+        """Convert this value to the most natural SI prefix.
+
+        For instance, a value of 12100 meters would be changed into 12.1
+        kilometers.
+        This only works on units that have a specific name. Elementary units
+        like meters of course work, as do composite units like joules. However,
+        if a unit can only be expressed by some combination of named units
+        (say N*s) then a TypeError will be raised.
+
+        Currently ignores 10^-2 through 10^2; that is, centi through hecto.
+        These are not used nearly as often, with the exception of the
+        centimeter.
+
+        :raises TypeError: If this unit is not an SI unit.
+        :raises ValueError: If the value of this unit is too big or too small
+            to be directly expressed with an SI prefix. Instead you should
+            probably express your value as scientific notation using the base
+            unit of the dimension.
+        :return: This value expressed in the unit that requires no extra
+            scientific notation.
+        """
+        magnitude = math.log10(self.scale)
+        if magnitude != int(magnitude):
+            raise TypeError("This isn't an SI unit so prefixes can't be applied")
+        pattern = re.compile(
+            f"[{''.join(p for _, p, __ in _SI_PREFIXES)}]?" +
+            "(m|g|s|A|K|cd|mol|J|Hz|C|Pa|V|Ω)"
+        )
+        if not pattern.match(self.abbreviation):
+            raise TypeError("This isn't a base SI unit so prefixes can't be applied")
+        order = (self.value * self.scale).adjusted()
+        if order > 26 or order < -24:
+            raise ValueError("SI prefixes only cover 48 orders of magnitude")
+        mag = (order // 3) * 3
+        family = [u for u in _EXTANT_UNITS.values()
+                  if u.dimension == self.dimension and u.scale == Decimal(f"1e{mag}")]
+        if len(family) != 1:
+            # kelvin/celsius are a special case, being equal in scale
+            k = [u for u in family if u.__name__ == "kelvin"]
+            family = [k[0]]
+        converter_name = f"to_{family[0].__name__}"
+        return getattr(self, converter_name)()
