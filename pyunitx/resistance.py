@@ -1,4 +1,5 @@
 import enum
+from decimal import Decimal
 
 from pyunitx._api import make_compound_unit, make_compound_dimension, si_unit
 from pyunitx.current import Current, amperes
@@ -34,6 +35,7 @@ class Color(enum.Enum):
     WHITE = "W"
     GOLD = "L"
     SILVER = "S"
+    BLANK = None
 
     def digit(self):
         values = {
@@ -67,14 +69,52 @@ class Color(enum.Enum):
         }
         return multipliers[self]
 
+    def tolerance(self):
+        tolerances = {
+            Color.BROWN: Decimal(1),
+            Color.RED: Decimal(2),
+            Color.GREEN: Decimal(".5"),
+            Color.BLUE: Decimal(".25"),
+            Color.VIOLET: Decimal(".1"),
+            Color.GRAY: Decimal(".05"),
+            Color.GOLD: Decimal("5"),
+            Color.SILVER: Decimal("10"),
+            Color.BLANK: Decimal("20"),
+        }
+        return tolerances[self] / 100
 
-def from_color(spec: str) -> ohms:
-    value = 0
+
+def from_color(spec: str, include_tol=False) -> ohms:
     spec = spec.upper()
-    for i, char in enumerate(spec[-2::-1]):
+    if len(spec) == 4:
+        digits = spec[:2]
+        multiplier = spec[2]
+        tolerance = spec[3]
+        sensitivity = None
+    elif len(spec) == 5:
+        digits = spec[:3]
+        multiplier = spec[3]
+        tolerance = spec[4]
+        sensitivity = None
+    elif len(spec) == 6:
+        digits = spec[:3]
+        multiplier = spec[3]
+        tolerance = spec[4]
+        sensitivity = spec[5]
+    elif len(spec) == 3:
+        digits = spec[:2]
+        multiplier = spec[2]
+        tolerance = None
+        sensitivity = None
+    else:
+        raise ValueError("Resistor codes can be 3-6 bands long.")
+    value = 0
+    for i, char in enumerate(digits[::-1]):
         e = Color(char)
         value += e.digit() * 10 ** i
-    value *= Color(spec[-1]).multiplier()
+    value *= Color(multiplier).multiplier()
+    if include_tol:
+        return ohms(value), ohms(value) * Color(tolerance).tolerance()
     return ohms(value)
 
 
