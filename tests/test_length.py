@@ -115,6 +115,49 @@ def test_positive():
     assert +meters(-4) == meters(-4)
 
 
+def test_equal_base_identical():
+    km_in_m = meters(1000)
+    km = kilometers(1)
+    assert km == km_in_m.to_kilometers()
+
+
+def test_equal_base_incompatible():
+    km = kilometers(1)
+    m = meters(1000)
+    assert km != m
+
+
+def test_add_base_identical():
+    a = meters(1)
+    b = meters(2)
+    assert a + b == meters(3)
+
+
+def test_add_base_incompatible():
+    a = meters(1)
+    b = kilometers(1)
+    with pytest.raises(TypeError):
+        print(a + b)
+    with pytest.raises(TypeError):
+        print(1 + a)
+
+
+def test_subtract_base_identical():
+    a = meters(5)
+    b = meters(2)
+    expected = meters(3)
+    assert a - b == expected
+
+
+def test_subtract_base_incompatible():
+    a = meters(1)
+    b = kilometers(1)
+    with pytest.raises(TypeError):
+        print(a - b)
+    with pytest.raises(TypeError):
+        print(1 - a)
+
+
 @pytest.mark.parametrize(
     "a,b,expect", [
         (3, 5, True),
