@@ -17,6 +17,7 @@ generated = si_unit(base_unit=amperes)
 globals().update(generated)
 
 __all__ = [
-              "Current",
-              "amperes",
-          ] + list(generated.keys())
+    "Current",
+    "amperes",
+    *generated.keys()
+]

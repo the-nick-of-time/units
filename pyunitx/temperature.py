@@ -92,11 +92,13 @@ def celsius_to_kelvin_absolute(degc: celsius) -> kelvin:
 
 
 __all__ = [
-              "Temperature",
-              "kelvin",
-              "celsius",
-              "fahrenheit",
-              "rankine",
-              "absolute_zero_celsius",
-              "celsius_to_kelvin_absolute",
-          ] + list(generated.keys())
+    "Temperature",
+    "kelvin",
+    "celsius",
+    "fahrenheit",
+    "rankine",
+    "absolute_zero_celsius",
+    "absolute_zero_fahrenheit",
+    "celsius_to_kelvin_absolute",
+    *generated.keys()
+]

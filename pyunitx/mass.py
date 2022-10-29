@@ -46,7 +46,7 @@ atomic_mass_unit = make_unit(
     """
 )
 
-av_pound = make_unit(
+pounds_mass = make_unit(
     name="pounds_mass",
     dimension=Mass,
     scale="0.45359237",
@@ -60,8 +60,8 @@ troy_pound = make_unit(
     abbrev="lbm_T",
     doc="""Troy pounds are a little smaller."""
 )
-slug = make_unit(
-    name="slug",
+slugs = make_unit(
+    name="slugs",
     dimension=Mass,
     scale="14.59390",
     abbrev="slug",
@@ -85,11 +85,12 @@ tons = make_unit(
 __all__ = [
     "Mass",
     "kilograms",
-    "av_pound",
+    "pounds_mass",
     "troy_pound",
-    "slug",
+    "slugs",
     "grams",
     "tonnes",
     "tons",
+    "atomic_mass_unit",
     *generated.keys()
 ]

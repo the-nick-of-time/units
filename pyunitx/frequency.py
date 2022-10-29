@@ -28,7 +28,8 @@ rpm = make_compound_unit(
 )
 
 __all__ = [
-              "Frequency",
-              "hertz",
-              "rpm",
-          ] + list(generated.keys())
+    "Frequency",
+    "hertz",
+    "rpm",
+    *generated.keys()
+]

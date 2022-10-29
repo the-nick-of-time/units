@@ -2,7 +2,7 @@ from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.force import Force, pounds, newtons
 from pyunitx.length import Length, meters, inches
 
-Pressure = make_compound_dimension({Force: 1, Length: -2})
+Pressure = make_compound_dimension(name="Pressure", exponents={Force: 1, Length: -2})
 
 pascals = make_compound_unit(
     name="pascals",
@@ -35,4 +35,10 @@ psi = make_compound_unit(
     """
 )
 
-__all__ = ["Pressure", "pascals", "bars", "psi"] + list(generated.keys())
+__all__ = [
+    "Pressure",
+    "pascals",
+    "bars",
+    "psi",
+    *generated.keys()
+]

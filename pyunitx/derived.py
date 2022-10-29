@@ -1,14 +1,12 @@
-from pyunitx._api import make_unit
+from pyunitx._api import make_unit, si_unit
 from pyunitx.angle import arcsecond
 from pyunitx.constants import c
 from pyunitx.length import Length, au
 from pyunitx.time import julian_years
 
-__all__ = ["parsec", "lightyear"]
-
 parsec_calc = au(1) / arcsecond(1).to_radians()
-parsec = make_unit(
-    name="parsec",
+parsecs = make_unit(
+    name="parsecs",
     dimension=Length,
     scale=parsec_calc.to_meters().value,
     abbrev="pc",
@@ -24,8 +22,12 @@ parsec = make_unit(
     a distance of 1 AU, that means it is one parsec away. 
     """
 )
-lightyear = make_unit(
-    name="lightyear",
+
+si_parsec = si_unit(base_unit=parsecs)
+globals().update(si_parsec)
+
+lightyears = make_unit(
+    name="lightyears",
     dimension=Length,
     scale=c.value * julian_years.scale,
     abbrev="ly",
@@ -36,3 +38,13 @@ lightyear = make_unit(
     of a Julian year, or 365.25 days.
     """
 )
+
+si_lightyear = si_unit(base_unit=lightyears)
+globals().update(si_lightyear)
+
+__all__ = [
+    "parsecs",
+    "lightyears",
+    *si_parsec.keys(),
+    *si_lightyear.keys(),
+]

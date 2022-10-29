@@ -89,8 +89,13 @@ years = make_unit(
 )
 
 __all__ = [
-              "Time",
-              "seconds", "minutes", "hours",
-              "days", "sidereal_days",
-              "julian_years",
-          ] + list(generated.keys())
+    "Time",
+    "seconds",
+    "minutes",
+    "hours",
+    "days",
+    "sidereal_days",
+    "julian_years",
+    "years",
+    *generated.keys()
+]

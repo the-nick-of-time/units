@@ -61,9 +61,10 @@ electronvolts = make_compound_unit(
 )
 
 __all__ = [
-              "Energy",
-              "joules",
-              "calorie",
-              "btu",
-              "electronvolts",
-          ] + list(generated.keys())
+    "Energy",
+    "joules",
+    "calorie",
+    "btu",
+    "electronvolts",
+    *generated.keys()
+]

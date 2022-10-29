@@ -31,7 +31,8 @@ fundamental_charge = make_compound_unit(
 )
 
 __all__ = [
-              "Charge",
-              "coulombs",
-              "fundamental_charge",
-          ] + list(generated.keys())
+    "Charge",
+    "coulombs",
+    "fundamental_charge",
+    *generated.keys()
+]

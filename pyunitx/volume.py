@@ -94,13 +94,16 @@ imperial_gallons = make_compound_unit(
 )
 
 __all__ = [
-              "meters_cubed",
-              "liters",
-              "milliliters",
-              "feet_cubed",
-              "fluid_ounces",
-              "cups",
-              "teaspoons",
-              "tablespoons",
-              "gallons",
-          ] + list(generated.keys())
+    "Volume",
+    "meters_cubed",
+    "liters",
+    "milliliters",
+    "fluid_ounces",
+    "cups",
+    "teaspoons",
+    "tablespoons",
+    "gallons",
+    "imperial_gallons",
+    "fluid_ounce_imperial",
+    *generated.keys()
+]

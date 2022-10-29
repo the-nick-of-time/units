@@ -1,8 +1,8 @@
-from pyunitx.derived import parsec, lightyear
+from pyunitx.derived import parsecs, lightyears
 
 
 def test_long_distances():
-    p = parsec(1)
-    l = lightyear("3.26156")
+    p = parsecs(1)
+    l = lightyears("3.26156")
 
     assert p.equivalent_to(l, 5)

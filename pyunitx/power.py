@@ -4,9 +4,7 @@ from pyunitx.force import pounds
 from pyunitx.length import feet
 from pyunitx.time import Time, seconds
 
-
-
-Power = make_compound_dimension({Energy: 1, Time: -1})
+Power = make_compound_dimension(exponents={Energy: 1, Time: -1}, name="Power")
 
 watts = make_compound_unit(
     name="watts",
@@ -44,9 +42,11 @@ horsepower = make_compound_unit(
     standards-compliant equine.
     """
 )
+
 __all__ = [
-              "Power",
-              "watts",
-              "kilowatts",
-              "horsepower",
-          ] + list(generated.keys())
+    "Power",
+    "watts",
+    "kilowatts",
+    "horsepower",
+    *generated.keys()
+]

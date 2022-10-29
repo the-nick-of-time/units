@@ -14,10 +14,22 @@ moles = make_unit(
     for its pragmatic usefulness in chemistry and fluid physics.
     """
 )
+pound_moles = make_unit(
+    name="pound_moles",
+    abbrev="lbmol",
+    dimension=Quantity,
+    scale="453.59237",
+    doc="""\
+    One lbmol is equal to the number of atoms in 12 lbm of carbon-12. As such
+    it is as much larger than the mol as a lbm is larger than a gram.
+    """
+)
 generated = si_unit(base_unit=moles)
 globals().update(generated)
 
 __all__ = [
-              "Quantity",
-              "moles",
-          ] + list(generated.keys())
+    "Quantity",
+    "moles",
+    "pound_moles",
+    *generated.keys()
+]

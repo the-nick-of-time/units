@@ -1,6 +1,6 @@
 from pyunitx.constants import g, R_E, M_E, G, R
 from pyunitx.force import pounds
-from pyunitx.mass import av_pound
+from pyunitx.mass import pounds_mass
 
 
 def test_gravity_derivation():
@@ -10,7 +10,7 @@ def test_gravity_derivation():
 
 
 def test_pound_mass():
-    assert (g.to_feet_per_second_squared() * av_pound(1)).equivalent_to(pounds(1), 5)
+    assert (g.to_feet_per_second_squared() * pounds_mass(1)).equivalent_to(pounds(1), 5)
 
 
 def test_gas_constant_to_usc():

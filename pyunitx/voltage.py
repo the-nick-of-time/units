@@ -18,6 +18,7 @@ generated = si_unit(base_unit=volts)
 globals().update(generated)
 
 __all__ = [
-              "Potential",
-              "volts",
-          ] + list(generated.keys())
+    "Potential",
+    "volts",
+    *generated.keys()
+]
