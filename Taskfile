@@ -115,7 +115,7 @@ function task_deploy() {
 
 function task_local_install() {
 	: "Install the project outside the virtualenv"
-	(deactivate ; pip install .)
+	(PATH=$(echo "$PATH" | cut -d: -f2-) ; pip install .)
 }
 
 # Print documentation for tasks

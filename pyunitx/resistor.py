@@ -5,9 +5,17 @@ from pyunitx.resistance import from_color
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--tolerance", action="store_true")
-    parser.add_argument("-s", "--sensitivity", action="store_true")
-    parser.add_argument("spec")
+    parser.add_argument("-t", "--tolerance", action="store_true", help="Show the tolerance")
+    parser.add_argument(
+        "-s",
+        "--sensitivity",
+        action="store_true",
+        help="Show the temperature sensitivity and the tolerance"
+    )
+    parser.add_argument(
+        "spec", help="The color code to read. See documentation for list of "
+                     "color symbols"
+        )
     return parser.parse_args()
 
 
