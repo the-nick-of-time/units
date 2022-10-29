@@ -1,4 +1,7 @@
+import pytest
+
 from pyunitx.resistance import from_color, ohms
+from pyunitx.temperature import kelvin
 
 
 def test_simple_color():
@@ -12,3 +15,14 @@ def test_capitalization():
 def test_tolerance():
     assert from_color("eku", True) == (ohms("50e6"), ohms("10e6"))
     assert from_color("EKUL", True) == (ohms("50e6"), ohms("25e5"))
+
+
+def test_sensitivity():
+    assert from_color("REEOBU", include_coeff=True) == (ohms("255e3"),
+                                                        ohms("2.55e3"),
+                                                        ohms("255e-2") / kelvin(1))
+
+
+def test_default_sensitivity():
+    with pytest.raises(KeyError):
+        from_color("BKO", include_coeff=True)

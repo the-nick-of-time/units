@@ -1,8 +1,10 @@
 import enum
 from decimal import Decimal
+from typing import Union, Tuple
 
 from pyunitx._api import make_compound_unit, make_compound_dimension, si_unit
 from pyunitx.current import Current, amperes
+from pyunitx.temperature import kelvin
 from pyunitx.voltage import Potential, volts
 
 Resistance = make_compound_dimension(name="Resistance", exponents={Potential: 1, Current: -1})
@@ -83,8 +85,26 @@ class Color(enum.Enum):
         }
         return tolerances[self] / 100
 
+    def temp_coefficient(self):
+        coefficients = {
+            Color.BLACK: 250,
+            Color.BROWN: 100,
+            Color.RED: 50,
+            Color.ORANGE: 15,
+            Color.YELLOW: 25,
+            Color.GREEN: 20,
+            Color.BLUE: 10,
+            Color.VIOLET: 5,
+            Color.GRAY: 1,
+        }
+        return (Decimal(coefficients[self]) / 1000000) / kelvin(1)
 
-def from_color(spec: str, include_tol=False) -> ohms:
+
+coeff = type(ohms(1) / kelvin(1))
+
+
+def from_color(spec: str, include_tol=False, include_coeff=False) \
+        -> Union[ohms, Tuple[ohms, ohms], Tuple[ohms, ohms, coeff]]:
     spec = spec.upper()
     if len(spec) == 4:
         digits = spec[:2]
@@ -113,6 +133,10 @@ def from_color(spec: str, include_tol=False) -> ohms:
         e = Color(char)
         value += e.digit() * 10 ** i
     value *= Color(multiplier).multiplier()
+    if include_coeff:
+        return (ohms(value),
+                ohms(value) * Color(tolerance).tolerance(),
+                ohms(value) * Color(sensitivity).temp_coefficient())
     if include_tol:
         return ohms(value), ohms(value) * Color(tolerance).tolerance()
     return ohms(value)
