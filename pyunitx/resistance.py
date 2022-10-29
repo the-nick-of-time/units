@@ -1,6 +1,6 @@
 import enum
 from decimal import Decimal
-from typing import Union, Tuple
+from typing import Union, Tuple, Iterable
 
 from pyunitx._api import make_compound_unit, make_compound_dimension, si_unit
 from pyunitx.current import Current, amperes
@@ -103,9 +103,10 @@ class Color(enum.Enum):
 coeff = type(ohms(1) / kelvin(1))
 
 
-def from_color(spec: str, include_tol=False, include_coeff=False) \
+def from_color(spec: Union[str, Iterable[Color]], include_tol=False, include_coeff=False) \
         -> Union[ohms, Tuple[ohms, ohms], Tuple[ohms, ohms, coeff]]:
-    spec = spec.upper()
+    if isinstance(spec, str):
+        spec = spec.upper()
     if len(spec) == 4:
         digits = spec[:2]
         multiplier = spec[2]

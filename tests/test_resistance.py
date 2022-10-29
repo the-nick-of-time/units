@@ -1,6 +1,6 @@
 import pytest
 
-from pyunitx.resistance import from_color, ohms
+from pyunitx.resistance import from_color, ohms, Color
 from pyunitx.temperature import kelvin
 
 
@@ -34,3 +34,7 @@ def test_bounds():
         from_color("BK")
     with pytest.raises(ValueError):
         from_color("REEOBUL")
+
+
+def test_enum():
+    assert from_color([Color.GREEN, Color.WHITE, Color.BLACK, Color.GOLD]) == ohms(59)
