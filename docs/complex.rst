@@ -82,6 +82,10 @@ Pressure
 Resistance
 ----------
 
+.. csv-table:: Resistor Color Codes
+	:file: colors.csv
+	:header-rows: 1
+
 .. automodule:: pyunitx.resistance
 	:members:
 	:exclude-members: sig_figs, is_dimension, equivalent_to, to_latex, to_natural_si

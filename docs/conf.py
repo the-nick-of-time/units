@@ -32,6 +32,14 @@ body = [f"{p},{s},10\\ :sup:`{Decimal(m).adjusted()}`" for p, s, m in _SI_PREFIX
 csv_si = Path("prefixes.csv")
 csv_si.write_text('\n'.join([headers] + body))
 
+# -- Table of resistor color codes -------------------------------------------
+from pyunitx.resistance import Color
+
+headers = ','.join(["Letter", "Color"])
+body = [f"{c.value},{c.name}" for c in Color if c is not Color.BLANK]
+csv_color = Path("colors.csv")
+csv_color.write_text('\n'.join([headers] + body))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 

@@ -25,6 +25,11 @@ globals().update(generated)
 
 
 class Color(enum.Enum):
+    """Resistor color codes.
+
+    This associates the colors with their value as digits, or multipliers, or
+    tolerance percentages.
+    """
     BLACK = "K"
     BROWN = "B"
     RED = "R"
@@ -40,6 +45,7 @@ class Color(enum.Enum):
     BLANK = None
 
     def digit(self):
+        """Gets the value of a color when used as a digit."""
         values = {
             Color.BLACK: 0,
             Color.BROWN: 1,
@@ -55,6 +61,7 @@ class Color(enum.Enum):
         return values[self]
 
     def multiplier(self):
+        """Gets the value of a color when used as a multiplier."""
         multipliers = {
             Color.BLACK: 10 ** 0,
             Color.BROWN: 10 ** 1,
@@ -72,6 +79,7 @@ class Color(enum.Enum):
         return multipliers[self]
 
     def tolerance(self):
+        """Gets the value of a color when used as a tolerance percentage."""
         tolerances = {
             Color.BROWN: Decimal(1),
             Color.RED: Decimal(2),
@@ -86,6 +94,8 @@ class Color(enum.Enum):
         return tolerances[self] / 100
 
     def temp_coefficient(self):
+        """Gets the value of a color used as a temperature coefficient, in
+        fractions per kelvin."""
         coefficients = {
             Color.BLACK: 250,
             Color.BROWN: 100,
@@ -105,6 +115,19 @@ coeff = type(ohms(1) / kelvin(1))
 
 def from_color(spec: Union[str, Iterable[Color]], include_tol=False, include_coeff=False) \
         -> Union[ohms, Tuple[ohms, ohms], Tuple[ohms, ohms, coeff]]:
+    """Read the definition of a resistor from its color code.
+
+    By default, just returns the resistor value in ohms. The return type is
+    changed by ``include_tol`` and ``include_coeff``, as described below.
+
+    :param spec: Either a string where each character is a color code, or an
+        iterable of :class:`Color`\\ s to be somewhat more readable.
+    :param include_tol: If True, output a tuple of (resistor value in ohms,
+        absolute resistor tolerance in ohms).
+    :param include_coeff: If True, output a tuple of (resistor value in ohms,
+        absolute resistor tolerance in ohms, absolute resistor temperature
+        sensitivity in ohms per kelvin). Overrides ``include_tol``.
+    """
     if isinstance(spec, str):
         spec = spec.upper()
     if len(spec) == 4:

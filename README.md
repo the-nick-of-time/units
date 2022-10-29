@@ -162,4 +162,52 @@ $ uconvert -f 3 4.9 kg lbm
 10.8 lbm
 ```
 
+## Resistor color code converter
+
+In the `resistance` module there is a function to construct a resistance from a color code.
+
+Q. What's the value of a resistor reading "orange, violet, red, silver"?
+
+```pycon
+>>> from pyunitx.resistance import from_color
+>>> from_color("OVRS")
+3700 Ω
+
+```
+
+Q. I want to know the tolerance on that same resistor.
+
+```pycon
+>>> from pyunitx.resistance import from_color
+>>> from_color("OVRS", include_tol=True)
+(3700 Ω, 370.0 Ω)
+
+```
+
+Q. What's the full specification of a six-band resistor reading "green, blue, blue, orange,
+brown, red"?
+
+```pycon
+>>> from pyunitx.resistance import from_color
+>>> from_color("EUUOBR", include_coeff=True)
+(566000 Ω, 5660.00 Ω, 28.30000 m^2 kg K^-1 A^-2 s^-3)
+
+```
+
+Note: that last quantity is ohms per kelvin. As above, it gets decomposed into its base units
+due to not being a named derived unit.
+
+For the mapping between letter and color,
+see [the documentation](https://pyunitx.readthedocs.io/complex.html#resistance). Because the
+starting letter of the colors are not unique (black, brown, and blue, as well as green, gray,
+and gold) the letter chosen to represent it isn't perfectly intuitive. If you want your code to
+be more readable, all the colors are defined in an enum that you can use directly.
+
+```pycon
+>>> from pyunitx.resistance import from_color, Color
+>>> from_color([Color.ORANGE, Color.VIOLET, Color.RED, Color.SILVER], include_tol=True)
+(3700 Ω, 370.0 Ω)
+
+```
+
 The full documentation can be found at [ReadTheDocs](https://pyunitx.readthedocs.io/en/latest/).

@@ -8,3 +8,4 @@ list-fftabs.py
 /docs/README.rst
 *.deb
 /docs/prefixes.csv
+/docs/colors.csv
