@@ -32,34 +32,40 @@ class Color(enum.Enum):
     VIOLET = "V"
     GRAY = "G"
     WHITE = "W"
+    GOLD = "L"
+    SILVER = "S"
 
     def digit(self):
         values = {
-            "K": 0,
-            "B": 1,
-            "R": 2,
-            "O": 3,
-            "Y": 4,
-            "E": 5,
-            "U": 6,
-            "V": 7,
-            "G": 8,
-            "W": 9,
+            Color.BLACK: 0,
+            Color.BROWN: 1,
+            Color.RED: 2,
+            Color.ORANGE: 3,
+            Color.YELLOW: 4,
+            Color.GREEN: 5,
+            Color.BLUE: 6,
+            Color.VIOLET: 7,
+            Color.GRAY: 8,
+            Color.WHITE: 9,
         }
-        return values[self.value]
+        return values[self]
 
     def multiplier(self):
         multipliers = {
-            "K": 10 ** 0,
-            "B": 10 ** 1,
-            "R": 10 ** 2,
-            "O": 10 ** 3,
-            "Y": 10 ** 4,
-            "G": 10 ** 5,
-            "U": 10 ** 6,
-            "V": 10 ** 7,
+            Color.BLACK: 10 ** 0,
+            Color.BROWN: 10 ** 1,
+            Color.RED: 10 ** 2,
+            Color.ORANGE: 10 ** 3,
+            Color.YELLOW: 10 ** 4,
+            Color.GREEN: 10 ** 5,
+            Color.BLUE: 10 ** 6,
+            Color.VIOLET: 10 ** 7,
+            Color.GRAY: 10 ** 8,
+            Color.WHITE: 10 ** 9,
+            Color.GOLD: 10 ** -1,
+            Color.SILVER: 10 ** -2,
         }
-        return multipliers[self.value]
+        return multipliers[self]
 
 
 def from_color(spec: str) -> ohms:
