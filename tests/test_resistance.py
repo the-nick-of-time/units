@@ -15,6 +15,7 @@ def test_capitalization():
 def test_tolerance():
     assert from_color("eku", True) == (ohms("50e6"), ohms("10e6"))
     assert from_color("EKUL", True) == (ohms("50e6"), ohms("25e5"))
+    assert from_color("EOVUS", True) == (ohms("537e6"), ohms("537e5"))
 
 
 def test_sensitivity():
@@ -26,3 +27,10 @@ def test_sensitivity():
 def test_default_sensitivity():
     with pytest.raises(KeyError):
         from_color("BKO", include_coeff=True)
+
+
+def test_bounds():
+    with pytest.raises(ValueError):
+        from_color("BK")
+    with pytest.raises(ValueError):
+        from_color("REEOBUL")
