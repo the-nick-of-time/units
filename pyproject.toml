@@ -36,3 +36,6 @@ addopts = [
     "-rP",
     "--doctest-glob=README.md",
 ]
+filterwarnings = [
+    'ignore:.*[0-9] significant figures requested from number with only [0-9] significant figures'
+]

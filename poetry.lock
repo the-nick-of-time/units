@@ -465,7 +465,7 @@ docs = ["pypandoc"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8e51195155083a40f8999fa1d40a9c18241860b74aceeb0b243d7c9e407b1f36"
+content-hash = "a36f97878bcdb3d76c3bbd845f929fd1e7e031a62e1c44dd7c185d436151c358"
 
 [metadata.files]
 alabaster = [
