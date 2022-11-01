@@ -1,6 +1,6 @@
 import pytest
 
-from pyunitx.resistance import from_color, ohms, Color
+from pyunitx.resistance import from_color, ohms, Color, kiloohms, microohms, milliohms
 from pyunitx.temperature import kelvin
 
 
@@ -38,3 +38,13 @@ def test_bounds():
 
 def test_enum():
     assert from_color([Color.GREEN, Color.WHITE, Color.BLACK, Color.GOLD]) == ohms(59)
+
+
+def test_si():
+    large = ohms(12345)
+    small = ohms("0.00123")
+    tiny = ohms("0.000098765")
+
+    assert large.to_natural_si() == kiloohms("12.345")
+    assert small.to_natural_si() == milliohms("1.23")
+    assert tiny.to_natural_si() == microohms("98.765")
