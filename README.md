@@ -210,4 +210,12 @@ be more readable, all the colors are defined in an enum that you can use directl
 
 ```
 
+There is also a companion command-line tool that outputs its values in a human-readable format.
+It is installed as `resistor` alongside `uconvert`.
+
+```shell
+$ resistor -c euuobr
+566 kΩ + 28.3 Ω/K ± 5.66 kΩ
+```
+
 The full documentation can be found at [ReadTheDocs](https://pyunitx.readthedocs.io/en/latest/).

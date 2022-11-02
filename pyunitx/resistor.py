@@ -13,10 +13,10 @@ def parse_args():
         help="Indicate the absolute tolerance in the output."
     )
     parser.add_argument(
-        "-s",
-        "--sensitivity",
+        "-c",
+        "--coefficient",
         action="store_true",
-        help="Indicate both temperature sensitivity and absolute tolerance in the output."
+        help="Indicate both temperature coefficient and absolute tolerance in the output."
     )
     parser.add_argument(
         "spec",
@@ -30,8 +30,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    values = from_color(args.spec, args.tolerance, args.sensitivity)
-    if args.sensitivity:
+    values = from_color(args.spec, args.tolerance, args.coefficient)
+    if args.coefficient:
         sensitivity = str((values[2] * kelvin(1)).to_natural_si())
         print(
             f"{values[0].to_natural_si()} + {sensitivity}/K ± {values[1].to_natural_si()}"

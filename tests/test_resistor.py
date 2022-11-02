@@ -11,8 +11,8 @@ from pyunitx.resistor import main
         [["rgol"], "28.000 kΩ"],
         [["ook"], "33 Ω"],
         [["-t", "ook"], "33 Ω ± 6.6 Ω"],
-        [["-s", "rgokvv"], "283 Ω + 1.415 mΩ/K ± 283 mΩ"],
-        [["-st", "rgokvv"], "283 Ω + 1.415 mΩ/K ± 283 mΩ"],
+        [["-c", "rgokvv"], "283 Ω + 1.415 mΩ/K ± 283 mΩ"],
+        [["-ct", "rgokvv"], "283 Ω + 1.415 mΩ/K ± 283 mΩ"],
     ]
 )
 def test_main(monkeypatch, capsys, args, expected):
