@@ -170,7 +170,7 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
     if isinstance(exponents, dict):
         exponents = tuple(exponents.items())
     composition = Compound(exponents)
-    existing = _access_unit_cache(composition, scale)
+    existing = _access_unit_cache(composition, Decimal(scale))
     if existing:
         return existing
     if name is None:

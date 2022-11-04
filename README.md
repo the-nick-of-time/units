@@ -125,8 +125,9 @@ units (like newton-seconds) this library will *not* do that for you and instead 
 its basest components. This is because the number of possible options is large and it's not
 possible to figure out what you want.
 
-This library predefines all the SI units and dimensions, but what if that's not enough? You
-might want to model some other quantity, like cash flow in your budget.
+This library predefines all the SI units and dimensions, as well as a bunch of US Customary
+units, but what if that's not enough? You might want to model some other quantity, like cash
+flow in your budget.
 
 ```pycon
 >>> from pyunitx import make_dimension, make_unit
