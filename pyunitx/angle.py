@@ -30,6 +30,8 @@ degrees = make_unit(
     All angle measurements in this module are equipped with a to_radians 
     method alongside the other conversion functions that work between the angle
     measurements defined here. 
+    Note that radians are dimensionless so this will return a plain number. To
+    convert from radians to degrees, use :meth:`degrees.from_radians`.
     """
 )
 arcminutes = make_unit(
@@ -49,10 +51,19 @@ arcseconds = make_unit(
 
 
 def __to_rad(deg):
+    """Convert this value to radians.
+
+    :return: The radian value, which is a dimensionless quantity.
+    """
     return deg.value * deg.scale * Decimal(math.pi) / 180
 
 
 def __from_rad(rad):
+    """Convert a radian value into degrees.
+
+    :param rad: The radian value, as a number.
+    :return: The degree equivalent.
+    """
     return degrees(rad * 180 / math.pi)
 
 
@@ -77,6 +88,20 @@ def from_dms(d: Number, m: Number, s: Number) -> degrees:
 
 
 def from_dms(d, m=None, s=None):
+    """Convert from degrees/minutes/seconds notation into a degrees measurement.
+
+    :param d: If this is called with three numbers, a number of degrees. If
+        this is called with a single sequence of three numbers, a number of
+        degrees. If this is called with a string, that string should either be
+        a number of decimal degrees (e.g. "-1.23°") or be in DMS notation (e.g.
+        "1°30′36.36″"). The minute symbol accepts the proper *prime* ′ or it
+        can be the apostrophe '. Similarly the second symbol accepts either
+        *double prime* ″ or quote ". If DMS is given, decimal seconds are
+        allowed but the degrees and minutes must be whole numbers.
+    :param m: A number of arcminutes, optional.
+    :param s: A number of arcseconds, optional.
+    :return: A measurement in degrees.
+    """
     if m is not None and s is not None and isinstance(d, (Decimal, float, int)):
         return degrees(d) + arcminutes(m).to_degrees() + arcseconds(s).to_degrees()
     if isinstance(d, Sequence) and len(d) == 3:
@@ -94,7 +119,7 @@ def from_dms(d, m=None, s=None):
     raise ValueError(
         "Either call with three numbers or with a string containing decimal "
         "degrees or with a string in degrees-minutes-seconds notation."
-        )
+    )
 
 
 degrees.from_dms = staticmethod(from_dms)

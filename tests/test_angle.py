@@ -31,6 +31,7 @@ def test_from_decimal_string():
 def test_from_dms_string():
     assert degrees.from_dms("1°30'36\"") == degrees("1.51")
     assert degrees.from_dms("1°30′36″") == degrees("1.51")
+    assert degrees.from_dms("1°30′36.36″") == degrees("1.5101")
     assert degrees.from_dms("1° 30′ 36″  ") == degrees("1.51")
 
 
