@@ -5,16 +5,16 @@ from pyunitx._api import make_dimension, make_unit
 
 __all__ = [
     "Angle",
-    "degree",
-    "arcminute",
-    "arcsecond",
+    "degrees",
+    "arcminutes",
+    "arcseconds",
 ]
 
 Angle = make_dimension("Angle")
 
 # Radians are better to be defined as a base unit but are dimensionless
-degree = make_unit(
-    name="degree",
+degrees = make_unit(
+    name="degrees",
     dimension=Angle,
     scale=1,
     abbrev="\xb0",
@@ -28,15 +28,15 @@ degree = make_unit(
     measurements defined here. 
     """
 )
-arcminute = make_unit(
-    name="arcminute",
+arcminutes = make_unit(
+    name="arcminutes",
     dimension=Angle,
     scale=Decimal(1) / 60,
     abbrev="\u2032",
     doc="""An arcminute is 1/60 of a degree."""
 )
-arcsecond = make_unit(
-    name="arcsecond",
+arcseconds = make_unit(
+    name="arcseconds",
     dimension=Angle,
     scale=Decimal(1) / 3600,
     abbrev="\u2033",
@@ -49,9 +49,9 @@ def __to_rad(deg):
 
 
 def __from_rad(rad):
-    return degree(rad * 180 / math.pi)
+    return degrees(rad * 180 / math.pi)
 
 
-degree.from_radians = staticmethod(__from_rad)
+degrees.from_radians = staticmethod(__from_rad)
 
 Angle.to_radians = __to_rad

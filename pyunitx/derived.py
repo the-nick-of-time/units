@@ -1,10 +1,10 @@
 from pyunitx._api import make_unit, si_unit
-from pyunitx.angle import arcsecond
+from pyunitx.angle import arcseconds
 from pyunitx.constants import c
 from pyunitx.length import Length, au
 from pyunitx.time import julian_years
 
-parsec_calc = au(1) / arcsecond(1).to_radians()
+parsec_calc = au(1) / arcseconds(1).to_radians()
 parsecs = make_unit(
     name="parsecs",
     dimension=Length,
