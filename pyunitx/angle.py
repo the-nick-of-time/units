@@ -91,6 +91,10 @@ def from_dms(d, m=None, s=None):
     if match:
         deg, mn, sc = match.group(1), match.group(2), match.group(3)
         return degrees(deg) + arcminutes(mn).to_degrees() + arcseconds(sc).to_degrees()
+    raise ValueError(
+        "Either call with three numbers or with a string containing decimal "
+        "degrees or with a string in degrees-minutes-seconds notation."
+        )
 
 
 degrees.from_dms = staticmethod(from_dms)

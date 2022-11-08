@@ -23,7 +23,7 @@ def test_from_dms():
 
 
 def test_from_decimal_string():
-    assert degrees.from_dms("1.23") == degrees("1.23")
+    assert degrees.from_dms("1.23 ") == degrees("1.23")
     assert degrees.from_dms("1.23°") == degrees("1.23")
     assert degrees.from_dms("-1.23°") == degrees("-1.23")
 
@@ -31,3 +31,11 @@ def test_from_decimal_string():
 def test_from_dms_string():
     assert degrees.from_dms("1°30'36\"") == degrees("1.51")
     assert degrees.from_dms("1°30′36″") == degrees("1.51")
+    assert degrees.from_dms("1° 30′ 36″  ") == degrees("1.51")
+
+
+def test_from_dms_fail():
+    with pytest.raises(ValueError):
+        degrees.from_dms("foobar")
+    with pytest.raises(ValueError):
+        degrees.from_dms("123deg")
