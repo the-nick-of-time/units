@@ -48,4 +48,10 @@ def __to_rad(deg):
     return deg.value * deg.scale * Decimal(math.pi) / 180
 
 
+def __from_rad(rad):
+    return degree(rad * 180 / math.pi)
+
+
+degree.from_radians = staticmethod(__from_rad)
+
 Angle.to_radians = __to_rad
