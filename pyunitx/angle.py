@@ -1,5 +1,9 @@
 import math
+import re
+import typing
+from collections.abc import Sequence
 from decimal import Decimal
+from numbers import Number
 
 from pyunitx._api import make_dimension, make_unit
 
@@ -55,3 +59,38 @@ def __from_rad(rad):
 degrees.from_radians = staticmethod(__from_rad)
 
 Angle.to_radians = __to_rad
+
+
+@typing.overload
+def from_dms(spec: str) -> degrees:
+    ...
+
+
+@typing.overload
+def from_dms(spec: typing.Tuple[Number, Number, Number]) -> degrees:
+    ...
+
+
+@typing.overload
+def from_dms(d: Number, m: Number, s: Number) -> degrees:
+    ...
+
+
+def from_dms(d, m=None, s=None):
+    if m is not None and s is not None and isinstance(d, (Decimal, float, int)):
+        return degrees(d) + arcminutes(m).to_degrees() + arcseconds(s).to_degrees()
+    if isinstance(d, Sequence) and len(d) == 3:
+        d, m, s = d
+        return degrees(d) + arcminutes(m).to_degrees() + arcseconds(s).to_degrees()
+    decimal = re.compile(r"^([+-]?\d+(\.\d+)?)°?$")
+    match = re.match(decimal, d.strip())
+    if match:
+        return degrees(match.group(1))
+    dms = re.compile(r"^(\d+)°\s*(\d+)[′']\s*(\d+(\.\d+)?)[″\"]$")
+    match = re.match(dms, d.strip())
+    if match:
+        deg, mn, sc = match.group(1), match.group(2), match.group(3)
+        return degrees(deg) + arcminutes(mn).to_degrees() + arcseconds(sc).to_degrees()
+
+
+degrees.from_dms = staticmethod(from_dms)

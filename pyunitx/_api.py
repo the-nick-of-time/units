@@ -4,7 +4,7 @@ import re
 import textwrap
 import warnings
 from decimal import Decimal
-from typing import Union, Tuple, Sequence, Type, Dict, Iterator, Optional
+from typing import Union, Tuple, Type, Dict, Iterator, Optional
 
 import sigfig
 
@@ -20,7 +20,7 @@ __all__ = [
     "SIUNITX_OLD",
 ]
 UnitOperand = Union['UnitInterface', int, float, Decimal]
-Scale = Union[Decimal, float, str, Tuple[int, Sequence[int], int]]
+Scale = Union[Decimal, float, str]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
 Pair = Tuple[Unitlike, int]
 Pairs = Tuple[Pair, ...]
