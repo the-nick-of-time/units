@@ -1,5 +1,7 @@
-from pyunitx.constants import g, R_E, M_E, G, R
+from pyunitx.constants import g, R_E, M_E, G, R, c
 from pyunitx.force import pounds
+from pyunitx.frequency import gigahertz
+from pyunitx.length import meters
 from pyunitx.mass import pounds_mass
 
 
@@ -17,3 +19,7 @@ def test_gas_constant_to_usc():
     us = R.to_feet_pounds_per_mole_per_rankine()
 
     assert us.sig_figs(4) == type(us)("3.407")
+
+
+def test_light_frequency():
+    assert (c / gigahertz(1)).to_meters() == meters("0.299792458")

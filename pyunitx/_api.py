@@ -281,7 +281,24 @@ def _access_unit_cache(c: 'Compound', scale) -> Optional[Type['UnitBase']]:
     key = (_sort(_dedupe(c.to_pairs())), scale)
     if key in remap:
         return remap[key]
+    if len(c) == 1 and _is_base(c):
+        # Particular case: SI derivatives of base units are also base units,
+        # divorced from their root
+        magnitude = scale.log10()
+        if magnitude == int(magnitude):
+            si_prefix = [prefix for prefix, _, sc in _SI_PREFIXES if Decimal(sc) == scale]
+            if len(si_prefix) != 1:
+                return None
+            si_name = si_prefix[0] + c.to_pairs()[0][0].__name__
+            if si_name in _EXTANT_UNITS:
+                return _EXTANT_UNITS[si_name]
     return None
+
+
+def _is_base(composition: 'Compound') -> bool:
+    return (len(composition) == 1
+            and composition.to_pairs()[0][1] == 1
+            and composition.to_pairs()[0][0].composition == composition)
 
 
 def _base_scale(composition: Union['Compound', Pairs]) -> Decimal:
