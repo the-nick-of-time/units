@@ -62,6 +62,12 @@ def test_str():
     assert str(m) == "meters_cubed_per_second_squared"
 
 
+def test_non_integer_name():
+    m = Multiset({seconds: 0.5})
+
+    assert str(m) == "seconds_to_the_0.5"
+
+
 def test_add_immutable(speed):
     new = speed.add(seconds)
 

@@ -113,11 +113,11 @@ def test_pow_sqrt():
     assert c ** (1 / 2) == expected
 
 
-def test_pow_sqrt_failure():
-    c = Compound(((meters, 1),))
+def test_pow_non_int():
+    c = Compound(((seconds, 1),))
+    expected = Compound(((seconds, 0.5),))
 
-    with pytest.raises(ValueError):
-        print(c ** (1 / 2))
+    assert c ** (1 / 2) == expected
 
 
 def test_decompose():

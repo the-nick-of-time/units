@@ -22,9 +22,9 @@ __all__ = [
 UnitOperand = Union['UnitInterface', int, float, Decimal]
 Scale = Union[Decimal, float, str]
 Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
-Pair = Tuple[Unitlike, int]
+Pair = Tuple[Unitlike, Union[int, float, Decimal]]
 Pairs = Tuple[Pair, ...]
-Exponents = Union[Pairs, Dict[Unitlike, int], 'Multiset']
+Exponents = Union[Pairs, Dict[Unitlike, Union[int, float, Decimal]], 'Multiset']
 
 SIUNITX_NEW = 3
 SIUNITX_OLD = 2
@@ -235,7 +235,8 @@ def _exponent_name(unit: type, exponent: int) -> str:
     }
     prefix = 'per_' if exponent < 0 else ''
     body = unit.__name__.rstrip("s") if exponent < 0 else unit.__name__
-    return f"{prefix}{body}{value_names[abs(exponent)]}"
+    suffix = value_names.get(abs(exponent), f"_to_the_{abs(exponent)}")
+    return f"{prefix}{body}{suffix}"
 
 
 def _decompose_all(exponents: Pairs) -> Pairs:
@@ -438,12 +439,7 @@ class Compound:
         pairs = []
         for t, e in self.to_pairs():
             new_exponent = e * power
-            if int(new_exponent) != new_exponent:
-                raise ValueError(
-                    f"The exponentiation has caused a non-integer exponent on {t}, "
-                    f"which is not allowed."
-                )
-            pairs.append((t, int(new_exponent)))
+            pairs.append((t, Decimal(new_exponent)))
         return Compound(tuple(pairs))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
