@@ -4,6 +4,7 @@ import re
 import textwrap
 import warnings
 from decimal import Decimal
+from fractions import Fraction
 from typing import Union, Tuple, Type, Dict, Iterator, Optional
 
 import sigfig
@@ -309,6 +310,12 @@ def _base_scale(composition: Union['Compound', Pairs]) -> Decimal:
     return base_scale
 
 
+def _frac_to_decimal(frac: Union[Fraction, Decimal, int, float]) -> Decimal:
+    if hasattr(frac, "numerator"):
+        return frac.numerator / Decimal(frac.denominator)
+    return Decimal(frac)
+
+
 class DimensionBase:
     __INSTANCES = {}
 
@@ -435,11 +442,11 @@ class Compound:
         self.__verify_no_dimension_mismatch(other)
         return Compound(self.units.remove(other))
 
-    def __pow__(self, power: Union[int, float, Decimal]):
+    def __pow__(self, power: Union[int, float, Decimal, Fraction]):
         pairs = []
         for t, e in self.to_pairs():
             new_exponent = e * power
-            pairs.append((t, Decimal(new_exponent)))
+            pairs.append((t, _frac_to_decimal(new_exponent)))
         return Compound(tuple(pairs))
 
     def __verify_no_dimension_mismatch(self, extra: Multiset):
@@ -635,7 +642,7 @@ class UnitBase:
         result_unit = type(self ** -1)
         return result_unit(Decimal(other) / self.value)
 
-    def __pow__(self, other):
+    def __pow__(self, other: Union[int, float, Decimal, Fraction, str]):
         """Raise this measurement to a power such that the result has no
         non-integer exponents.
 
@@ -650,11 +657,12 @@ class UnitBase:
         :raises ValueError: If the resulting unit has fractional exponents.
         :return: A measurement with the value and units raised to the power.
         """
-        v = Decimal(other)
-        result_composition = self.composition ** v
-        result_value = self.value ** v
+        if isinstance(other, str):
+            other = Decimal(other)
+        result_composition = self.composition ** other
+        result_value = self.value ** _frac_to_decimal(other)
         result_unit = make_compound_unit(
-            scale=self.scale ** v,
+            scale=self.scale ** _frac_to_decimal(other),
             exponents=result_composition.to_pairs()
         )
         return result_unit(result_value)

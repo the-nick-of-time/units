@@ -1,3 +1,5 @@
+from fractions import Fraction
+
 import pytest
 
 from pyunitx._api import Compound, Multiset
@@ -118,6 +120,13 @@ def test_pow_non_int():
     expected = Compound(((seconds, 0.5),))
 
     assert c ** (1 / 2) == expected
+
+
+def test_pow_fraction():
+    c = Compound(((seconds, 3),))
+    expected = Compound(((seconds, 2),))
+
+    assert c ** Fraction(2, 3) == expected
 
 
 def test_decompose():
