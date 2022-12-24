@@ -8,7 +8,8 @@ from pyunitx.length import (kilometers,
                             inches,
                             yards,
                             Length,
-                            micrometers, )
+                            micrometers,
+                            millimeters, )
 
 
 def test_km_to_m():
@@ -213,9 +214,11 @@ def test_greaterequal(a, b, expect):
 def test_si():
     large = meters(102364)
     small = meters("0.00004266")
+    medium = meters("0.041")
 
     assert large.to_natural_si() == kilometers("102.364")
     assert small.to_natural_si() == micrometers("42.66")
+    assert medium.to_natural_si() == millimeters(41)
 
 
 def test_not_si():

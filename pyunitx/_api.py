@@ -22,10 +22,10 @@ __all__ = [
 ]
 UnitOperand = Union['UnitInterface', int, float, Decimal]
 Scale = Union[Decimal, float, str]
-Unitlike = Union[Type['UnitInterface'], 'DimensionBase']
-Pair = Tuple[Unitlike, Union[int, float, Decimal]]
+UnitLike = Union[Type['UnitInterface'], 'DimensionBase']
+Pair = Tuple[UnitLike, Union[int, float, Decimal]]
 Pairs = Tuple[Pair, ...]
-Exponents = Union[Pairs, Dict[Unitlike, Union[int, float, Decimal]], 'Multiset']
+Exponents = Union[Pairs, Dict[UnitLike, Union[int, float, Decimal]], 'Multiset']
 
 SIUNITX_NEW = 3
 SIUNITX_OLD = 2
@@ -154,7 +154,10 @@ def make_compound_unit(*, scale: Scale, exponents: Exponents, name: str = None, 
         second to miles per hour could be determined strictly from the scale
         factors already defined for miles -> meters and hours -> seconds, doing
         that calculation is up to the constructor of the unit. I think this
-        obeys the principle of least surprise, but I might be wrong.
+        obeys the principle of least surprise, but I might be wrong. When new
+        units are constructed by multiplication and division, the results *do*
+        have the scale automatically computed as there is no other way that
+        makes sense.
     :param exponents: A sequence of tuples or dict that pair existing units
         with the exponent they should be raised to.
     :param name: A name to give this unit, like joules. If no particular
@@ -207,7 +210,7 @@ def si_unit(*, base_unit: Type['UnitBase'], skip=()) \
         new_scale = Decimal(scale) * base_unit.scale
         new_name = prefix + base_unit.__name__
         new_abbrev = short + base_unit.abbreviation
-        if base_unit.composition == Compound(Multiset({base_unit: 1})):
+        if _is_base(base_unit.composition):
             new_unit = make_unit(
                 name=new_name,
                 abbrev=new_abbrev,
@@ -247,7 +250,7 @@ def _decompose_all(exponents: Pairs) -> Pairs:
     return _sort(accumulator)
 
 
-def _decompose(unit: Unitlike, factor: int) -> Pairs:
+def _decompose(unit: UnitLike, factor: int) -> Pairs:
     if not hasattr(unit, "composition"):
         # must be a unit currently under construction and doesn't have composition yet
         return (unit, factor),
@@ -259,7 +262,7 @@ def _decompose(unit: Unitlike, factor: int) -> Pairs:
     return tuple(accumulator)
 
 
-def _dedupe(pairs: Iterator[Pair]) -> Dict[Unitlike, int]:
+def _dedupe(pairs: Iterator[Pair]) -> Dict[UnitLike, int]:
     accumulator = {}
     for unitish, num in pairs:
         if unitish in accumulator:
@@ -361,7 +364,7 @@ class Multiset:
             self.store = _dedupe(pairs)
         self.store = {k: v for k, v in self.store.items() if v != 0}
 
-    def __iter__(self) -> Iterator[Unitlike]:
+    def __iter__(self) -> Iterator[UnitLike]:
         return iter(self.store.keys())
 
     def __getitem__(self, item):
