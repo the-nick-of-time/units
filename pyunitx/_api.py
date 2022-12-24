@@ -643,18 +643,21 @@ class UnitBase:
         return result_unit(Decimal(other) / self.value)
 
     def __pow__(self, other: Union[int, float, Decimal, Fraction, str]):
-        """Raise this measurement to a power such that the result has no
-        non-integer exponents.
+        """Raise this measurement to a power.
 
         For instance, ``meters(4) ** 2 == meters_squared(16)``. You can also
         compute the magnitude of a vector with
         ``vec = [meters(4), meters(3)]; mag = (vec[0] ** 2 + vec[1] ** 2) ** (1/2)``.
 
-        If the resulting calculation has any units with non-integer powers,
-        ``ValueError`` is raised.
+        While the power of 1/2 (square root) can be exactly represented as a
+        float, in general fractional powers will not be. For these cases you can
+        use :external:py:class:`fractions.Fraction`.
+
+        Anything other than fractions will be run through the
+        :external:py:class:`decimal.Decimal` constructor first, so you can use
+        anything including strings to represent the number.
 
         :param other: Any integer, the power to raise this measurement to.
-        :raises ValueError: If the resulting unit has fractional exponents.
         :return: A measurement with the value and units raised to the power.
         """
         if isinstance(other, str):
