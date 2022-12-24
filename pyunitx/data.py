@@ -98,14 +98,27 @@ tebibytes = make_unit(
     using 2\\ :sup:`10`, which is close to 1000.
     """
 )
+pebibytes = make_unit(
+    name="pebibytes",
+    abbrev="PiB",
+    dimension=Data,
+    scale=8 * 1024 ** 5,
+    doc="""\
+    One PiB is 1024\\ :sup:`5` bytes.
+    
+    Use of the SI prefixes ``kilo``, etc. are discouraged with data as the most
+    natural set of scales are based on powers of two. Thus prefixes are selected
+    using 2\\ :sup:`10` = 1024, which is close to 1000.
+    """
+)
 exbibytes = make_unit(
     name="exbibytes",
     abbrev="EiB",
     dimension=Data,
-    scale=8 * 1024 ** 5,
+    scale=8 * 1024 ** 6,
     doc="""\
-    One EiB is 1024\\ :sup:`5` bytes.
-    
+    One EiB is 1024\\ :sup:`6` bytes.
+
     Use of the SI prefixes ``kilo``, etc. are discouraged with data as the most
     natural set of scales are based on powers of two. Thus prefixes are selected
     using 2\\ :sup:`10` = 1024, which is close to 1000.
