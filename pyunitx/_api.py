@@ -752,6 +752,23 @@ class UnitBase:
     def __repr__(self):
         return str(self)
 
+    def __format__(self, format_spec):
+        """Format this measurement similar to a float.
+
+        :param format_spec: The format specification, in a restricted subset of
+            the python `string formatting mini-language. \
+            <https://docs.python.org/3/library/string.html#format-specification-mini-language>`_
+            Currently only supports ``.[precision]g`` to round to the specified
+            number of significant figures.
+        """
+        if not format_spec:
+            return str(self)
+        match = re.fullmatch(r"\.(\d+)[gG]", format_spec)
+        if match:
+            precision = int(match.group(1))
+            return f"{self.sig_figs(precision).value} {self.abbreviation}"
+        raise ValueError("Invalid format specification")
+
     def is_dimension(self, dim: DimensionBase) -> bool:
         """Check if this unit is of the given dimension.
 

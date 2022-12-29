@@ -26,7 +26,7 @@ All units have exactly the same interface so the copies are omitted for brevity.
 .. autoclass:: pyunitx.length.meters
 	:members:
 	:inherited-members:
-	:special-members: __new__, __add__, __sub__, __abs__, __pos__, __neg__, __mul__, __truediv__, __pow__, __getattr__, __eq__, __lt__, __le__
+	:special-members: __new__, __add__, __sub__, __abs__, __pos__, __neg__, __mul__, __truediv__, __pow__, __getattr__, __eq__, __lt__, __le__, __format__
 
 .. automodule:: pyunitx.length
 	:members:

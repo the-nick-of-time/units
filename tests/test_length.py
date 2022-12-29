@@ -244,3 +244,20 @@ def test_si_unofficial():
 
     with pytest.raises(TypeError):
         area.to_natural_si()
+
+
+def test_format():
+    precise = meters("987.654321")
+
+    assert format(precise) == "987.654321 m"
+    assert format(precise, ".2g") == "9.9E+2 m"
+    assert format(precise, ".2G") == "9.9E+2 m"
+    assert format(precise, ".6g") == "987.654 m"
+
+
+def test_format_unsupported():
+    precise = meters("987.654321")
+    unsupported = [".3f", "%", ">+0"]
+    for u in unsupported:
+        with pytest.raises(ValueError):
+            format(precise, u)
