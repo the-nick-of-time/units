@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 
 from pyunitx.angle import degrees
+from pyunitx.time import seconds
 
 
 def test_to_radian():
@@ -40,3 +41,9 @@ def test_from_dms_fail():
         degrees.from_dms("foobar")
     with pytest.raises(ValueError):
         degrees.from_dms("123deg")
+
+
+def test_compound_to_radians():
+    speed = degrees(90) / seconds(1)
+
+    assert speed.to_radians_per_second().equivalent_to(math.pi / 2 / seconds(1))

@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from decimal import Decimal
 from numbers import Number
 
-from pyunitx._api import make_dimension, make_unit
+from pyunitx._api import make_dimension, make_unit, Compound
 
 __all__ = [
     "Angle",
@@ -48,6 +48,15 @@ arcseconds = make_unit(
     abbrev="\u2033",
     doc="""An arcsecond is 1/60 of an arcminute, and therefore 1/3600 of a degree."""
 )
+
+radians = make_unit(
+    name="radians",
+    dimension=Angle,
+    scale=math.pi / 180,
+    abbrev="rad",
+    doc="""Radians are the most natural unit of angle."""
+)
+radians.composition = Compound(())
 
 
 def __to_rad(deg):
