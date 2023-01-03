@@ -3,7 +3,8 @@ from decimal import Decimal
 
 import pytest
 
-from pyunitx.angle import degrees
+from pyunitx.angle import degrees, arcseconds
+from pyunitx.energy import joules
 from pyunitx.time import seconds
 
 
@@ -47,3 +48,7 @@ def test_compound_to_radians():
     speed = degrees(90) / seconds(1)
 
     assert speed.to_radians_per_second().equivalent_to(math.pi / 2 / seconds(1))
+
+    flux = joules(1) / arcseconds(1) ** 2
+    expected = joules((arcseconds.scale ** -2) * (180 / Decimal(math.pi)) ** 2)
+    assert flux.to_joules_per_radian_squared().equivalent_to(expected)

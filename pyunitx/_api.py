@@ -20,6 +20,7 @@ __all__ = [
     "SIUNITX_NEW",
     "SIUNITX_OLD",
 ]
+
 UnitOperand = Union['UnitInterface', int, float, Decimal]
 Scale = Union[Decimal, float, str]
 UnitLike = Union[Type['UnitInterface'], 'DimensionBase']
@@ -461,7 +462,7 @@ class Compound:
                 # same unit
                 raise ImplicitConversionError(unit, existing_dimensions[unit.dimension])
 
-    def to_pairs(self):
+    def to_pairs(self) -> Pairs:
         return self.units.to_pairs()
 
     def make_abbreviation(self) -> str:
@@ -740,6 +741,14 @@ class UnitBase:
                     scale=base_scale,
                     exponents=composition.to_pairs(),
                 )
+                if 'radian' in key:
+                    from pyunitx.angle import Angle
+                    angle = [(u, e) for u, e in self.composition if u.dimension == Angle]
+                    assert len(angle) == 1
+                    angular, exponent = angle[0]
+                    factor = (Decimal(math.pi) / angular(180 / angular.scale)) ** exponent
+                    converted = self * factor
+                    return lambda: unit(converted.value * converted.scale / unit.scale)
                 key = "to_" + unit.__name__
                 # It is automatically registered on the dimension on creation,
                 # no need to explicitly use it
