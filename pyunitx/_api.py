@@ -110,11 +110,7 @@ def make_unit(*, name: str, dimension: 'DimensionBase', scale: Scale, abbrev: st
     # @formatter:on
     unit.composition = Compound(((unit, 1),))
 
-    def converter(self):
-        f"""Convert the current unit to {name}"""
-        return unit(self.value * self.scale / unit.scale)
-
-    setattr(dimension, "to_" + name.replace(" ", "_"), converter)
+    setattr(dimension, "to_" + name.replace(" ", "_"), _make_converter(unit))
     _EXTANT_UNITS[unit.__name__] = unit
     return unit
 
@@ -228,6 +224,13 @@ def si_unit(*, base_unit: Type['UnitBase'], skip=()) \
         generated[new_name] = new_unit
     return generated
 
+
+def _make_converter(unit):
+    def converter(self):
+        f"""Convert {self.__name__} to {unit.__name__}"""
+        return unit(self.value * self.scale / unit.scale)
+
+    return converter
 
 def _exponent_name(unit: type, exponent: int) -> str:
     value_names = {
@@ -748,7 +751,7 @@ class UnitBase:
                     angular, exponent = angle[0]
                     factor = (Decimal(math.pi) / angular(180 / angular.scale)) ** exponent
                     converted = self * factor
-                    return lambda: unit(converted.value * converted.scale / unit.scale)
+                    return lambda: _make_converter(unit)(converted)
                 key = "to_" + unit.__name__
                 # It is automatically registered on the dimension on creation,
                 # no need to explicitly use it
