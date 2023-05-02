@@ -4,7 +4,7 @@ documentation = $(wildcard docs/*.rst) docs/conf.py
 
 version := $(shell poetry version --short)
 
-.coverage: $(sources) $(tests) .coveragerc
+.coverage: $(sources) $(tests) pyproject.toml
 	coverage run -m pytest
 	coverage report
 

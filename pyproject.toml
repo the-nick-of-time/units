@@ -13,7 +13,7 @@ pypandoc = { version = "^1.9", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pypandoc = "^1.9"
-coverage = "^6.5.0"
+coverage = { version = "^6.5.0", extras = ["toml"] }
 pytest = "^7.0"
 lz4 = "^4.0.2"
 Sphinx = "^5.2.0.post0"
@@ -39,3 +39,20 @@ addopts = [
 filterwarnings = [
     'ignore:.*[0-9] significant figures requested from number with only [0-9] significant figures'
 ]
+
+[tool.coverage.run]
+source = ["pyunitx"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    # Ellipses as the whole line like in typing overloads
+    '\.\.\.$',
+    "def __repr__",
+    "if __name__ == [\"']__main__['\"]",
+]
+fail_under = 90
+sort = "Cover"
+
+[tool.coverage.html]
+title = "pyunitx Test Coverage"
