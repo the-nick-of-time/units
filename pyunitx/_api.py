@@ -21,9 +21,9 @@ __all__ = [
     "SIUNITX_OLD",
 ]
 
-UnitOperand = Union['UnitInterface', int, float, Decimal]
+UnitOperand = Union['UnitBase', int, float, Decimal]
 Scale = Union[Decimal, float, str]
-UnitLike = Union[Type['UnitInterface'], 'DimensionBase']
+UnitLike = Union[Type['UnitBase'], 'DimensionBase']
 Pair = Tuple[UnitLike, Union[int, float, Decimal]]
 Pairs = Tuple[Pair, ...]
 Exponents = Union[Pairs, Dict[UnitLike, Union[int, float, Decimal]], 'Multiset']
@@ -518,6 +518,7 @@ class UnitBase:
     composition: 'Compound'
     scale: 'Decimal'
     abbreviation: str
+    dimension: DimensionBase
     __slots__ = ["value"]
 
     def __new__(cls, value: Scale):
