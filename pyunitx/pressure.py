@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pyunitx._api import make_compound_dimension, make_compound_unit, si_unit
 from pyunitx.force import Force, pounds, newtons
 from pyunitx.length import Length, meters, inches
@@ -34,11 +36,22 @@ psi = make_compound_unit(
     not using the base unit of length.
     """
 )
+torr = make_compound_unit(
+    scale=Decimal(101325) / 760,
+    exponents={newtons: 1, meters: -2},
+    name="torr",
+    abbrev="Torr",
+    doc="""\
+    One torr is equivalent to 1/760 of a :data:`standard atmosphere <pyunitx.constants.atm>`.
+    It is used sometimes for fine gradations of pressure.
+    """
+)
 
 __all__ = [
     "Pressure",
     "pascals",
     "bars",
     "psi",
+    "torr",
     *generated.keys()
 ]
