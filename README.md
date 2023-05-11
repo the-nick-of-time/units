@@ -199,7 +199,8 @@ Note: that last quantity is ohms per kelvin. As above, it gets decomposed into i
 due to not being a named derived unit.
 
 For the mapping between letter and color,
-see [the documentation](https://pyunitx.readthedocs.io/complex.html#resistance). Because the
+see [the documentation](https://pyunitx.readthedocs.io/en/latest/complex.html#resistance).
+Because the
 starting letter of the colors are not unique (black, brown, and blue, as well as green, gray,
 and gold) the letter chosen to represent it isn't perfectly intuitive. If you want your code to
 be more readable, all the colors are defined in an enum that you can use directly.

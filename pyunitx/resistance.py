@@ -153,7 +153,7 @@ def from_color(spec: Union[str, Iterable[Color]], include_tol=False, include_coe
     else:
         raise ValueError("Resistor codes can be 3-6 bands long.")
     value = 0
-    for i, char in enumerate(digits[::-1]):
+    for i, char in enumerate(reversed(digits)):
         e = Color(char)
         value += e.digit() * 10 ** i
     value *= Color(multiplier).multiplier()
