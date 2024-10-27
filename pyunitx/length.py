@@ -55,6 +55,16 @@ astronomical_unit = au = make_unit(
     of the :class:`parsecs <pyunitx.derived.parsecs>`.
     """
 )
+angstroms = make_unit(
+    name="angstroms",
+    dimension=Length,
+    scale="1e-10",
+    abbrev="Å",
+    doc="""\
+    Angstroms are a very small unit of length, useful in discussing the space
+    between atoms in molecules.
+    """
+)
 
 __all__ = [
     "Length",

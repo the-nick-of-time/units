@@ -9,7 +9,8 @@ from pyunitx.length import (kilometers,
                             yards,
                             Length,
                             micrometers,
-                            millimeters, )
+                            millimeters,
+                            angstroms, )
 
 
 def test_km_to_m():
@@ -261,3 +262,8 @@ def test_format_unsupported():
     for u in unsupported:
         with pytest.raises(ValueError):
             format(precise, u)
+
+
+def test_exponential_scale():
+    small = angstroms(1)
+    assert small.to_meters() == meters("1e-10")
