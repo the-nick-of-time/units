@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyunitx"
-version = "0.10.1"
+version = "0.10.2"
 description = "First-class manipulation of physical quantities"
 authors = ["Nick Thurmes <nthurmes@gmail.com>"]
 license = "GPL-3.0-or-later"
@@ -10,9 +10,9 @@ readme = "README.md"
 python = "^3.7"
 sigfig = "^1.3.2"
 pypandoc = { version = "^1.9", optional = true }
-ruff = "^0.0.265"
 
 [tool.poetry.group.dev.dependencies]
+ruff = "^0.0.265"
 pypandoc = "^1.9"
 coverage = { version = "^6.5.0", extras = ["toml"] }
 pytest = "^7.0"

@@ -1,16 +1,4 @@
-from pyunitx._api import make_unit, make_dimension
-
-__all__ = [
-    "Data",
-    "bits",
-    "bytes",
-    "nybbles",
-    "kibibytes",
-    "mebibytes",
-    "gibibytes",
-    "tebibytes",
-    "exbibytes",
-]
+from pyunitx._api import make_unit, make_dimension, si_unit
 
 Data = make_dimension("Data")
 
@@ -124,3 +112,19 @@ exbibytes = make_unit(
     using 2\\ :sup:`10` = 1024, which is close to 1000.
     """
 )
+
+generated = si_unit(base_unit=bytes)
+globals().update(generated)
+
+__all__ = [
+    "Data",
+    "bits",
+    "bytes",
+    "nybbles",
+    "kibibytes",
+    "mebibytes",
+    "gibibytes",
+    "tebibytes",
+    "exbibytes",
+    *generated.keys(),
+]
