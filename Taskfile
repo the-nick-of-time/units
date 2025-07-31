@@ -104,7 +104,7 @@ function task_publish() {
 	task_build
 	tag
 	git push --tags github HEAD:main
-	poetry publish --username="$PYPI_USERNAME" --password="$PYPI_PASSWORD"
+	POETRY_PYPI_TOKEN_PYPI="$PYPI_PYUNITX" poetry publish
 	task_coveralls
 }
 
